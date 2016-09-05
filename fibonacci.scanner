@@ -34,7 +34,7 @@ Token Type: STRINGLITERAL
 Value: "\n"
 Token Type: OPERATOR
 Value: ;
-Token Type: IDENTIFIER
+Token Type: KEYWORD
 Value: FUNCTION
 Token Type: KEYWORD
 Value: INT
@@ -92,7 +92,7 @@ Token Type: OPERATOR
 Value: )
 Token Type: OPERATOR
 Value: ;
-Token Type: IDENTIFIER
+Token Type: KEYWORD
 Value: ELSIF
 Token Type: OPERATOR
 Value: (
@@ -104,21 +104,13 @@ Token Type: INTLITERAL
 Value: 0
 Token Type: OPERATOR
 Value: )
-Token Type: IDENTIFIER
-Value: This
-Token Type: IDENTIFIER
-Value: is
-Token Type: IDENTIFIER
-Value: a
-Token Type: IDENTIFIER
-Value: comment
 Token Type: KEYWORD
 Value: RETURN
 Token Type: INTLITERAL
 Value: 0
 Token Type: OPERATOR
 Value: ;
-Token Type: IDENTIFIER
+Token Type: KEYWORD
 Value: ELSIF
 Token Type: OPERATOR
 Value: (
@@ -136,7 +128,7 @@ Token Type: INTLITERAL
 Value: 1
 Token Type: OPERATOR
 Value: ;
-Token Type: IDENTIFIER
+Token Type: KEYWORD
 Value: ELSIF
 Token Type: OPERATOR
 Value: (
@@ -158,7 +150,7 @@ Token Type: KEYWORD
 Value: ENDIF
 Token Type: KEYWORD
 Value: END
-Token Type: IDENTIFIER
+Token Type: KEYWORD
 Value: FUNCTION
 Token Type: KEYWORD
 Value: VOID

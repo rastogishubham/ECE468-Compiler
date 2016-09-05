@@ -4,17 +4,18 @@ dummy : 'WATER';
 
 
 COMMENT:
-	'--'.*?;
+	'--'.*? '\n'-> skip
+	;
 
 KEYWORDS: 
 	'PROGRAM'
 	| 'BEGIN'
 	| 'END'
-	| 'FUCNTION'
+	| 'FUNCTION'
 	| 'READ'
 	| 'WRITE'
 	| 'IF'
-	| 'ELSEIF'
+	| 'ELSIF'
 	| 'ENDIF'
 	| 'DO'
 	| 'WHILE'
