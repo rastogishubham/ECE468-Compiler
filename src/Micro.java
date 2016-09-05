@@ -8,11 +8,12 @@ public class Micro {
 			String filename = "";
 			if(args.length > 0) 
 				filename = args[0];
-			final Grammar g = Grammar.load("/home/shay/a/rastogis/Compiler/Micro.g4");
+			final Grammar g = Grammar.load("/../Micro.g4");
 			LexerInterpreter lexEngine = g.createLexerInterpreter(new ANTLRFileStream(filename));
 			while(!lexEngine.nextToken().getText().equals("<EOF>")) {	
 				System.out.print("Token Type: ");
 				Token tokens = lexEngine.nextToken();
+				//System.out.println(tokens.getTokenSource());	
 				//if(tokens.getText() == "IDENTIFIER")
 				System.out.println(tokens);
 			}
