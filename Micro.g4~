@@ -2,10 +2,6 @@ grammar Micro;
 
 dummy : 'WATER';
 
-
-COMMENT:
-	'--'.*?;
-
 KEYWORDS: 
 	'PROGRAM'
 	| 'BEGIN'
@@ -62,4 +58,7 @@ INTLITERAL:
 
 STRINGLITERAL:
 	'"'.*?'"';		
+
+COMMENT:
+	'--'.*?;
 

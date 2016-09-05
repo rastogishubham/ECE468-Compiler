@@ -16,8 +16,8 @@ public class MicroParser extends Parser {
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		T__0=1, KEYWORDS=2, OPERATORS=3, EMPTY=4, IDENTIFIERS=5, FLOATLITERAL=6, 
-		INTLITERAL=7, STRINGLITERAL=8, COMMENT=9;
+		T__0=1, COMMENT=2, KEYWORDS=3, OPERATORS=4, EMPTY=5, IDENTIFIERS=6, FLOATLITERAL=7, 
+		INTLITERAL=8, STRINGLITERAL=9;
 	public static final int
 		RULE_dummy = 0;
 	public static final String[] ruleNames = {
@@ -28,8 +28,8 @@ public class MicroParser extends Parser {
 		null, "'WATER'"
 	};
 	private static final String[] _SYMBOLIC_NAMES = {
-		null, null, "KEYWORDS", "OPERATORS", "EMPTY", "IDENTIFIERS", "FLOATLITERAL", 
-		"INTLITERAL", "STRINGLITERAL", "COMMENT"
+		null, null, "COMMENT", "KEYWORDS", "OPERATORS", "EMPTY", "IDENTIFIERS", 
+		"FLOATLITERAL", "INTLITERAL", "STRINGLITERAL"
 	};
 	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
 
