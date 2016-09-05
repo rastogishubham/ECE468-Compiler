@@ -1,0 +1,34 @@
+import java.io.*;
+import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.tool.Grammar;
+import java.util.*;
+public class Micro {
+	public static void main(String[] args) throws IOException{
+			String filename = "";
+			if(args.length > 0) 
+				filename = args[0];
+			final Grammar g = Grammar.load("/home/shay/a/rastogis/Compiler/Micro.g4");
+			LexerInterpreter lexEngine = g.createLexerInterpreter(new ANTLRFileStream(filename));
+			int i = 0;
+			/*while(i != 100) {
+				Token tokens = lexEngine.nextToken();
+				System.out.println(tokens);
+				i++;
+			}*/
+			while(!lexEngine.nextToken().getText().equals("<EOF>")) {	
+				System.out.print("Token Type: ");
+				Token tokens = lexEngine.nextToken();
+				//if(tokens.getText() == "IDENTIFIER")
+				System.out.println(tokens);
+			}
+			/*CommonTokenStream tokens = new CommonTokenStream(lexEngine);
+			List<Token> token_list = tokens.fill();
+			System.out.println("Number of tokens: " + token_list.size());*/
+			/*for(int i = 0; i < 10; i++) {
+				Token token = lexEngine.getToken();
+				token.fill();
+				System.out.println(token.getText());
+			}*/
+	}
+}
