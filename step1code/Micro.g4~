@@ -56,7 +56,7 @@ IDENTIFIERS:
 	[a-zA-Z][a-zA-Z0-9]*
 	{
 		if(getText().length() > 31)
-			throw new RuntimeException("Wrong!");
+			throw new RuntimeException("Wrong!);
 		
 		//	System.out.println("Wrong!);
 	};
