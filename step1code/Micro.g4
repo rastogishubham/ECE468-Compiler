@@ -1,5 +1,6 @@
 grammar Micro;
 
+
 dummy : 'WATER';
 
 
@@ -56,17 +57,23 @@ IDENTIFIERS:
 	[a-zA-Z][a-zA-Z0-9]*
 	{
 		if(getText().length() > 31)
-			throw new RuntimeException("Wrong!");
-		
-		//	System.out.println("Wrong!);
-	};
+			throw new RuntimeException("lxcjkgvksjd");
+	}
+	;
 
 FLOATLITERAL:
 	[0-9]*'.'[0-9]+;
 
 INTLITERAL:
-	[0-9]+;
+	[0-9]+
+	;
 
 STRINGLITERAL:
-	'"'.*?'"';		
+	'"'.*?'"'
+	{
+		if(getText().length() > 81)
+			throw new RuntimeException("lxcjkgvksjd");
+	}
+	;
+	
 

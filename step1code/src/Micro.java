@@ -8,8 +8,8 @@ public class Micro {
 			String filename = "";
 			if(args.length > 0) 
 				filename = args[0];
-			final Grammar g = Grammar.load("Micro.g4");
-			LexerInterpreter lexEngine = g.createLexerInterpreter(new ANTLRFileStream(filename));
+			//final Grammar g = Grammar.load("Micro.g4");
+			MicroLexer lexEngine = new MicroLexer(new ANTLRFileStream(filename));
 			Token token = lexEngine.nextToken();
 			while(!token.getText().equals("<EOF>")) {
 				if(token.getType() == 3)
