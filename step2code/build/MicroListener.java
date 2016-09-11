@@ -416,14 +416,4 @@ public interface MicroListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitDo_while_stmt(MicroParser.Do_while_stmtContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link MicroParser#empty}.
-	 * @param ctx the parse tree
-	 */
-	void enterEmpty(MicroParser.EmptyContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link MicroParser#empty}.
-	 * @param ctx the parse tree
-	 */
-	void exitEmpty(MicroParser.EmptyContext ctx);
 }

@@ -502,18 +502,6 @@ public class MicroBaseListener implements MicroListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitDo_while_stmt(MicroParser.Do_while_stmtContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterEmpty(MicroParser.EmptyContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitEmpty(MicroParser.EmptyContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

@@ -106,7 +106,7 @@ OPERATORS:
 	| '>='
 	;
 
-EMPTY:
+ :
 	[ \t\r\n\f] -> skip
 	;
 
