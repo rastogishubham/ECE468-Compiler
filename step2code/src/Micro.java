@@ -9,13 +9,19 @@ public class Micro {
 			String filename = "";
 			if(args.length > 0) 
 				filename = args[0];
-			System.out.println(filename);
 			//final Grammar g = Grammar.load("Micro.g4");
 			MicroLexer lexEngine = new MicroLexer(new ANTLRFileStream(filename));
 		//	Token token = lexEngine.nextToken();
 			CommonTokenStream tokenStream = new CommonTokenStream(lexEngine);
 			tokenStream.fill();
 			MicroParser parser = new MicroParser(tokenStream);
-			System.out.println(parser.program());
+			try {
+				parser.setErrorHandler(new BailErrorStrategy());
+				parser.program();
+				System.out.println("Accepted");
+			}
+			catch(Exception e) {
+				System.out.println("Not Accepted");
+			}
 	}
 }
