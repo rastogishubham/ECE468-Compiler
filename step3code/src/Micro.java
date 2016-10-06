@@ -16,8 +16,8 @@ public class Micro {
 			tokenStream.fill();
 			MicroParser parser = new MicroParser(tokenStream);
 			try {
-				parser.setErrorHandler(new BailErrorStrategy());
-				parser.removeErrorListeners();				
+				//parser.setErrorHandler(new BailErrorStrategy());
+				//parser.removeErrorListeners();				
 				parser.program();
 				System.out.println("Accepted");
 			}

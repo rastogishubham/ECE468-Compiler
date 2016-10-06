@@ -7,11 +7,11 @@ pgm_body          : decl func_declarations ;
 decl              : string_decl decl | var_decl decl | ;
 
 /* Global String Declaration */
-string_decl       : 'STRING' id ':=' str ';' ;
+string_decl       : 'STRING' id ':=' str ';' {System.out.println($id.text);} ;
 str               : STRINGLITERAL ;
 
 /* Variable Declaration */
-var_decl          : var_type id_list ';' ;
+var_decl          : var_type id_list ';' {System.out.print($id_list.text);};
 var_type          : 'FLOAT' | 'INT' ;
 any_type          : var_type | 'VOID' ;
 id_list           : id id_tail ;

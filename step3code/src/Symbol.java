@@ -1,12 +1,12 @@
 public class Symbol { 
-	String type; 
-	String name; 
-	String value; 
+	private String type; 
+	private String name; 
+	private String value; 
 
-	public Symbol( String typeIn, String nameIn, String valueIn){  
-		type = typeIn; 
-		name = nameIn; 
-		value = valueIn; 
+	public Symbol(String typeIn, String nameIn, String valueIn) {  
+		this.type = typeIn; 
+		this.name = nameIn; 
+		this.value = valueIn; 
 	}
 
 	public String getType() { 
@@ -14,14 +14,14 @@ public class Symbol {
 	}
 
 	public void setType(String tempType) { 
-		type  = tempType; 
+		this.type  = tempType; 
 	}
 	
 	public String getName() { 
 		return name; 
 	}
-	public void setName(String  tempName) { 
-		name = tempName; 
+	public void setName(String tempName) { 
+		this.name = tempName; 
 	}
 	
 	public String getValue() { 
