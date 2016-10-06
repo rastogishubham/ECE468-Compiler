@@ -5,6 +5,7 @@ import java.util.*;
 public class SymbolTableStack {
 	private static int BlockScopeNum = 1;
 	private static Stack <SymbolTable> SymbolStack = new Stack <SymbolTable>();
+	//private static int x = 0;
 	
 	public static void pushNewSymbolTable(String Scope) {
 		SymbolTable tempTable = new SymbolTable(Scope, BlockScopeNum);
@@ -18,5 +19,8 @@ public class SymbolTableStack {
 		tempTable.insertNewVariable(type, name, value);
 		SymbolStack.push(tempTable);
 	}
-
+	public static void printTopSymbolTable() {
+		SymbolTable tempTable = SymbolStack.pop();
+		tempTable.printTable();	
+	}
 }

@@ -19,7 +19,7 @@ public class Micro {
 				//parser.setErrorHandler(new BailErrorStrategy());
 				//parser.removeErrorListeners();				
 				parser.program();
-				System.out.println("Accepted");
+				//System.out.println("Accepted");
 			}
 			catch(Exception e) {
 				System.out.println("Not Accepted");
