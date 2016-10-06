@@ -58,7 +58,7 @@ else_part         : 'ELSIF' {SymbolTableStack.pushNewSymbolTable("BLOCK");} '(' 
 cond              : expr compop expr | 'TRUE' | 'FALSE' ;
 compop            : '<' | '>' | '=' | '!=' | '<=' | '>=' ;
 
-do_while_stmt     : 'DO' decl stmt_list 'WHILE' '(' cond ')' ';' ;
+do_while_stmt     : 'DO' {SymbolTableStack.pushNewSymbolTable("BLOCK");} decl stmt_list 'WHILE' {SymbolTableStack.printTopSymbolTable();} '(' cond ')' ';' ;
 
 
 COMMENT:
