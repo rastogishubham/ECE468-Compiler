@@ -28,7 +28,7 @@ public class Symbol {
 		return value; 
 	}
 	
-	public void setValue(String setValue) {  
+	public String setValue(String setValue) {  
 		return value; 
 	}
 }
