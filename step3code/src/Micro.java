@@ -22,7 +22,8 @@ public class Micro {
 				//System.out.println("Accepted");
 			}
 			catch(Exception e) {
-				System.out.println("Not Accepted");
+				//System.out.println("Not Accepted");
+				
 			}
 	}
 }

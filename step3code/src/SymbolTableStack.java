@@ -10,6 +10,8 @@ public class SymbolTableStack {
 	public static void pushNewSymbolTable(String Scope) {
 		SymbolTable tempTable = new SymbolTable(Scope, BlockScopeNum);
 		SymbolStack.push(tempTable);
+		if(Scope.equals("BLOCK"))
+			BlockScopeNum++;
 	}
 	public static void popTopSymbolTable() {
 		SymbolTable tempTable = SymbolStack.pop();

@@ -9,14 +9,16 @@ public class SymbolTable {
 	public SymbolTable(String scope, int BlockScopeNum){
 		this.scope = scope;
 		if(scope.equals("BLOCK"))
-			this.scope = scope + Integer.toString(BlockScopeNum);
+			this.scope = scope + " " + Integer.toString(BlockScopeNum);
 	}
 	
 	public void insertNewVariable(String type, String name, String value) { 
 		String [] name_array = name.split(",");
 		for(int i = 0; i < name_array.length; i ++) {
 			if(VariableTable.containsKey(name_array[i])) {
-				System.out.println("Error, variable with same name already present");
+				//throw new RuntimeException();
+				System.out.println("DECLARATION ERROR " + name_array[i]);
+				throw new RuntimeException();
 			}
 			else {
 				Symbol tempSymbol = new Symbol(type, value);
