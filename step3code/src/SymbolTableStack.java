@@ -3,21 +3,22 @@ import java.lang.*;
 import java.util.*;
 
 public class SymbolTableStack {
-	private static int BlockScopeNum = 1;
-	private static List <SymbolTable> SymbolStack = new ArrayList<SymbolTable>();
+	private int BlockScopeNum = 1;
+	private List <SymbolTable> SymbolStack = new ArrayList<SymbolTable>();
 	//private static int x = 0;
 	
-	public static void pushNewSymbolTable(String Scope) {
+	public void pushNewSymbolTable(String Scope) {
 		SymbolTable tempTable = new SymbolTable(Scope, BlockScopeNum);
 		//SymbolStack.push(tempTable);
 		SymbolStack.add(tempTable);
-		if(Scope.equals("BLOCK"))
+		if(Scope.equals("BLOCK")) {
 			BlockScopeNum++;
+		}
 	}
 	/*public static void popTopSymbolTable() {
 		SymbolTable tempTable = SymbolStack.pop();
 	}*/
-	public static void addSymbol(String type, String name, String value) {
+	public void addSymbol(String type, String name, String value) {
 		SymbolTable tempTable = SymbolStack.get(SymbolStack.size() - 1);//SymbolStack.pop();
 		tempTable.insertNewVariable(type, name, value);
 		//SymbolStack.push(tempTable);
@@ -28,7 +29,7 @@ public class SymbolTableStack {
 		SymbolTable tempTable = SymbolStack.pop();
 		tempTable.printTable();	
 	}*/
-	public static void printSymbolStack() {
+	public void printSymbolStack() {
 		for(int i = 0; i < SymbolStack.size(); i++) {
 			SymbolTable tempTable = SymbolStack.get(i);
 			tempTable.printTable();

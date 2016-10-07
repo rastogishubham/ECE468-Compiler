@@ -1,5 +1,5 @@
 import java.io.*;
-import org.antlr.runtime.tree.*;
+import org.antlr.v4.runtime.tree.*;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.atn.ParseInfo;
 import java.util.*;
@@ -18,7 +18,11 @@ public class Micro {
 			try {
 				//parser.setErrorHandler(new BailErrorStrategy());
 				//parser.removeErrorListeners();				
-				parser.program();
+				//parser.program();
+				MicroParser.ProgramContext context = parser.program();
+				ParseTreeWalker walker = new ParseTreeWalker();
+				Listener listener = new Listener();
+				walker.walk(listener, context);
 				//System.out.println("Accepted");
 			}
 			catch(Exception e) {
