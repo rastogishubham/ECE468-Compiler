@@ -3,7 +3,7 @@ grammar Micro;
 /* Program */
 program           : 'PROGRAM' id 'BEGIN' pgm_body 'END' ; 
 id                : IDENTIFIERS ;
-pgm_body          : {SymbolTableStack.pushNewSymbolTable("GLOBAL");} decl {SymbolTableStack.printTopSymbolTable();} func_declarations ;
+pgm_body          : {SymbolTableStack.pushNewSymbolTable("GLOBAL");} decl  func_declarations {SymbolTableStack.printSymbolStack();} ;
 decl              : string_decl decl | var_decl decl | ;
 
 /* Global String Declaration */
@@ -25,7 +25,7 @@ param_decl_tail   : ',' param_decl param_decl_tail | ;
 /* Function Declarations */
 func_declarations : func_decl func_declarations | ;
 func_decl         : 'FUNCTION' any_type id {SymbolTableStack.pushNewSymbolTable($id.text);}'(' param_decl_list ')' 'BEGIN' func_body 'END' ;
-func_body         : decl {SymbolTableStack.printTopSymbolTable();} stmt_list ;
+func_body         : decl stmt_list ;
 
 /* Statement List */
 stmt_list         : stmt stmt_list | ;
@@ -53,12 +53,12 @@ addop             : '+' | '-' ;
 mulop             : '*' | '/' ;
 
 /* Complex Statements and Condition */ 
-if_stmt           : 'IF' {SymbolTableStack.pushNewSymbolTable("BLOCK");} '(' cond ')' decl {SymbolTableStack.printTopSymbolTable();} stmt_list else_part 'ENDIF' ;
-else_part         : 'ELSIF' {SymbolTableStack.pushNewSymbolTable("BLOCK");} '(' cond ')' decl {SymbolTableStack.printTopSymbolTable();} stmt_list else_part | ;
+if_stmt           : 'IF' {SymbolTableStack.pushNewSymbolTable("BLOCK");} '(' cond ')' decl stmt_list else_part 'ENDIF' ;
+else_part         : 'ELSIF' {SymbolTableStack.pushNewSymbolTable("BLOCK");} '(' cond ')' decl stmt_list else_part | ;
 cond              : expr compop expr | 'TRUE' | 'FALSE' ;
 compop            : '<' | '>' | '=' | '!=' | '<=' | '>=' ;
 
-do_while_stmt     : 'DO' {SymbolTableStack.pushNewSymbolTable("BLOCK");} decl stmt_list 'WHILE' {SymbolTableStack.printTopSymbolTable();} '(' cond ')' ';' ;
+do_while_stmt     : 'DO' {SymbolTableStack.pushNewSymbolTable("BLOCK");} decl stmt_list 'WHILE' '(' cond ')' ';' ;
 
 
 COMMENT:
