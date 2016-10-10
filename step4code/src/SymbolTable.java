@@ -16,7 +16,6 @@ public class SymbolTable {
 		String [] name_array = name.split(",");
 		for(int i = 0; i < name_array.length; i ++) {
 			if(VariableTable.containsKey(name_array[i])) {
-				//throw new RuntimeException();
 				System.out.println("DECLARATION ERROR " + name_array[i]);
 				throw new RuntimeException();
 			}

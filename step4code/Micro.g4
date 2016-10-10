@@ -114,7 +114,7 @@ IDENTIFIERS:
 	[a-zA-Z][a-zA-Z0-9]*
 	{
 		if(getText().length() > 31)
-			throw new RuntimeException("lxcjkgvksjd");
+			throw new RuntimeException("Error: Identifier too long");
 	}
 	;
 
@@ -129,7 +129,7 @@ STRINGLITERAL:
 	'"'.*?'"'
 	{
 		if(getText().length() > 81)
-			throw new RuntimeException("lxcjkgvksjd");
+			throw new RuntimeException("Error: String Literal too long");
 	}
 	;
 	
