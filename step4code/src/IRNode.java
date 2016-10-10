@@ -1,3 +1,7 @@
+import java.io.*;
+import java.lang.*;
+import java.util.*;
+
 class IRNode {
 	private String Opcode;
 	private String Operand1;
@@ -14,24 +18,25 @@ class IRNode {
 	public String getOpcode() {
 		return this.Opcode;
 	}
-	public void SetOpcode(String Opcode) {
+	public void setOpcode(String Opcode) {
 		this.Opcode = Opcode;
 	}
 	public String getOperand1() {
 		return this.Operand1;
 	}
-	public void SetOperand1(String Operand1) {
+	public void setOperand1(String Operand1) {
 		this.Opcode = Operand1;
 	}
 	public String getOperand2() {
 		return this.Operand2;
 	}
-	public void SetOperand2(String Operand2) {
+	public void setOperand2(String Operand2) {
 		this.Opcode = Operand2;
 	}
 	public String getResult() {
 		return this.Result;
 	}
-	public void SetResult(String Result) {
+	public void setResult(String Result) {
 		this.Opcode = Result;
 	}
+}
