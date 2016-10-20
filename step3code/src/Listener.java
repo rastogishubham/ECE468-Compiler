@@ -42,13 +42,13 @@ public class Listener extends MicroBaseListener {
 	@Override 
 	public void enterIf_stmt(MicroParser.If_stmtContext ctx) {
 		SymbolStack.pushNewSymbolTable("BLOCK");
-		//System.out.println(ctx.getText());
+		//System.out.println("\n\n\n\n\n" + ctx.getText() + "\n\n\n\n\n");
 	}
 	@Override
 	public void enterElse_part(MicroParser.Else_partContext ctx) {
 		if(!ctx.getText().equals(""))
 			SymbolStack.pushNewSymbolTable("BLOCK");
-		//System.out.println(ctx.getText());
+		//System.out.println("else part: " + ctx.getText());
 	}
 	@Override
 	public void enterDo_while_stmt(MicroParser.Do_while_stmtContext ctx) {
