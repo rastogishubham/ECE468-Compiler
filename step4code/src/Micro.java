@@ -5,7 +5,7 @@ import org.antlr.v4.runtime.atn.ParseInfo;
 import java.util.*;
 import java.lang.*;
 public class Micro {
-	public static void main(String[] args) throws IOException{
+	public static void main(String[] args) throws IOException {
 			String filename = "";
 			if(args.length > 0) 
 				filename = args[0];
