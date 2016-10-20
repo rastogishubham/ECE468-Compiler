@@ -68,6 +68,11 @@ public class Listener extends MicroBaseListener {
 
 		String expression = ctx.getText().split(":=")[1];
 		String result = ctx.getText().split(":=")[0];
+		System.out.println("Expression " + expression);
+		System.out.println("Result " + result);
+		ExpressionStack expstack = new ExpressionStack();
+		String expr = expstack.createExprStack(expression);
+		System.out.println("\nPostfix expression " + expr);
 	}
 	
 }
