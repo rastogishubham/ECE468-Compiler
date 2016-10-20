@@ -3,27 +3,20 @@ import java.lang.*;
 import java.util.*;
 
 class IRList {
-	private IRNode IR;
-	private IRList next;
+	
+	private List <IRNode> ListIR = new ArrayList<IRNode>();
 
-	public IRList() {
-		this.IR = null;
-		this.next = null;
+	public void appendIRNode(String Opcode, String Operand1, String Operand2, String Result) {
+			IRNode IR = new IRNode(Opcode, Operand1, Operand2, Result);
+			ListIR.add(IR);
 	}
-	public void creatNode(String Opcode, String Operand1, String Operand2, String Result) {
-			IR = new IRNode(Opcode, Operand1, Operand2, Result);
-			next = null;
+	public void appendIRNode(IRNode tempNode) {
+			ListIR.add(tempNode);
+	}
+	public IRNode getIRNode(int index) {
+		return ListIR.get(index);
 	}
 	public IRNode getIRNode() {
-		return this.IR;
-	}
-	public void setIRNode(String Opcode, String Operand1, String Operand2, String Result) {
-		this.IR.setOpcode(Opcode);
-		this.IR.setOperand1(Operand1);
-		this.IR.setOperand2(Operand2);
-		this.IR.setResult(Result);
-	}
-	public IRList getNextNode() {
-		return this.next;
+		return ListIR.get(ListIR.size() - 1);
 	}
 }
