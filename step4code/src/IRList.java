@@ -19,4 +19,11 @@ class IRList {
 	public IRNode getIRNode() {
 		return ListIR.get(ListIR.size() - 1);
 	}
+	public void printList() {
+		for(int i = 0; i < (this.ListIR.size() - 1); i ++) {
+			IRNode tempNode = ListIR.get(i);
+			tempNode.printNode();
+		}
+		
+	}
 }
