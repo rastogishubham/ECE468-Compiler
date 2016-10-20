@@ -7,7 +7,7 @@ public class Listener extends MicroBaseListener {
 	private SymbolTableList SymbolList = new SymbolTableList();
 	private String Var_type;
 	private IRList ListIR = new IRList();
-	private int tempRegNum = 1;
+//	private int tempRegNum = 1;
 	@Override
 	public void enterPgm_body(MicroParser.Pgm_bodyContext ctx) {
 		SymbolList.pushNewSymbolTable("GLOBAL");	
@@ -57,15 +57,17 @@ public class Listener extends MicroBaseListener {
 	}
 	@Override 
 	public void enterAssign_expr(MicroParser.Assign_exprContext ctx) {
-		String operand1 = ctx.getText().split(":=")[1];
+	/*	String operand1 = ctx.getText().split(":=")[1];
 		String Result = "T" + Integer.toString(tempRegNum);
 		IRNode tempNode = new IRNode("STOREI", operand1, "", Result);
 		ListIR.appendIRNode(tempNode);
 
 		String operand2 = ctx.getText().split(":=")[0];
 		IRNode tempNode2 = new IRNode("STOREI", Result, "", operand2);
-		ListIR.appendIRNode(tempNode2);
-		tempRegNum++;
+		ListIR.appendIRNode(tempNode2);*/
+
+		String expression = ctx.getText().split(":=")[1];
+		String result = ctx.getText().split(":=")[0];
 	}
 	
 }
