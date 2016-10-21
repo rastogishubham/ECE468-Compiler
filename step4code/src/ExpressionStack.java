@@ -10,22 +10,11 @@ public class ExpressionStack {
     private List <String> tokenList = new ArrayList <String> ();
 
     public void createTokenList(String expression) {
-        String identifier = "";
-        for(int i = 0; i < expression.length(); i++) {
-            char token = expression.charAt(i);
-            if(OperatorTable.containsKey(Character.toString(token))) {
-                tokenList.add(identifier);
-                tokenList.add(Character.toString(token));
-                identifier = "";
-            }
-            else if(token == '(' || token == ')') {
-                tokenList.add(Character.toString(token));
-            }
-            else {
-                identifier += token;
-            }
+        StringTokenizer tok = new StringTokenizer(expression, "/+-*()", true);
+        while(tok.hasMoreTokens()) {
+            tokenList.add(tok.nextToken());
         }
-        this.tokenList.add(identifier);
+
     }
 
     public String createExprStack(String expression) {

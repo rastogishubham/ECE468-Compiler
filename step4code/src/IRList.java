@@ -20,10 +20,13 @@ class IRList {
 		return ListIR.get(ListIR.size() - 1);
 	}
 	public void printList() {
-		for(int i = 0; i < (this.ListIR.size() - 1); i ++) {
+		for(int i = 0; i < this.ListIR.size(); i ++) {
 			IRNode tempNode = ListIR.get(i);
 			tempNode.printNode();
 		}
-		
+	}
+
+	public int getSize() { 
+		return ListIR.size();
 	}
 }

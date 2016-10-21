@@ -7,7 +7,7 @@ public class Listener extends MicroBaseListener {
 	private SymbolTableList SymbolList = new SymbolTableList();
 	private String Var_type;
 	private IRList ListIR = new IRList();
-//	private int tempRegNum = 1;
+	public static int tempRegNum = 1;
 	@Override
 	public void enterPgm_body(MicroParser.Pgm_bodyContext ctx) {
 		SymbolList.pushNewSymbolTable("GLOBAL");	
@@ -57,25 +57,26 @@ public class Listener extends MicroBaseListener {
 	}
 	@Override 
 	public void enterAssign_expr(MicroParser.Assign_exprContext ctx) {
-	/*	String operand1 = ctx.getText().split(":=")[1];
-		String Result = "T" + Integer.toString(tempRegNum);
-		IRNode tempNode = new IRNode("STOREI", operand1, "", Result);
-		ListIR.appendIRNode(tempNode);
-
-		String operand2 = ctx.getText().split(":=")[0];
-		IRNode tempNode2 = new IRNode("STOREI", Result, "", operand2);
-		ListIR.appendIRNode(tempNode2);*/
 
 		String expression = ctx.getText().split(":=")[1];
 		String result = ctx.getText().split(":=")[0];
-		System.out.println("Expression " + expression);
-		System.out.println("Result " + result);
-		ExpressionStack expstack = new ExpressionStack();
-		String expr = expstack.createExprStack(expression);
-		System.out.println("\nPostfix expression " + expr);
-		PemdasTree pdt = new PemdasTree();
-		Node node = pdt.createBinaryTree(expr);
-		System.out.println(node);
+		try {
+			int val_ex = Integer.parseInt(expression);
+			double double_ex = Double.parseDouble(expression);
+
+		}
+		catch(Exception e) {
+			ExpressionStack expstack = new ExpressionStack();
+			String expr = expstack.createExprStack(expression);
+			PemdasTree pdt = new PemdasTree();
+			Node node = pdt.createBinaryTree(expr);
+			IRList tempList = new IRList();
+			tempList = pdt.inOrderTraverse(tempList, node);
+			tempList.printList();
+			System.out.println("\n\n");
+		}
+		
+
 
 	}
 	

@@ -24,6 +24,13 @@ public class Node
 		this.right = rightTemp;
 	}
 
+	public Node getLeftNode() { 
+		return this.left; 
+	}
+
+	public Node getRightNode() { 
+		return this.right; 
+	}
 	public void setValue(String valueTemp) {
 		this.value = valueTemp; 
 	}
