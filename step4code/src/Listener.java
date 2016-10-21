@@ -6,8 +6,8 @@ public class Listener extends MicroBaseListener {
 	
 	private SymbolTableList SymbolList = new SymbolTableList();
 	private String Var_type;
-	private IRList ListIR = new IRList();
 	public static int tempRegNum = 1;
+	private List <IRList> ListIR = new ArrayList<IRList>();
 	@Override
 	public void enterPgm_body(MicroParser.Pgm_bodyContext ctx) {
 		SymbolList.pushNewSymbolTable("GLOBAL");	
@@ -15,7 +15,7 @@ public class Listener extends MicroBaseListener {
 	@Override
 	public void exitPgm_body(MicroParser.Pgm_bodyContext ctx) {
 		//SymbolList.printSymbolList();	
-		ListIR.printList();
+		//ListIR.printList();
 	}
 	@Override
 	public void enterString_decl(MicroParser.String_declContext ctx) {
@@ -60,24 +60,31 @@ public class Listener extends MicroBaseListener {
 
 		String expression = ctx.getText().split(":=")[1];
 		String result = ctx.getText().split(":=")[0];
-		try {
-			int val_ex = Integer.parseInt(expression);
-			double double_ex = Double.parseDouble(expression);
-
-		}
-		catch(Exception e) {
-			ExpressionStack expstack = new ExpressionStack();
-			String expr = expstack.createExprStack(expression);
-			PemdasTree pdt = new PemdasTree();
-			Node node = pdt.createBinaryTree(expr);
-			IRList tempList = new IRList();
-			tempList = pdt.inOrderTraverse(tempList, node);
+			// IRList tempList = new IRList();
+			// tempList.appendIRNode("STOREI", expression, "", "$T" + Integer.toString(Listener.tempRegNum));
+			// tempList.appendIRNode("STOREI", "$T" + Integer.toString(Listener.tempRegNum), "", result);
+			// Listener.tempRegNum += 1;
+			// tempList.printList();
+		ExpressionStack expstack = new ExpressionStack();
+		String expr = expstack.createExprStack(expression);
+		PemdasTree pdt = new PemdasTree();
+		Node node = pdt.createBinaryTree(expr);
+		IRList tempList = new IRList();
+		if(node.getLeftNode() == null && node.getRightNode() == null) {
+			tempList.appendIRNode("STOREI", expression, "", "$T" + Integer.toString(Listener.tempRegNum));
+			tempList.appendIRNode("STOREI", "$T" + Integer.toString(Listener.tempRegNum), "", result);
+			Listener.tempRegNum += 1;
 			tempList.printList();
-			System.out.println("\n\n");
 		}
-		
-
-
+		else {
+			tempList = pdt.inOrderTraverse(tempList, node);
+			Listener.tempRegNum -= 1;
+			tempList.appendIRNode("STOREI", "$T" + Integer.toString(Listener.tempRegNum), "", result);
+			Listener.tempRegNum += 1;
+			tempList.printList();
+			//System.out.println("\n\n");
+			ListIR.add(tempList);
+		}
 	}
 	
 }

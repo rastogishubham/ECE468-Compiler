@@ -52,6 +52,19 @@ public class PemdasTree
             String operand2 = exprTree.getRightNode().getValue(); 
             String result = "$T" + Integer.toString(Listener.tempRegNum); 
 
+            if(operand1.matches("\\d+(?:\\.\\d+)?$")) {
+                listIR.appendIRNode("STOREI", exprTree.getLeftNode().getValue(), "", result);
+                exprTree.getLeftNode().setValue(result);
+                Listener.tempRegNum += 1;
+            }
+            else if(operand2.matches("\\d+(?:\\.\\d+)?$")) {
+                listIR.appendIRNode("STOREI", exprTree.getRightNode().getValue(), "", result);
+                exprTree.getRightNode().setValue(result);
+                Listener.tempRegNum += 1;
+            }
+            result = "$T" + Integer.toString(Listener.tempRegNum);
+            operand1 = exprTree.getLeftNode().getValue(); 
+            operand2 = exprTree.getRightNode().getValue();
             listIR.appendIRNode(new IRNode(opcode, operand1, operand2, result));
             exprTree.setValue(result);
             Listener.tempRegNum += 1;
