@@ -16,24 +16,19 @@ public class Node
 		this.value = val;
 	}
 
-	public void setLeftNode(Node leftTemp) 
-	{
+	public void setLeftNode(Node leftTemp) {
 		this.left = leftTemp; 
 	}
 	
-	public void setRightNode(Node rightTemp)
-	{
+	public void setRightNode(Node rightTemp) {
 		this.right = rightTemp;
 	}
 
-	public void setValue(String valueTemp)
-	{
+	public void setValue(String valueTemp) {
 		this.value = valueTemp; 
 	}
 	
-	public String getValue()
-	{
+	public String getValue() {
 		return value;
 	}
-	
 }

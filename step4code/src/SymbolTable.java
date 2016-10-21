@@ -6,7 +6,7 @@ public class SymbolTable {
 	private String scope;
 	private List <String> nameList = new ArrayList<String>();
 
-	public SymbolTable(String scope, int BlockScopeNum){
+	public SymbolTable(String scope, int BlockScopeNum) {
 		this.scope = scope;
 		if(scope.equals("BLOCK"))
 			this.scope = scope + " " + Integer.toString(BlockScopeNum);
