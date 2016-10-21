@@ -73,6 +73,10 @@ public class Listener extends MicroBaseListener {
 		ExpressionStack expstack = new ExpressionStack();
 		String expr = expstack.createExprStack(expression);
 		System.out.println("\nPostfix expression " + expr);
+		PemdasTree pdt = new PemdasTree();
+		Node node = pdt.parseExpression(expr);
+		System.out.println(node);
+
 	}
 	
 }

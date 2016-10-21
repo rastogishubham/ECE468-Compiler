@@ -8,21 +8,14 @@ import java.util.*;
 
 public class PemdasTree 
 {
-	int iter; 
+	/*int iter; 
     private Stack <Node> pointerStack = new Stack<Node>();
     String [] operators = {"+", "-", "*", "/", "^"}; 
-    
-    public static void main (String [] args) 
-    { 	
-    	String expression = " a b + c d e + * *"; 
-    	PemdasTree run = new PemdasTree(); 
-    	run.parseExpression(expression);
-    }
     
     public Node parseExpression(String expression) 
     { 
     	Node tree; 
-        String [] parts = expression.split(" "); 
+        String [] parts = expression.split(""); 
         iter = 0; 
         boolean operator = false; 
         while(iter < parts.length )
@@ -62,6 +55,37 @@ public class PemdasTree
         tree = pointerStack.pop();
         return tree;
     }
-    
+    */
 
+    private Stack <Node> operatorStack = new Stack<Node>();
+    private Hashtable<String, Integer> OperatorTable = new Hashtable<String, Integer>();
+
+    public void createOperatorTable() {
+        this.OperatorTable.put("*", 3);
+        this.OperatorTable.put("/", 3);
+        this.OperatorTable.put("-", 2);
+        this.OperatorTable.put("+", 2);
+    }
+
+    public Node createBinaryTree(String expression) {
+        this.createOperatorTable();
+        for(int i = 0; i < expression.length(); i++) {
+            char token = expression.charAt(i);
+            if(this.OperatorTable.containsKey(Character.toString(token))) {
+
+                Node Operand1 = operatorStack.pop();
+                Node Operand2 = operatorStack.pop();
+                Node tempNode = new Node(Operand1, Operand2, Character.toString(token));
+                operatorStack.push(tempNode);
+            }
+            else {
+                Node tempNode = new Node(null, null, Character.toString(token));
+                operatorStack.push(tempNode);
+            }
+        }
+        while(!operatorStack.isEmpty()) {
+            
+        }
+        return operatorStack.pop();
+    }
 }

@@ -6,29 +6,29 @@ import java.util.*;
 
 public class Node 
 {
-	Node left; 
-	Node right; 
-	String value; 
-	
-	public static void main (String [] args) 
-	{
-		
-	}
+	private Node left; 
+	private Node right; 
+	private String value; 
 
+	public Node (Node rightNode, Node leftNode, String val) {
+		this.left = leftNode;
+		this.right = rightNode;
+		this.value = val;
+	}
 
 	public void setLeftNode(Node leftTemp) 
 	{
-		left = leftTemp; 
+		this.left = leftTemp; 
 	}
 	
 	public void setRightNode(Node rightTemp)
 	{
-		right = rightTemp;
+		this.right = rightTemp;
 	}
 
 	public void setValue(String valueTemp)
 	{
-		value = valueTemp; 
+		this.value = valueTemp; 
 	}
 	
 	public String getValue()
