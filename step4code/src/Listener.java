@@ -94,28 +94,28 @@ public class Listener extends MicroBaseListener {
 
 					System.out.println("addr " + operand2 + " " + result);					
 				}
-				else if(opcode.contains("SUBI")) {
+				else if(opcode.contains("SUBF")) {
 					System.out.print("move");
 					System.out.print(" " + operand1);
 					System.out.println(" " + result);
 
 					System.out.println("subr " + operand2 + " " + result);					
 				}
-				else if(opcode.contains("MULTI")) {
+				else if(opcode.contains("MULTF")) {
 					System.out.print("move");
 					System.out.print(" " + operand1);
 					System.out.println(" " + result);
 
 					System.out.println("mulr " + operand2 + " " + result);					
 				}
-				else if(opcode.contains("DIVI")) {
+				else if(opcode.contains("DIVF")) {
 					System.out.print("move");
 					System.out.print(" " + operand1);
 					System.out.println(" " + result);
 
 					System.out.println("divr " + operand2 + " " + result);					
 				}
-				else if(opcode.contains("WRITEI")) {
+				else if(opcode.contains("WRITEF")) {
 					System.out.println("sys writer " + operand1);
 				}
 			}
@@ -170,7 +170,7 @@ public class Listener extends MicroBaseListener {
 		PemdasTree pdt = new PemdasTree();
 		Node node = pdt.createBinaryTree(expr);
 		IRList tempList = new IRList();
-
+		//System.out.println("\nExpression\n" + ctx.getText());
 		if(typeTable.get(result).equals("INT")) {
 			if(node.getLeftNode() == null && node.getRightNode() == null) {
 				tempList.appendIRNode("STOREI", expression, "", "$T" + Integer.toString(Listener.tempRegNum));

@@ -21,10 +21,10 @@ public class PemdasTree
     }
 
     public void createOperatorTableFloat() {
-        this.OperatorTable.put("*", "MULTF");
-        this.OperatorTable.put("/", "DIVF");
-        this.OperatorTable.put("-", "SUBF");
-        this.OperatorTable.put("+", "ADDF");
+        this.OperatorTableFloat.put("*", "MULTF");
+        this.OperatorTableFloat.put("/", "DIVF");
+        this.OperatorTableFloat.put("-", "SUBF");
+        this.OperatorTableFloat.put("+", "ADDF");
     }
 
     public Node createBinaryTree(String expression) {
@@ -66,7 +66,8 @@ public class PemdasTree
                 exprTree.getLeftNode().setValue(result);
                 Listener.tempRegNum += 1;
             }
-            else if(operand2.matches("\\d+(?:\\.\\d+)?$")) {
+            if(operand2.matches("\\d+(?:\\.\\d+)?$")) {
+                result = "$T" + Integer.toString(Listener.tempRegNum);
                 listIR.appendIRNode("STOREI", exprTree.getRightNode().getValue(), "", result);
                 exprTree.getRightNode().setValue(result);
                 Listener.tempRegNum += 1;
@@ -100,7 +101,7 @@ public class PemdasTree
                 exprTree.getLeftNode().setValue(result);
                 Listener.tempRegNum += 1;
             }
-            else if(operand2.matches("\\d+(?:\\.\\d+)?$")) {
+            if(operand2.matches("\\d+(?:\\.\\d+)?$")) {
                 listIR.appendIRNode("STOREF", exprTree.getRightNode().getValue(), "", result);
                 exprTree.getRightNode().setValue(result);
                 Listener.tempRegNum += 1;
