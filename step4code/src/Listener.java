@@ -8,6 +8,8 @@ public class Listener extends MicroBaseListener {
 	private String Var_type;
 	public static int tempRegNum = 1;
 	private List <IRList> ListIR = new ArrayList<IRList>();
+	private Hashtable<String, String> typeTable = new Hashtable<String, String>();
+
 	@Override
 	public void enterPgm_body(MicroParser.Pgm_bodyContext ctx) {
 		SymbolList.pushNewSymbolTable("GLOBAL");	
@@ -44,41 +46,77 @@ public class Listener extends MicroBaseListener {
 					result = "r" + result.split("T")[1];
 				}
 
-				if(opcode.contains("STORE")) {
+				if(opcode.contains("STOREI")) {
 					System.out.print("move");
 					System.out.print(" " + operand1);
 					System.out.println(" " + result);
 				}
-				else if(opcode.contains("ADD")) {
+				else if(opcode.contains("ADDI")) {
 					System.out.print("move");
 					System.out.print(" " + operand1);
 					System.out.println(" " + result);
 
 					System.out.println("addi " + operand2 + " " + result);					
 				}
-				else if(opcode.contains("SUB")) {
+				else if(opcode.contains("SUBI")) {
 					System.out.print("move");
 					System.out.print(" " + operand1);
 					System.out.println(" " + result);
 
 					System.out.println("subi " + operand2 + " " + result);					
 				}
-				else if(opcode.contains("MULT")) {
+				else if(opcode.contains("MULTI")) {
 					System.out.print("move");
 					System.out.print(" " + operand1);
 					System.out.println(" " + result);
 
 					System.out.println("muli " + operand2 + " " + result);					
 				}
-				else if(opcode.contains("DIV")) {
+				else if(opcode.contains("DIVI")) {
 					System.out.print("move");
 					System.out.print(" " + operand1);
 					System.out.println(" " + result);
 
 					System.out.println("divi " + operand2 + " " + result);					
 				}
-				else {
+				else if(opcode.contains("WRITEI")) {
 					System.out.println("sys writei " + operand1);
+				}
+				else if(opcode.contains("STOREF")) {
+					System.out.print("move");
+					System.out.print(" " + operand1);
+					System.out.println(" " + result);
+				}
+				else if(opcode.contains("ADDF")) {
+					System.out.print("move");
+					System.out.print(" " + operand1);
+					System.out.println(" " + result);
+
+					System.out.println("addr " + operand2 + " " + result);					
+				}
+				else if(opcode.contains("SUBI")) {
+					System.out.print("move");
+					System.out.print(" " + operand1);
+					System.out.println(" " + result);
+
+					System.out.println("subr " + operand2 + " " + result);					
+				}
+				else if(opcode.contains("MULTI")) {
+					System.out.print("move");
+					System.out.print(" " + operand1);
+					System.out.println(" " + result);
+
+					System.out.println("mulr " + operand2 + " " + result);					
+				}
+				else if(opcode.contains("DIVI")) {
+					System.out.print("move");
+					System.out.print(" " + operand1);
+					System.out.println(" " + result);
+
+					System.out.println("divr " + operand2 + " " + result);					
+				}
+				else if(opcode.contains("WRITEI")) {
+					System.out.println("sys writer " + operand1);
 				}
 			}
 		}
@@ -127,40 +165,71 @@ public class Listener extends MicroBaseListener {
 
 		String expression = ctx.getText().split(":=")[1];
 		String result = ctx.getText().split(":=")[0];
-			// IRList tempList = new IRList();
-			// tempList.appendIRNode("STOREI", expression, "", "$T" + Integer.toString(Listener.tempRegNum));
-			// tempList.appendIRNode("STOREI", "$T" + Integer.toString(Listener.tempRegNum), "", result);
-			// Listener.tempRegNum += 1;
-			// tempList.printList();
 		ExpressionStack expstack = new ExpressionStack();
 		String expr = expstack.createExprStack(expression);
 		PemdasTree pdt = new PemdasTree();
 		Node node = pdt.createBinaryTree(expr);
 		IRList tempList = new IRList();
-		if(node.getLeftNode() == null && node.getRightNode() == null) {
-			tempList.appendIRNode("STOREI", expression, "", "$T" + Integer.toString(Listener.tempRegNum));
-			tempList.appendIRNode("STOREI", "$T" + Integer.toString(Listener.tempRegNum), "", result);
-			Listener.tempRegNum += 1;
-			tempList.printList();
-			ListIR.add(tempList);
+
+		if(typeTable.get(result).equals("INT")) {
+			if(node.getLeftNode() == null && node.getRightNode() == null) {
+				tempList.appendIRNode("STOREI", expression, "", "$T" + Integer.toString(Listener.tempRegNum));
+				tempList.appendIRNode("STOREI", "$T" + Integer.toString(Listener.tempRegNum), "", result);
+				Listener.tempRegNum += 1;
+				tempList.printList();
+				ListIR.add(tempList);
+			}
+			else {
+				tempList = pdt.inOrderTraverse(tempList, node);
+				Listener.tempRegNum -= 1;
+				tempList.appendIRNode("STOREI", "$T" + Integer.toString(Listener.tempRegNum), "", result);
+				Listener.tempRegNum += 1;
+				tempList.printList();
+				ListIR.add(tempList);
+			}
 		}
 		else {
-			tempList = pdt.inOrderTraverse(tempList, node);
-			Listener.tempRegNum -= 1;
-			tempList.appendIRNode("STOREI", "$T" + Integer.toString(Listener.tempRegNum), "", result);
-			Listener.tempRegNum += 1;
-			tempList.printList();
-			//System.out.println("\n\n");
-			ListIR.add(tempList);
+			if(node.getLeftNode() == null && node.getRightNode() == null) {
+				tempList.appendIRNode("STOREF", expression, "", "$T" + Integer.toString(Listener.tempRegNum));
+				tempList.appendIRNode("STOREF", "$T" + Integer.toString(Listener.tempRegNum), "", result);
+				Listener.tempRegNum += 1;
+				tempList.printList();
+				ListIR.add(tempList);
+			}
+			else {
+				tempList = pdt.inOrderTraverseFloat(tempList, node);
+				Listener.tempRegNum -= 1;
+				tempList.appendIRNode("STOREF", "$T" + Integer.toString(Listener.tempRegNum), "", result);
+				Listener.tempRegNum += 1;
+				tempList.printList();
+				ListIR.add(tempList);
+			}
 		}
 	}
 
-		@Override 
-		public void enterWrite_stmt(MicroParser.Write_stmtContext ctx) { 
-			IRList tempList = new IRList();
+	@Override 
+	public void enterWrite_stmt(MicroParser.Write_stmtContext ctx) { 
+		IRList tempList = new IRList();
+		String var = ctx.getText();
+		String var2 = var.split("\\(")[1].split("\\)")[0];
+		if(typeTable.get(var2).equals("INT")) {
 			tempList.appendIRNode("WRITEI", ctx.getChild(2).getText(), "", "");
 			tempList.printList();
 			ListIR.add(tempList);
 		}
-	
+		else {
+			tempList.appendIRNode("WRITEF", ctx.getChild(2).getText(), "", "");
+			tempList.printList();
+			ListIR.add(tempList);
+		}
+	}
+	@Override 
+	public void enterVar_decl(MicroParser.Var_declContext ctx) {
+		String varlist = ctx.getChild(1).getText();
+		String [] var_list = varlist.split(",");
+		 for(int i = 0; i < var_list.length; i ++) {
+		 	typeTable.put(var_list[i], ctx.getChild(0).getText());
+		 }
+
+	}
 }
