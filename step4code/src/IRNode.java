@@ -40,6 +40,6 @@ class IRNode {
 		this.Opcode = Result;
 	}
 	public void printNode() {
-		System.out.println(this.Opcode + " " + this.Operand1 + " " + this.Operand2 + " " +this.Result);
+		System.out.println(";" + this.Opcode + " " + this.Operand1 + " " + this.Operand2 + " " +this.Result);
 	}
 }

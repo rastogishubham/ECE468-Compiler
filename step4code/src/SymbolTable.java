@@ -38,4 +38,8 @@ public class SymbolTable {
     		}
 			System.out.println();
 	}
+
+	public List getNameList() {
+		return this.nameList;
+	}
 } 

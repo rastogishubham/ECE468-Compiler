@@ -25,4 +25,7 @@ public class SymbolTableList {
 			tempTable.printTable();
 		}
 	}
+	public SymbolTable getSymbolTable(int index) {
+		return this.SymbolList.get(index);
+	}
 }
