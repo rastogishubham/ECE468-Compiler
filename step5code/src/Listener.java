@@ -10,6 +10,20 @@ public class Listener extends MicroBaseListener {
 	public static int labelNum = 1;
 	private List <IRList> ListIR = new ArrayList<IRList>();
 	private Hashtable<String, String> typeTable = new Hashtable<String, String>();
+	private Hashtable <String, String> logOperatorTable = new Hashtable<String, String>();
+
+	public Listener() {
+		createLogicalTable();
+	}
+
+	private void createLogicalTable() {
+		logOperatorTable.put(">", "LE");
+		logOperatorTable.put(">=", "LT");
+		logOperatorTable.put("<", "GE");
+		logOperatorTable.put("<=", "GT");
+		logOperatorTable.put("!=", "EQ");
+		logOperatorTable.put("=", "NE");
+	}
 
 	@Override
 	public void enterPgm_body(MicroParser.Pgm_bodyContext ctx) {
@@ -148,8 +162,28 @@ public class Listener extends MicroBaseListener {
 	@Override 
 	public void enterIf_stmt(MicroParser.If_stmtContext ctx) {
 		SymbolList.pushNewSymbolTable("BLOCK");
+
 		String expression = ctx.getChild(2).getText();
-		String operator = 
+		String operand = expression.split("<=|>=|!=|<|>|=")[0];
+		String val = expression.split("<=|>=|!=|<|>|=")[1];
+		String operator = expression.split(operand)[1].split(val)[0];
+		IRList tempList = new IRList();
+
+		if(val.matches("\\d+(?:\\.\\d+)?$") && typeTable.get(operand).equals("INT")) {
+			tempList.appendIRNode("STOREI", val, "", ("$T" + Integer.toString(Listener.tempRegNum)));
+			//Listener.tempRegNum += 1;
+		}
+		else if(val.matches("\\d+(?:\\.\\d+)?$") && typeTable.get(operand).equals("FLOAT")) {
+			tempList.appendIRNode("STOREF", val, "", ("$T" + Integer.toString(Listener.tempRegNum)));
+			//Listener.tempRegNum += 1;
+		}
+		//Do not know if I have to account for a < b and stuff need to ask how that would work
+		else {
+			
+		}
+		tempList.appendIRNode(logOperatorTable.get(operator), operand, ("$T" + Integer.toString(Listener.tempRegNum)), ("label" + Integer.toString(Listener.labelNum)));
+		Listener.tempRegNum += 1;
+		Listener.labelNum += 1;
 	}
 	@Override
 	public void enterElse_part(MicroParser.Else_partContext ctx) {
