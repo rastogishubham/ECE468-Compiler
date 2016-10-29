@@ -4,7 +4,6 @@ import java.util.*;
 
 public class PemdasTree 
 {
-
     private Stack <Node> operatorStack = new Stack<Node>();
     private Hashtable<String, String> OperatorTable = new Hashtable<String, String>();
     private Hashtable<String, String> OperatorTableFloat = new Hashtable<String, String>();

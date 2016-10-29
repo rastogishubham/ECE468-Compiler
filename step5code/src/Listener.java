@@ -11,7 +11,7 @@ public class Listener extends MicroBaseListener {
 	private List <IRList> ListIR = new ArrayList<IRList>();
 	private Hashtable<String, String> typeTable = new Hashtable<String, String>();
 	private Hashtable <String, String> logOperatorTable = new Hashtable<String, String>();
-
+	private Stack <String> labelStack = new Stack<String>(); 
 	public Listener() {
 		createLogicalTable();
 	}
@@ -164,31 +164,88 @@ public class Listener extends MicroBaseListener {
 		SymbolList.pushNewSymbolTable("BLOCK");
 
 		String expression = ctx.getChild(2).getText();
-		String operand = expression.split("<=|>=|!=|<|>|=")[0];
-		String val = expression.split("<=|>=|!=|<|>|=")[1];
-		String operator = expression.split(operand)[1].split(val)[0];
+		String operand = "";
+		String val = "";
+		String operator = "";
+		String labelName = "label" + Integer.toString(labelNum);
 		IRList tempList = new IRList();
 
-		if(val.matches("\\d+(?:\\.\\d+)?$") && typeTable.get(operand).equals("INT")) {
+		if(!expression.equals("TRUE")) {
+			operand = expression.split("<=|>=|!=|<|>|=")[0];
+			val = expression.split("<=|>=|!=|<|>|=")[1];
+			operator = expression.split(operand)[1].split(val)[0];
+		}
+		
+		if(typeTable.containsKey(operand) && typeTable.get(operand).equals("INT")) {
 			tempList.appendIRNode("STOREI", val, "", ("$T" + Integer.toString(Listener.tempRegNum)));
-			//Listener.tempRegNum += 1;
 		}
-		else if(val.matches("\\d+(?:\\.\\d+)?$") && typeTable.get(operand).equals("FLOAT")) {
+		else if(typeTable.containsKey(operand) && typeTable.get(operand).equals("FLOAT")) {
 			tempList.appendIRNode("STOREF", val, "", ("$T" + Integer.toString(Listener.tempRegNum)));
-			//Listener.tempRegNum += 1;
 		}
-		//Do not know if I have to account for a < b and stuff need to ask how that would work
 		else {
-			
+			tempList.appendIRNode("STOREI", "1", "", ("$T" + Integer.toString(Listener.tempRegNum)));
+			Listener.tempRegNum += 1;
+			tempList.appendIRNode("STOREI", "1", "", ("$T" + Integer.toString(Listener.tempRegNum)));
 		}
-		tempList.appendIRNode(logOperatorTable.get(operator), operand, ("$T" + Integer.toString(Listener.tempRegNum)), ("label" + Integer.toString(Listener.labelNum)));
+
+		tempList.appendIRNode(logOperatorTable.get(operator), operand, ("$T" + Integer.toString(Listener.tempRegNum)), labelName);
+		tempList.printList();
+		ListIR.add(tempList);
+		labelStack.push(labelName);
 		Listener.tempRegNum += 1;
 		Listener.labelNum += 1;
+		//labelStack.push("label" + Integer.toString(labelNum));
+	}
+	@Override 
+	public void exitIf_stmt(MicroParser.If_stmtContext ctx) {
+		/*String labelName = labelStack.pop();
+		IRList tempList = new IRList();
+		tempList.appendIRNode("LABEL", labelName, "", "");*/
 	}
 	@Override
 	public void enterElse_part(MicroParser.Else_partContext ctx) {
-		if(!ctx.getText().equals(""))
+		IRList tempList = new IRList();
+		String labelName = "label" + Integer.toString(Listener.labelNum); //labelStack.peek();
+		tempList.appendIRNode("JUMP", labelName, "", "");
+		if(!ctx.getText().equals("")) {
+
 			SymbolList.pushNewSymbolTable("BLOCK");
+
+			labelName = labelStack.pop();
+			tempList.appendIRNode("LABEL", labelName, "", "");
+
+			String expression = ctx.getChild(2).getText();
+			String operand = "";
+			String val = "";
+			String operator = "";
+
+			if(!expression.equals("TRUE")) {
+				operand = expression.split("<=|>=|!=|<|>|=")[0];
+				val = expression.split("<=|>=|!=|<|>|=")[1];
+				operator = expression.split(operand)[1].split(val)[0];
+			}
+			if(typeTable.containsKey(operand) && typeTable.get(operand).equals("INT")) {
+				tempList.appendIRNode("STOREI", val, "", ("$T" + Integer.toString(Listener.tempRegNum)));
+				tempList.appendIRNode(logOperatorTable.get(operator), operand, ("$T" + Integer.toString(Listener.tempRegNum)), labelName);
+			}
+			else if(typeTable.containsKey(operand) && typeTable.get(operand).equals("FLOAT")) {
+				tempList.appendIRNode("STOREF", val, "", ("$T" + Integer.toString(Listener.tempRegNum)));
+				tempList.appendIRNode(logOperatorTable.get(operator), operand, ("$T" + Integer.toString(Listener.tempRegNum)), labelName);
+			}
+			else {
+				tempList.appendIRNode("STOREI", "1", "", ("$T" + Integer.toString(Listener.tempRegNum)));
+				Listener.tempRegNum += 1;
+				tempList.appendIRNode("STOREI", "1", "", ("$T" + Integer.toString(Listener.tempRegNum)));
+				tempList.appendIRNode("NE", ("$T" + Integer.toString((Listener.tempRegNum - 1))), ("$T" + Integer.toString(Listener.tempRegNum)), labelName);
+			}
+		}
+
+		tempList.printList();
+		ListIR.add(tempList);
+		labelName = "label" + Integer.toString(Listener.labelNum);
+		labelStack.push(labelName);
+		Listener.labelNum += 1;
+		Listener.tempRegNum += 1;
 	}
 	@Override
 	public void enterDo_while_stmt(MicroParser.Do_while_stmtContext ctx) {
@@ -196,6 +253,17 @@ public class Listener extends MicroBaseListener {
 		IRList tempList = new IRList();
 		String labelName = "label" + Integer.toString(Listener.labelNum);
 		Listener.labelNum += 1;
+		String outLabel = "label" + Integer.toString(Listener.labelNum);
+		labelStack.push(outLabel);
+		Listener.labelNum += 1;
+		tempList.appendIRNode("LABEL", labelName, "", "");
+		tempList.printList();
+		ListIR.add(tempList);
+	}
+	@Override
+	public void exitDo_while_stmt(MicroParser.Do_while_stmtContext ctx) {
+		IRList tempList = new IRList();
+		String labelName = labelStack.pop();
 		tempList.appendIRNode("LABEL", labelName, "", "");
 		tempList.printList();
 		ListIR.add(tempList);
