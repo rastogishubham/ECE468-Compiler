@@ -11,7 +11,9 @@ public class Listener extends MicroBaseListener {
 	private List <IRList> ListIR = new ArrayList<IRList>();
 	private Hashtable<String, String> typeTable = new Hashtable<String, String>();
 	private Hashtable <String, String> logOperatorTable = new Hashtable<String, String>();
-	private Stack <String> labelStack = new Stack<String>(); 
+	private Stack <String> labelStack = new Stack<String>();
+	private Stack <String> exitLabelStack = new Stack<String>();
+
 	public Listener() {
 		createLogicalTable();
 	}
@@ -194,25 +196,30 @@ public class Listener extends MicroBaseListener {
 		labelStack.push(labelName);
 		Listener.tempRegNum += 1;
 		Listener.labelNum += 1;
-		//labelStack.push("label" + Integer.toString(labelNum));
+		exitLabelStack.push("label" + Integer.toString(labelNum));
+		Listener.labelNum += 1;
 	}
 	@Override 
 	public void exitIf_stmt(MicroParser.If_stmtContext ctx) {
-		/*String labelName = labelStack.pop();
+		String labelName = exitLabelStack.pop();
 		IRList tempList = new IRList();
-		tempList.appendIRNode("LABEL", labelName, "", "");*/
+		tempList.appendIRNode("LABEL", labelName, "", "");
+		tempList.printList();
+		ListIR.add(tempList);
 	}
 	@Override
 	public void enterElse_part(MicroParser.Else_partContext ctx) {
 		IRList tempList = new IRList();
-		String labelName = "label" + Integer.toString(Listener.labelNum); //labelStack.peek();
+		String labelName = exitLabelStack.peek();
 		tempList.appendIRNode("JUMP", labelName, "", "");
+		labelName = labelStack.pop();
+		tempList.appendIRNode("LABEL", labelName, "", "");
 		if(!ctx.getText().equals("")) {
 
 			SymbolList.pushNewSymbolTable("BLOCK");
-
-			labelName = labelStack.pop();
-			tempList.appendIRNode("LABEL", labelName, "", "");
+			
+			labelName = "label" + Integer.toString(Listener.labelNum);
+			labelStack.push(labelName);
 
 			String expression = ctx.getChild(2).getText();
 			String operand = "";
@@ -238,14 +245,12 @@ public class Listener extends MicroBaseListener {
 				tempList.appendIRNode("STOREI", "1", "", ("$T" + Integer.toString(Listener.tempRegNum)));
 				tempList.appendIRNode("NE", ("$T" + Integer.toString((Listener.tempRegNum - 1))), ("$T" + Integer.toString(Listener.tempRegNum)), labelName);
 			}
+			Listener.tempRegNum += 1;
+			labelName = "label" + Integer.toString(Listener.labelNum);
 		}
 
 		tempList.printList();
 		ListIR.add(tempList);
-		labelName = "label" + Integer.toString(Listener.labelNum);
-		labelStack.push(labelName);
-		Listener.labelNum += 1;
-		Listener.tempRegNum += 1;
 	}
 	@Override
 	public void enterDo_while_stmt(MicroParser.Do_while_stmtContext ctx) {
@@ -259,14 +264,43 @@ public class Listener extends MicroBaseListener {
 		tempList.appendIRNode("LABEL", labelName, "", "");
 		tempList.printList();
 		ListIR.add(tempList);
+		exitLabelStack.push(labelName);
 	}
 	@Override
 	public void exitDo_while_stmt(MicroParser.Do_while_stmtContext ctx) {
 		IRList tempList = new IRList();
-		String labelName = labelStack.pop();
+
+		String expression = ctx.getChild(5).getText();
+		String operand = "";
+		String val = "";
+		String operator = "";
+		String labelName = "label" + Integer.toString(Listener.labelNum);
+		if(!expression.equals("TRUE")) {
+			operand = expression.split("<=|>=|!=|<|>|=")[0];
+			val = expression.split("<=|>=|!=|<|>|=")[1];
+			operator = expression.split(operand)[1].split(val)[0];
+		}
+		if(typeTable.containsKey(operand) && typeTable.get(operand).equals("INT")) {
+			tempList.appendIRNode("STOREI", val, "", ("$T" + Integer.toString(Listener.tempRegNum)));
+		}
+		else if(typeTable.containsKey(operand) && typeTable.get(operand).equals("FLOAT")) {
+			tempList.appendIRNode("STOREF", val, "", ("$T" + Integer.toString(Listener.tempRegNum)));
+		}
+		else {
+			tempList.appendIRNode("STOREI", "1", "", ("$T" + Integer.toString(Listener.tempRegNum)));
+			Listener.tempRegNum += 1;
+			tempList.appendIRNode("STOREI", "1", "", ("$T" + Integer.toString(Listener.tempRegNum)));
+		}
+		tempList.appendIRNode(logOperatorTable.get(operator), operand, ("$T" + Integer.toString(Listener.tempRegNum)), labelName);
+
+		labelName = exitLabelStack.pop();
+		tempList.appendIRNode("JUMP", labelName, "", "");	
+
+		labelName = labelStack.pop();
 		tempList.appendIRNode("LABEL", labelName, "", "");
 		tempList.printList();
 		ListIR.add(tempList);
+		Listener.tempRegNum += 1;
 	}
 	@Override 
 	public void enterAssign_expr(MicroParser.Assign_exprContext ctx) {
