@@ -246,6 +246,7 @@ public class Listener extends MicroBaseListener {
 				tempList.appendIRNode("NE", ("$T" + Integer.toString((Listener.tempRegNum - 1))), ("$T" + Integer.toString(Listener.tempRegNum)), labelName);
 			}
 			Listener.tempRegNum += 1;
+			Listener.labelNum += 1;
 			labelName = "label" + Integer.toString(Listener.labelNum);
 		}
 
@@ -268,13 +269,14 @@ public class Listener extends MicroBaseListener {
 	}
 	@Override
 	public void exitDo_while_stmt(MicroParser.Do_while_stmtContext ctx) {
+
 		IRList tempList = new IRList();
 
 		String expression = ctx.getChild(5).getText();
 		String operand = "";
 		String val = "";
 		String operator = "";
-		String labelName = "label" + Integer.toString(Listener.labelNum);
+		String labelName = labelStack.peek();
 		if(!expression.equals("TRUE")) {
 			operand = expression.split("<=|>=|!=|<|>|=")[0];
 			val = expression.split("<=|>=|!=|<|>|=")[1];
