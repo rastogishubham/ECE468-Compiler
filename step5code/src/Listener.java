@@ -27,6 +27,10 @@ public class Listener extends MicroBaseListener {
 		logOperatorTable.put("=", "NE");
 	}
 
+	private void parseExp() {
+		
+	}
+
 	@Override
 	public void enterPgm_body(MicroParser.Pgm_bodyContext ctx) {
 		SymbolList.pushNewSymbolTable("GLOBAL");	
@@ -316,27 +320,41 @@ public class Listener extends MicroBaseListener {
 		IRList tempList = new IRList();
 		if(typeTable.get(result).equals("INT")) {
 			if(node.getLeftNode() == null && node.getRightNode() == null) {
-				tempList.appendIRNode("STOREI", expression, "", "$T" + Integer.toString(Listener.tempRegNum));
-				tempList.appendIRNode("STOREI", "$T" + Integer.toString(Listener.tempRegNum), "", result);
+
+				if(typeTable.containsKey(expression)) {
+					tempList.appendIRNode("STOREI", expression, result, "");
+				}
+				else {
+					tempList.appendIRNode("STOREI", expression, "", "$T" + Integer.toString(Listener.tempRegNum));
+					tempList.appendIRNode("STOREI", "$T" + Integer.toString(Listener.tempRegNum), "", result);
+					Listener.tempRegNum += 1;
+				}
 			}
 			else {
 				tempList = pdt.inOrderTraverse(tempList, node);
 				Listener.tempRegNum -= 1;
 				tempList.appendIRNode("STOREI", "$T" + Integer.toString(Listener.tempRegNum), "", result);
+				Listener.tempRegNum += 1;
 			}
 		}
 		else {
 			if(node.getLeftNode() == null && node.getRightNode() == null) {
-				tempList.appendIRNode("STOREF", expression, "", "$T" + Integer.toString(Listener.tempRegNum));
-				tempList.appendIRNode("STOREF", "$T" + Integer.toString(Listener.tempRegNum), "", result);
+				if(typeTable.containsKey(expression)) {
+					tempList.appendIRNode("STOREF", expression, result, "");
+				}
+				else {
+					tempList.appendIRNode("STOREF", expression, "", "$T" + Integer.toString(Listener.tempRegNum));
+					tempList.appendIRNode("STOREF", "$T" + Integer.toString(Listener.tempRegNum), "", result);
+					Listener.tempRegNum += 1;
+				}
 			}
 			else {
 				tempList = pdt.inOrderTraverseFloat(tempList, node);
 				Listener.tempRegNum -= 1;
 				tempList.appendIRNode("STOREF", "$T" + Integer.toString(Listener.tempRegNum), "", result);
+				Listener.tempRegNum += 1;
 			}
 		}
-		Listener.tempRegNum += 1;
 		tempList.printList();
 		ListIR.add(tempList);
 	}
