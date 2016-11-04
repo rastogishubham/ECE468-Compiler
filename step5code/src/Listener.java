@@ -13,7 +13,7 @@ public class Listener extends MicroBaseListener {
 	private Hashtable <String, String> logOperatorTable = new Hashtable<String, String>();
 	private Stack <String> labelStack = new Stack<String>();
 	private Stack <String> exitLabelStack = new Stack<String>();
-
+	private Hashtable <String, String> registerTypeTable = new Hashtable<String, String>();
 	public Listener() {
 		createLogicalTable();
 	}
@@ -27,8 +27,20 @@ public class Listener extends MicroBaseListener {
 		logOperatorTable.put("=", "NE");
 	}
 
-	private void parseExp() {
-		
+	private void parseExp(String expression, String result) {
+		ExpressionStack expstack = new ExpressionStack();
+		String expr = expstack.createExprStack(expression);
+		PemdasTree pdt = new PemdasTree();
+		Node node = pdt.createBinaryTree(expr);
+		IRList tempList = new IRList();
+		if(typeTable.get(result).equals("INT")) {
+			tempList = pdt.inOrderTraverse(tempList, node);
+		}
+		else {
+			tempList = pdt.inOrderTraverseFloat(tempList, node);
+		}
+		tempList.printList();
+		ListIR.add(tempList);
 	}
 
 	@Override
@@ -65,11 +77,30 @@ public class Listener extends MicroBaseListener {
 				}
 
 				if(opcode.contains("STOREI")) {
+
+					if(operand1.matches("\\r\\d+$")) {
+						registerTypeTable.put(operand1, "INT");
+					}
+					if(result.matches("\\r\\d+$")) {
+						registerTypeTable.put(result, "INT");
+					}
+
 					System.out.print("move");
 					System.out.print(" " + operand1);
 					System.out.println(" " + result);
 				}
 				else if(opcode.contains("ADDI")) {
+
+					if(operand1.matches("\\r\\d+$")) {
+						registerTypeTable.put(operand1, "INT");
+					}
+					if(operand2.matches("\\r\\d+$")) {
+						registerTypeTable.put(operand1, "INT");
+					}
+					if(result.matches("\\r\\d+$")) {
+						registerTypeTable.put(result, "INT");
+					}
+
 					System.out.print("move");
 					System.out.print(" " + operand1);
 					System.out.println(" " + result);
@@ -77,6 +108,17 @@ public class Listener extends MicroBaseListener {
 					System.out.println("addi " + operand2 + " " + result);					
 				}
 				else if(opcode.contains("SUBI")) {
+
+					if(operand1.matches("\\r\\d+$")) {
+						registerTypeTable.put(operand1, "INT");
+					}
+					if(operand2.matches("\\r\\d+$")) {
+						registerTypeTable.put(operand1, "INT");
+					}
+					if(result.matches("\\r\\d+$")) {
+						registerTypeTable.put(result, "INT");
+					}
+
 					System.out.print("move");
 					System.out.print(" " + operand1);
 					System.out.println(" " + result);
@@ -84,6 +126,17 @@ public class Listener extends MicroBaseListener {
 					System.out.println("subi " + operand2 + " " + result);					
 				}
 				else if(opcode.contains("MULTI")) {
+
+					if(operand1.matches("\\r\\d+$")) {
+						registerTypeTable.put(operand1, "INT");
+					}
+					if(operand2.matches("\\r\\d+$")) {
+						registerTypeTable.put(operand1, "INT");
+					}
+					if(result.matches("\\r\\d+$")) {
+						registerTypeTable.put(result, "INT");
+					}
+
 					System.out.print("move");
 					System.out.print(" " + operand1);
 					System.out.println(" " + result);
@@ -91,6 +144,17 @@ public class Listener extends MicroBaseListener {
 					System.out.println("muli " + operand2 + " " + result);					
 				}
 				else if(opcode.contains("DIVI")) {
+
+					if(operand1.matches("\\r\\d+$")) {
+						registerTypeTable.put(operand1, "INT");
+					}
+					if(operand2.matches("\\r\\d+$")) {
+						registerTypeTable.put(operand1, "INT");
+					}
+					if(result.matches("\\r\\d+$")) {
+						registerTypeTable.put(result, "INT");
+					}
+
 					System.out.print("move");
 					System.out.print(" " + operand1);
 					System.out.println(" " + result);
@@ -98,14 +162,38 @@ public class Listener extends MicroBaseListener {
 					System.out.println("divi " + operand2 + " " + result);					
 				}
 				else if(opcode.contains("WRITEI")) {
+
+					if(operand1.matches("\\r\\d+$")) {
+						registerTypeTable.put(operand1, "INT");
+					}
+
 					System.out.println("sys writei " + operand1);
 				}
 				else if(opcode.contains("STOREF")) {
+
+					if(operand1.matches("\\r\\d+$")) {
+						registerTypeTable.put(operand1, "FLOAT");
+					}
+					if(result.matches("\\r\\d+$")) {
+						registerTypeTable.put(result, "FLOAT");
+					}
+
 					System.out.print("move");
 					System.out.print(" " + operand1);
 					System.out.println(" " + result);
 				}
 				else if(opcode.contains("ADDF")) {
+
+					if(operand1.matches("\\r\\d+$")) {
+						registerTypeTable.put(operand1, "FLOAT");
+					}
+					if(operand2.matches("\\r\\d+$")) {
+						registerTypeTable.put(operand1, "FLOAT");
+					}
+					if(result.matches("\\r\\d+$")) {
+						registerTypeTable.put(result, "FLOAT");
+					}
+
 					System.out.print("move");
 					System.out.print(" " + operand1);
 					System.out.println(" " + result);
@@ -113,6 +201,17 @@ public class Listener extends MicroBaseListener {
 					System.out.println("addr " + operand2 + " " + result);					
 				}
 				else if(opcode.contains("SUBF")) {
+
+					if(operand1.matches("\\r\\d+$")) {
+						registerTypeTable.put(operand1, "FLOAT");
+					}
+					if(operand2.matches("\\r\\d+$")) {
+						registerTypeTable.put(operand1, "FLOAT");
+					}
+					if(result.matches("\\r\\d+$")) {
+						registerTypeTable.put(result, "FLOAT");
+					}
+
 					System.out.print("move");
 					System.out.print(" " + operand1);
 					System.out.println(" " + result);
@@ -120,6 +219,17 @@ public class Listener extends MicroBaseListener {
 					System.out.println("subr " + operand2 + " " + result);					
 				}
 				else if(opcode.contains("MULTF")) {
+
+					if(operand1.matches("\\r\\d+$")) {
+						registerTypeTable.put(operand1, "FLOAT");
+					}
+					if(operand2.matches("\\r\\d+$")) {
+						registerTypeTable.put(operand1, "FLOAT");
+					}
+					if(result.matches("\\r\\d+$")) {
+						registerTypeTable.put(result, "FLOAT");
+					}
+
 					System.out.print("move");
 					System.out.print(" " + operand1);
 					System.out.println(" " + result);
@@ -127,6 +237,17 @@ public class Listener extends MicroBaseListener {
 					System.out.println("mulr " + operand2 + " " + result);					
 				}
 				else if(opcode.contains("DIVF")) {
+
+					if(operand1.matches("\\r\\d+$")) {
+						registerTypeTable.put(operand1, "FLOAT");
+					}
+					if(operand2.matches("\\r\\d+$")) {
+						registerTypeTable.put(operand1, "FLOAT");
+					}
+					if(result.matches("\\r\\d+$")) {
+						registerTypeTable.put(result, "FLOAT");
+					}
+
 					System.out.print("move");
 					System.out.print(" " + operand1);
 					System.out.println(" " + result);
@@ -135,6 +256,150 @@ public class Listener extends MicroBaseListener {
 				}
 				else if(opcode.contains("WRITEF")) {
 					System.out.println("sys writer " + operand1);
+				}
+				else if(opcode.contains("READI")) {
+					System.out.println("sys readi " + operand1);
+				}
+				else if(opcode.contains("READF")) {
+					System.out.println("sys readr " + operand1);
+				}
+				else if(opcode.contains("JUMP")) {
+					System.out.println("jmp " + operand1);
+				}
+				else if(opcode.contains("LABEL")) {
+					System.out.println("label " + operand1);
+				}
+				else if(opcode.contains("GT")) {
+					if(registerTypeTable.containsKey(operand1)) {
+						if(registerTypeTable.get(operand1).equals("INT")) {
+							System.out.println("cmpi " + operand1 + " " + operand2);
+						}
+						else {
+							System.out.println("cmpr " + operand1 + " " + operand2);
+						}
+					}
+					else if(typeTable.containsKey(operand1)) {
+						if(typeTable.get(operand1).equals("INT")) {
+							System.out.println("cmpi " + operand1 + " " + operand2);
+						}
+						else {
+							System.out.println("cmpr " + operand1 + " " + operand2);
+						}
+					}
+					else {
+						System.out.println("cmpi " + operand1 + " " + operand2);
+					}
+					System.out.println("jgt " + result);
+				}
+				else if(opcode.contains("GE")) {
+					if(registerTypeTable.containsKey(operand1)) {
+						if(registerTypeTable.get(operand1).equals("INT")) {
+							System.out.println("cmpi " + operand1 + " " + operand2);
+						}
+						else {
+							System.out.println("cmpr " + operand1 + " " + operand2);
+						}
+					}
+					else if(typeTable.containsKey(operand1)) {
+						if(typeTable.get(operand1).equals("INT")) {
+							System.out.println("cmpi " + operand1 + " " + operand2);
+						}
+						else {
+							System.out.println("cmpr " + operand1 + " " + operand2);
+						}
+					}
+					else {
+						System.out.println("cmpi " + operand1 + " " + operand2);
+					}
+					System.out.println("jge " + result);
+				}
+				else if(opcode.contains("LT")) {
+					if(registerTypeTable.containsKey(operand1)) {
+						if(registerTypeTable.get(operand1).equals("INT")) {
+							System.out.println("cmpi " + operand1 + " " + operand2);
+						}
+						else {
+							System.out.println("cmpr " + operand1 + " " + operand2);
+						}
+					}
+					else if(typeTable.containsKey(operand1)) {
+						if(typeTable.get(operand1).equals("INT")) {
+							System.out.println("cmpi " + operand1 + " " + operand2);
+						}
+						else {
+							System.out.println("cmpr"+ operand1 + " " + operand2);
+						}
+					}
+					else {
+						System.out.println("cmpi " + operand1 + " " + operand2);
+					}
+					System.out.println("jlt " + result);
+				}
+				else if(opcode.contains("LE")) {
+					if(registerTypeTable.containsKey(operand1)) {
+						if(registerTypeTable.get(operand1).equals("INT")) {
+							System.out.println("cmpi " + operand1 + " " + operand2);
+						}
+						else {
+							System.out.println("cmpr " + operand1 + " " + operand2);
+						}
+					}
+					else if(typeTable.containsKey(operand1)) {
+						if(typeTable.get(operand1).equals("INT")) {
+							System.out.println("cmpi " + operand1 + " " + operand2);
+						}
+						else {
+							System.out.println("cmpr " + operand1 + " " + operand2);
+						}
+					}
+					else {
+						System.out.println("cmpi " + operand1 + " " + operand2);
+					}
+					System.out.println("jle " + result);
+				}
+				else if(opcode.contains("NE")) {
+					if(registerTypeTable.containsKey(operand1)) {
+						if(registerTypeTable.get(operand1).equals("INT")) {
+							System.out.println("cmpi " + operand1 + " " + operand2);
+						}
+						else {
+							System.out.println("cmpr " + operand1 + " " + operand2);
+						}
+					}
+					else if(typeTable.containsKey(operand1)) {
+						if(typeTable.get(operand1).equals("INT")) {
+							System.out.println("cmpi " + operand1 + " " + operand2);
+						}
+						else {
+							System.out.println("cmpr " + operand1 + " " + operand2);
+						}
+					}
+					else {
+						System.out.println("cmpi " + operand1 + " " + operand2);
+					}
+					System.out.println("jne " + result);
+				}
+				else if(opcode.contains("EQ")) {
+					if(registerTypeTable.containsKey(operand1)) {
+						if(registerTypeTable.get(operand1).equals("INT")) {
+							System.out.println("cmpi " + operand1 + " " + operand2);
+						}
+						else {
+							System.out.println("cmpr " + operand1 + " " + operand2);
+						}
+					}
+					else if(typeTable.containsKey(operand1)) {
+						if(typeTable.get(operand1).equals("INT")) {
+							System.out.println("cmpi " + operand1 + " " + operand2);
+						}
+						else {
+							System.out.println("cmpr "+ operand1 + " " + operand2);
+						}
+					}
+					else {
+						System.out.println("cmpi " + operand1 + " "  + operand2);
+					}
+					System.out.println("jeq " + result);
 				}
 			}
 		}
@@ -180,20 +445,31 @@ public class Listener extends MicroBaseListener {
 			operand = expression.split("<=|>=|!=|<|>|=")[0];
 			val = expression.split("<=|>=|!=|<|>|=")[1];
 			operator = expression.split(operand)[1].split(val)[0];
+			operator = operator.substring(0, 1);
 		}
 		
 		if(typeTable.containsKey(operand) && typeTable.get(operand).equals("INT")) {
-			tempList.appendIRNode("STOREI", val, "", ("$T" + Integer.toString(Listener.tempRegNum)));
+			
+			if(val.matches("(\\d+(?:\\.\\d+)?$)|([A-Za-z]+$)")) {
+				tempList.appendIRNode("STOREI", val, "", ("$T" + Integer.toString(Listener.tempRegNum)));
+			}
+			else {
+				parseExp(val, operand);
+			}
 		}
 		else if(typeTable.containsKey(operand) && typeTable.get(operand).equals("FLOAT")) {
-			tempList.appendIRNode("STOREF", val, "", ("$T" + Integer.toString(Listener.tempRegNum)));
+			if(val.matches("(\\d+(?:\\.\\d+)?$)|([A-Za-z]+$)")) {
+				tempList.appendIRNode("STOREF", val, "", ("$T" + Integer.toString(Listener.tempRegNum)));
+			}
+			else {
+				parseExp(val, operand);
+			}
 		}
 		else {
 			tempList.appendIRNode("STOREI", "1", "", ("$T" + Integer.toString(Listener.tempRegNum)));
 			Listener.tempRegNum += 1;
 			tempList.appendIRNode("STOREI", "1", "", ("$T" + Integer.toString(Listener.tempRegNum)));
 		}
-
 		tempList.appendIRNode(logOperatorTable.get(operator), operand, ("$T" + Integer.toString(Listener.tempRegNum)), labelName);
 		tempList.printList();
 		ListIR.add(tempList);
@@ -236,11 +512,23 @@ public class Listener extends MicroBaseListener {
 				operator = expression.split(operand)[1].split(val)[0];
 			}
 			if(typeTable.containsKey(operand) && typeTable.get(operand).equals("INT")) {
-				tempList.appendIRNode("STOREI", val, "", ("$T" + Integer.toString(Listener.tempRegNum)));
+
+				if(val.matches("(\\d+(?:\\.\\d+)?$)|([A-Za-z]+$)")) {
+					tempList.appendIRNode("STOREI", val, "", ("$T" + Integer.toString(Listener.tempRegNum)));
+				}
+				else {
+					parseExp(expression, operand);
+				}
 				tempList.appendIRNode(logOperatorTable.get(operator), operand, ("$T" + Integer.toString(Listener.tempRegNum)), labelName);
 			}
 			else if(typeTable.containsKey(operand) && typeTable.get(operand).equals("FLOAT")) {
-				tempList.appendIRNode("STOREF", val, "", ("$T" + Integer.toString(Listener.tempRegNum)));
+
+				if(val.matches("(\\d+(?:\\.\\d+)?$)|([A-Za-z]+$)")) {
+					tempList.appendIRNode("STOREF", val, "", ("$T" + Integer.toString(Listener.tempRegNum)));
+				}
+				else {
+					parseExp(expression, operand);
+				}
 				tempList.appendIRNode(logOperatorTable.get(operator), operand, ("$T" + Integer.toString(Listener.tempRegNum)), labelName);
 			}
 			else {
@@ -321,14 +609,14 @@ public class Listener extends MicroBaseListener {
 		if(typeTable.get(result).equals("INT")) {
 			if(node.getLeftNode() == null && node.getRightNode() == null) {
 
-				if(typeTable.containsKey(expression)) {
+				/*if(typeTable.containsKey(expression)) {
 					tempList.appendIRNode("STOREI", expression, result, "");
-				}
-				else {
+				}*/
+				//else {
 					tempList.appendIRNode("STOREI", expression, "", "$T" + Integer.toString(Listener.tempRegNum));
 					tempList.appendIRNode("STOREI", "$T" + Integer.toString(Listener.tempRegNum), "", result);
 					Listener.tempRegNum += 1;
-				}
+				//}
 			}
 			else {
 				tempList = pdt.inOrderTraverse(tempList, node);
@@ -339,14 +627,14 @@ public class Listener extends MicroBaseListener {
 		}
 		else {
 			if(node.getLeftNode() == null && node.getRightNode() == null) {
-				if(typeTable.containsKey(expression)) {
+				/*if(typeTable.containsKey(expression)) {
 					tempList.appendIRNode("STOREF", expression, result, "");
-				}
-				else {
+				}*/
+				//else {
 					tempList.appendIRNode("STOREF", expression, "", "$T" + Integer.toString(Listener.tempRegNum));
 					tempList.appendIRNode("STOREF", "$T" + Integer.toString(Listener.tempRegNum), "", result);
 					Listener.tempRegNum += 1;
-				}
+				//}
 			}
 			else {
 				tempList = pdt.inOrderTraverseFloat(tempList, node);
