@@ -12,7 +12,7 @@ public class SymbolTable {
 			this.scope = scope + " " + Integer.toString(BlockScopeNum);
 	}
 	
-	public void insertNewVariable(String type, String name, String value) { 
+	public void insertNewVariable(String type, String name, String value, String tempName) { 
 		String [] name_array = name.split(",");
 		for(int i = 0; i < name_array.length; i ++) {
 			if(VariableTable.containsKey(name_array[i])) {
@@ -20,7 +20,7 @@ public class SymbolTable {
 				throw new RuntimeException();
 			}
 			else {
-				Symbol tempSymbol = new Symbol(type, value);
+				Symbol tempSymbol = new Symbol(type, value, tempName);
 				VariableTable.put(name_array[i], tempSymbol);
 				nameList.add(name_array[i]);
 			}
@@ -32,14 +32,18 @@ public class SymbolTable {
 			String tempName = nameList.get(i);
 			Symbol tempSymbol = VariableTable.get(tempName);
 			if(!tempSymbol.getType().equals("STRING"))
-				System.out.println("name " + tempName + " type " + tempSymbol.getType());
+				System.out.println("name " + tempName + " type " + tempSymbol.getType() + " tempReg " + tempSymbol.getTempName());
 			else
-				System.out.println("name " + tempName + " type " + tempSymbol.getType() + " value " + tempSymbol.getValue());
+				System.out.println("name " + tempName + " type " + tempSymbol.getType() + " value " + tempSymbol.getValue() + " tempReg " + tempSymbol.getTempName());
     		}
 			System.out.println();
 	}
 
-	public List getNameList() {
+	public List<String> getNameList() {
 		return this.nameList;
+	}
+
+	public String getScope() {
+		return this.scope;
 	}
 } 

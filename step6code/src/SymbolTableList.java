@@ -15,7 +15,14 @@ public class SymbolTableList {
 	}
 	public void addSymbol(String type, String name, String value) {
 		SymbolTable tempTable = SymbolList.get(SymbolList.size() - 1);
-		tempTable.insertNewVariable(type, name, value);
+		tempTable.insertNewVariable(type, name, value, null);
+		SymbolList.remove(SymbolList.size() - 1);
+		SymbolList.add(tempTable);
+	}
+	public void addSymbol(String type, String name, int tempVal, String regType) {
+		SymbolTable tempTable = SymbolList.get(SymbolList.size() - 1);
+		String tempReg = "$" + regType + Integer.toString(tempVal);
+		tempTable.insertNewVariable(type, name, null, tempReg);
 		SymbolList.remove(SymbolList.size() - 1);
 		SymbolList.add(tempTable);
 	}
@@ -27,5 +34,8 @@ public class SymbolTableList {
 	}
 	public SymbolTable getSymbolTable(int index) {
 		return this.SymbolList.get(index);
+	}
+	public SymbolTable getSymbolTable() {
+		return this.SymbolList.get(this.SymbolList.size() - 1);
 	}
 }

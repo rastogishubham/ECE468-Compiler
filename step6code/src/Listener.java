@@ -8,6 +8,8 @@ public class Listener extends MicroBaseListener {
 	private String Var_type;
 	public static int tempRegNum = 1;
 	public static int labelNum = 1;
+	public static int paramNum = 1;
+	public static int localNum = 1;
 	private List <IRList> ListIR = new ArrayList<IRList>();
 	private Hashtable<String, String> typeTable = new Hashtable<String, String>();
 	private Hashtable <String, String> logOperatorTable = new Hashtable<String, String>();
@@ -414,7 +416,15 @@ public class Listener extends MicroBaseListener {
 	@Override
 	public void exitVar_decl(MicroParser.Var_declContext ctx) {
 		String name_list = ctx.getText().split("(FLOAT)|(INT)")[1].split(";")[0];
-		SymbolList.addSymbol(Var_type, name_list, null);
+
+		SymbolTable tempTable = SymbolList.getSymbolTable();
+		if(!tempTable.getScope().equals("GLOBAL")) {
+			SymbolList.addSymbol(Var_type, name_list, Listener.localNum, "L");
+		}
+		else {
+			SymbolList.addSymbol(Var_type, name_list, null);
+		}
+		Listener.localNum++;
 	}
 	@Override
 	public void enterVar_type(MicroParser.Var_typeContext ctx) {
@@ -423,13 +433,24 @@ public class Listener extends MicroBaseListener {
 	@Override
 	public void exitParam_decl(MicroParser.Param_declContext ctx) {
 		String name = ctx.getText().split("(FLOAT)|(INT)")[1];
-		SymbolList.addSymbol(Var_type, name, null);
+		SymbolList.addSymbol(Var_type, name, Listener.paramNum, "P");
+		Listener.paramNum++;
 	}
 	@Override
 	public void enterFunc_decl(MicroParser.Func_declContext ctx) {
+		Listener.paramNum = 1;
+		localNum = 1;
+
 		String name = ctx.getText().split("FUNCTION")[1].split("(FLOAT)|(VOID)|(INT)")[1].split("\\(")[0];
 		SymbolList.pushNewSymbolTable(name);
+
+		IRList tempList = new IRList();
+		tempList.appendIRNode("LABEL", name, "", "");
+		tempList.appendIRNode("LINK", "", "", "");
+		tempList.printList();
+		ListIR.add(tempList);
 	}
+
 	@Override 
 	public void enterIf_stmt(MicroParser.If_stmtContext ctx) {
 		SymbolList.pushNewSymbolTable("BLOCK");
@@ -648,7 +669,7 @@ public class Listener extends MicroBaseListener {
 	}
 	@Override 
 	public void enterWrite_stmt(MicroParser.Write_stmtContext ctx) { 
-		IRList tempList = new IRList();
+		/*IRList tempList = new IRList();
 		String var = ctx.getText();
 		String var2 = var.split("\\(")[1].split("\\)")[0];
 		if(typeTable.get(var2).equals("INT")) {
@@ -658,7 +679,9 @@ public class Listener extends MicroBaseListener {
 			tempList.appendIRNode("WRITEF", ctx.getChild(2).getText(), "", "");
 		}
 		tempList.printList();
-		ListIR.add(tempList);
+		ListIR.add(tempList);*/
+
+
 	}
 	@Override 
 	public void enterVar_decl(MicroParser.Var_declContext ctx) {
@@ -681,4 +704,19 @@ public class Listener extends MicroBaseListener {
 		tempList.printList();
 		ListIR.add(tempList);
 	}
+
+	@Override public void exitFunc_decl(MicroParser.Func_declContext ctx) {
+		
+		SymbolTable tempTable = SymbolList.getSymbolTable();
+
+		tempTable.printTable();
+
+		IRList tempList = new IRList();
+		tempList.appendIRNode("RET", "", "", "");
+		tempList.printList();
+		System.out.println();
+		ListIR.add(tempList);
+	}
+
 }
+
