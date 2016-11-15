@@ -12,9 +12,21 @@ public class SymbolTable {
 			this.scope = scope + " " + Integer.toString(BlockScopeNum);
 	}
 	
-	public void insertNewVariable(String type, String name, String value, String tempName) { 
+	public void insertNewVariable(String type, String name, String value, String regType) { 
 		String [] name_array = name.split(",");
+		String tempValue = "";
 		for(int i = 0; i < name_array.length; i ++) {
+			if(regType != null) {
+				if(regType.equals("P")) {
+					tempValue = Integer.toString(Listener.paramNum);
+					Listener.paramNum += 1;
+				}
+				else if(regType.equals("L")) {
+					tempValue = Integer.toString(Listener.localNum);
+					Listener.localNum += 1;
+				}
+			}
+			String tempName = "$" + regType + tempValue;
 			if(VariableTable.containsKey(name_array[i])) {
 				System.out.println("DECLARATION ERROR " + name_array[i]);
 				throw new RuntimeException();

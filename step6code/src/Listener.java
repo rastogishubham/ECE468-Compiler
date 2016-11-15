@@ -419,12 +419,12 @@ public class Listener extends MicroBaseListener {
 
 		SymbolTable tempTable = SymbolList.getSymbolTable();
 		if(!tempTable.getScope().equals("GLOBAL")) {
-			SymbolList.addSymbol(Var_type, name_list, Listener.localNum, "L");
+			SymbolList.addSymbolLocalParam(Var_type, name_list, "L");
 		}
 		else {
 			SymbolList.addSymbol(Var_type, name_list, null);
 		}
-		Listener.localNum++;
+		//Listener.localNum++;
 	}
 	@Override
 	public void enterVar_type(MicroParser.Var_typeContext ctx) {
@@ -433,8 +433,8 @@ public class Listener extends MicroBaseListener {
 	@Override
 	public void exitParam_decl(MicroParser.Param_declContext ctx) {
 		String name = ctx.getText().split("(FLOAT)|(INT)")[1];
-		SymbolList.addSymbol(Var_type, name, Listener.paramNum, "P");
-		Listener.paramNum++;
+		SymbolList.addSymbolLocalParam(Var_type, name, "P");
+		//Listener.paramNum++;
 	}
 	@Override
 	public void enterFunc_decl(MicroParser.Func_declContext ctx) {
