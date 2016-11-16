@@ -72,8 +72,28 @@ public class PemdasTree
                 Listener.tempRegNum += 1;
             }
             result = "$T" + Integer.toString(Listener.tempRegNum);
-            operand1 = exprTree.getLeftNode().getValue(); 
-            operand2 = exprTree.getRightNode().getValue();
+            SymbolTable tempTable = Listener.SymbolList.getSymbolTable();
+            String scope = tempTable.getScope();
+
+            if(scope.equals("GLOBAL") || (operand1.matches("\\$T\\d+$") && operand2.matches("\\$T\\d+$"))) {
+                operand1 = exprTree.getLeftNode().getValue(); 
+                operand2 = exprTree.getRightNode().getValue();
+            }
+            else {
+                if(operand1.matches("\\$T\\d+$"))
+                    operand1 = exprTree.getLeftNode().getValue();
+                else {
+                    String op1 = exprTree.getLeftNode().getValue();
+                    operand1 = getTempRegName(op1);
+                }
+                if(operand2.matches("\\$T\\d+$")) {
+                    operand2 = exprTree.getRightNode().getValue();
+                }
+                else {
+                    String op2 = exprTree.getRightNode().getValue();
+                    operand2 = getTempRegName(op2);
+                }
+            }
             listIR.appendIRNode(new IRNode(opcode, operand1, operand2, result));
             exprTree.setValue(result);
             Listener.tempRegNum += 1;
@@ -106,12 +126,49 @@ public class PemdasTree
                 Listener.tempRegNum += 1;
             }
             result = "$T" + Integer.toString(Listener.tempRegNum);
-            operand1 = exprTree.getLeftNode().getValue(); 
-            operand2 = exprTree.getRightNode().getValue();
+            SymbolTable tempTable = Listener.SymbolList.getSymbolTable();
+            String scope = tempTable.getScope();
+
+            if(scope.equals("GLOBAL") || (operand1.matches("\\$T\\d+$") && operand2.matches("\\$T\\d+$"))) {
+                operand1 = exprTree.getLeftNode().getValue(); 
+                operand2 = exprTree.getRightNode().getValue();
+            }
+            else {
+                if(operand1.matches("\\$T\\d+$"))
+                    operand1 = exprTree.getLeftNode().getValue();
+                else {
+                    String op1 = exprTree.getLeftNode().getValue();
+                    operand1 = getTempRegName(op1);
+                }
+                if(operand2.matches("\\$T\\d+$")) {
+                    operand2 = exprTree.getRightNode().getValue();
+                }
+                else {
+                    String op2 = exprTree.getRightNode().getValue();
+                    operand2 = getTempRegName(op2);
+                }
+            }
             listIR.appendIRNode(new IRNode(opcode, operand1, operand2, result));
             exprTree.setValue(result);
             Listener.tempRegNum += 1;
         }
         return listIR;
+    }
+
+    public String getTempRegName(String operand) {
+        SymbolTable tempTable = Listener.SymbolList.getSymbolTable();
+        String scope = tempTable.getScope();
+        Hashtable <String, Symbol> varTable = tempTable.getVariableTable();
+        while(true) {
+            if(scope.equals("GLOBAL"))
+                return null;
+            if(varTable.containsKey(operand)) {
+                Symbol tempSymbol = varTable.get(operand);
+                return tempSymbol.getTempName();
+            }
+            tempTable = Listener.SymbolList.getSymbolTable();
+            scope = tempTable.getScope();
+            varTable = tempTable.getVariableTable();
+        }
     }
 }

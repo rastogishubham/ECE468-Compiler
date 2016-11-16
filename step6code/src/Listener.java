@@ -4,7 +4,7 @@ import java.util.*;
 
 public class Listener extends MicroBaseListener {
 	
-	private SymbolTableList SymbolList = new SymbolTableList();
+	public static SymbolTableList SymbolList = new SymbolTableList();
 	private String Var_type;
 	public static int tempRegNum = 1;
 	public static int labelNum = 1;
@@ -47,11 +47,11 @@ public class Listener extends MicroBaseListener {
 
 	@Override
 	public void enterPgm_body(MicroParser.Pgm_bodyContext ctx) {
-		SymbolList.pushNewSymbolTable("GLOBAL");	
+		Listener.SymbolList.pushNewSymbolTable("GLOBAL");	
 	}
 	@Override
 	public void exitPgm_body(MicroParser.Pgm_bodyContext ctx) {
-		SymbolTable tempTable = SymbolList.getSymbolTable(0);
+		SymbolTable tempTable = Listener.SymbolList.getSymbolTable(0);
 		List nameList = tempTable.getNameList();
 
 		for(int i = 0; i < nameList.size(); i ++) {
@@ -411,18 +411,18 @@ public class Listener extends MicroBaseListener {
 	public void enterString_decl(MicroParser.String_declContext ctx) {
 		String name = ctx.getText().split(":=")[0].split("STRING")[1];
 		String Value = ctx.getText().split(":=")[1].split(";")[0];
-		SymbolList.addSymbol("STRING", name, Value);	
+		Listener.SymbolList.addSymbol("STRING", name, Value);	
 	}
 	@Override
 	public void exitVar_decl(MicroParser.Var_declContext ctx) {
 		String name_list = ctx.getText().split("(FLOAT)|(INT)")[1].split(";")[0];
 
-		SymbolTable tempTable = SymbolList.getSymbolTable();
+		SymbolTable tempTable = Listener.SymbolList.getSymbolTable();
 		if(!tempTable.getScope().equals("GLOBAL")) {
-			SymbolList.addSymbolLocalParam(Var_type, name_list, "L");
+			Listener.SymbolList.addSymbolLocalParam(Var_type, name_list, "L");
 		}
 		else {
-			SymbolList.addSymbol(Var_type, name_list, null);
+			Listener.SymbolList.addSymbol(Var_type, name_list, null);
 		}
 		//Listener.localNum++;
 	}
@@ -433,7 +433,12 @@ public class Listener extends MicroBaseListener {
 	@Override
 	public void exitParam_decl(MicroParser.Param_declContext ctx) {
 		String name = ctx.getText().split("(FLOAT)|(INT)")[1];
-		SymbolList.addSymbolLocalParam(Var_type, name, "P");
+		Listener.SymbolList.addSymbolLocalParam(Var_type, name, "P");
+		String paramlist = ctx.getChild(1).getText();
+		String [] param_list = paramlist.split(",");
+		 for(int i = 0; i < param_list.length; i ++) {
+		 	typeTable.put(param_list[i], ctx.getChild(0).getText());
+		 }
 		//Listener.paramNum++;
 	}
 	@Override
@@ -442,7 +447,7 @@ public class Listener extends MicroBaseListener {
 		localNum = 1;
 
 		String name = ctx.getText().split("FUNCTION")[1].split("(FLOAT)|(VOID)|(INT)")[1].split("\\(")[0];
-		SymbolList.pushNewSymbolTable(name);
+		Listener.SymbolList.pushNewSymbolTable(name);
 
 		IRList tempList = new IRList();
 		tempList.appendIRNode("LABEL", name, "", "");
@@ -453,7 +458,7 @@ public class Listener extends MicroBaseListener {
 
 	@Override 
 	public void enterIf_stmt(MicroParser.If_stmtContext ctx) {
-		SymbolList.pushNewSymbolTable("BLOCK");
+		Listener.SymbolList.pushNewSymbolTable("BLOCK");
 
 		String expression = ctx.getChild(2).getText();
 		String operand = "";
@@ -517,7 +522,7 @@ public class Listener extends MicroBaseListener {
 		tempList.appendIRNode("LABEL", labelName, "", "");
 		if(!ctx.getText().equals("")) {
 
-			SymbolList.pushNewSymbolTable("BLOCK");
+			Listener.SymbolList.pushNewSymbolTable("BLOCK");
 			
 			labelName = "label" + Integer.toString(Listener.labelNum);
 			labelStack.push(labelName);
@@ -568,7 +573,7 @@ public class Listener extends MicroBaseListener {
 	}
 	@Override
 	public void enterDo_while_stmt(MicroParser.Do_while_stmtContext ctx) {
-		SymbolList.pushNewSymbolTable("BLOCK");
+		Listener.SymbolList.pushNewSymbolTable("BLOCK");
 		IRList tempList = new IRList();
 		String labelName = "label" + Integer.toString(Listener.labelNum);
 		Listener.labelNum += 1;
@@ -627,40 +632,43 @@ public class Listener extends MicroBaseListener {
 		PemdasTree pdt = new PemdasTree();
 		Node node = pdt.createBinaryTree(expr);
 		IRList tempList = new IRList();
-		if(typeTable.get(result).equals("INT")) {
+		if(typeTable.get(result).equals("INT") && !expression.matches("\\w+\\(.*\\)$")) {
 			if(node.getLeftNode() == null && node.getRightNode() == null) {
-
-				/*if(typeTable.containsKey(expression)) {
-					tempList.appendIRNode("STOREI", expression, result, "");
-				}*/
-				//else {
+				if(expression.matches("\\d+(?:\\.\\d+)?$"))
 					tempList.appendIRNode("STOREI", expression, "", "$T" + Integer.toString(Listener.tempRegNum));
-					tempList.appendIRNode("STOREI", "$T" + Integer.toString(Listener.tempRegNum), "", result);
-					Listener.tempRegNum += 1;
-				//}
+				else {
+					String tempReg = getTempRegName(expression);
+					tempList.appendIRNode("STOREI", tempReg, "", "$T" + Integer.toString(Listener.tempRegNum));
+				}
+				String resultReg = getTempRegName(result);
+				tempList.appendIRNode("STOREI", "$T" + Integer.toString(Listener.tempRegNum), "", resultReg);
+				Listener.tempRegNum += 1;
 			}
 			else {
 				tempList = pdt.inOrderTraverse(tempList, node);
 				Listener.tempRegNum -= 1;
-				tempList.appendIRNode("STOREI", "$T" + Integer.toString(Listener.tempRegNum), "", result);
+				String resultReg = getTempRegName(result);
+				tempList.appendIRNode("STOREI", "$T" + Integer.toString(Listener.tempRegNum), "", resultReg);
 				Listener.tempRegNum += 1;
 			}
 		}
-		else {
+		else if(typeTable.get(result).equals("FLOAT") && !expression.matches("\\w+\\(.*\\)$")) {
 			if(node.getLeftNode() == null && node.getRightNode() == null) {
-				/*if(typeTable.containsKey(expression)) {
-					tempList.appendIRNode("STOREF", expression, result, "");
-				}*/
-				//else {
+				if(expression.matches("\\d+(?:\\.\\d+)?$"))
 					tempList.appendIRNode("STOREF", expression, "", "$T" + Integer.toString(Listener.tempRegNum));
-					tempList.appendIRNode("STOREF", "$T" + Integer.toString(Listener.tempRegNum), "", result);
-					Listener.tempRegNum += 1;
-				//}
+				else {
+					String tempReg = getTempRegName(expression);
+					tempList.appendIRNode("STOREF", tempReg, "", "$T" + Integer.toString(Listener.tempRegNum));
+				}
+				String resultReg = getTempRegName(result);
+				tempList.appendIRNode("STOREF", "$T" + Integer.toString(Listener.tempRegNum), "", resultReg);
+				Listener.tempRegNum += 1;
 			}
 			else {
 				tempList = pdt.inOrderTraverseFloat(tempList, node);
 				Listener.tempRegNum -= 1;
-				tempList.appendIRNode("STOREF", "$T" + Integer.toString(Listener.tempRegNum), "", result);
+				String resultReg = getTempRegName(result);
+				tempList.appendIRNode("STOREF", "$T" + Integer.toString(Listener.tempRegNum), "", resultReg);
 				Listener.tempRegNum += 1;
 			}
 		}
@@ -706,10 +714,9 @@ public class Listener extends MicroBaseListener {
 	}
 
 	@Override public void exitFunc_decl(MicroParser.Func_declContext ctx) {
-		
-		SymbolTable tempTable = SymbolList.getSymbolTable();
+		SymbolTable tempTable = Listener.SymbolList.getSymbolTable();
 
-		tempTable.printTable();
+		//tempTable.printTable();
 
 		IRList tempList = new IRList();
 		tempList.appendIRNode("RET", "", "", "");
@@ -718,5 +725,21 @@ public class Listener extends MicroBaseListener {
 		ListIR.add(tempList);
 	}
 
+    public String getTempRegName(String operand) {
+	    SymbolTable tempTable = Listener.SymbolList.getSymbolTable();
+	    String scope = tempTable.getScope();
+	    Hashtable <String, Symbol> varTable = tempTable.getVariableTable();
+	    while(true) {
+	        if(scope.equals("GLOBAL"))
+	            return null;
+	        if(varTable.containsKey(operand)) {
+	            Symbol tempSymbol = varTable.get(operand);
+	            return tempSymbol.getTempName();
+	        }
+	        tempTable = Listener.SymbolList.getSymbolTable();
+	        scope = tempTable.getScope();
+	        varTable = tempTable.getVariableTable();
+	    }
+	}
 }
 

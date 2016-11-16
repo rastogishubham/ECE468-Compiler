@@ -58,4 +58,8 @@ public class SymbolTable {
 	public String getScope() {
 		return this.scope;
 	}
+
+	public Hashtable<String, Symbol> getVariableTable() {
+		return this.VariableTable;
+	}
 } 
