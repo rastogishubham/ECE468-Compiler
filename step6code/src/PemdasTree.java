@@ -85,6 +85,8 @@ public class PemdasTree
                 else {
                     String op1 = exprTree.getLeftNode().getValue();
                     operand1 = getTempRegName(op1);
+                    if(operand1.contains("null"))
+                        operand1 = op1;
                 }
                 if(operand2.matches("\\$T\\d+$")) {
                     operand2 = exprTree.getRightNode().getValue();
@@ -92,6 +94,8 @@ public class PemdasTree
                 else {
                     String op2 = exprTree.getRightNode().getValue();
                     operand2 = getTempRegName(op2);
+                    if(operand2.contains("null"))
+                        operand2 = op2;
                 }
             }
             listIR.appendIRNode(new IRNode(opcode, operand1, operand2, result));
@@ -139,6 +143,8 @@ public class PemdasTree
                 else {
                     String op1 = exprTree.getLeftNode().getValue();
                     operand1 = getTempRegName(op1);
+                    if(operand1.contains("null"))
+                        operand1 = op1;
                 }
                 if(operand2.matches("\\$T\\d+$")) {
                     operand2 = exprTree.getRightNode().getValue();
@@ -146,6 +152,8 @@ public class PemdasTree
                 else {
                     String op2 = exprTree.getRightNode().getValue();
                     operand2 = getTempRegName(op2);
+                    if(operand2.contains("null"))
+                        operand2 = op2;
                 }
             }
             listIR.appendIRNode(new IRNode(opcode, operand1, operand2, result));
@@ -160,9 +168,9 @@ public class PemdasTree
         String scope = tempTable.getScope();
         Hashtable <String, Symbol> varTable = tempTable.getVariableTable();
         int pos = Listener.SymbolList.getListLen();
-        while(pos > 0) {
+        while(pos >= 0) {
             if(!scope.equals("GLOBAL") && !scope.contains("BLOCK"))
-                pos = 2;
+                pos = 1;
             if(varTable.containsKey(operand)) {
                 Symbol tempSymbol = varTable.get(operand);
                 return tempSymbol.getTempName();

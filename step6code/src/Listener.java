@@ -10,6 +10,7 @@ public class Listener extends MicroBaseListener {
 	public static int labelNum = 1;
 	public static int paramNum = 1;
 	public static int localNum = 1;
+	public int retType = 0;
 	private List <IRList> ListIR = new ArrayList<IRList>();
 	private Hashtable<String, String> typeTable = new Hashtable<String, String>();
 	private Hashtable <String, String> logOperatorTable = new Hashtable<String, String>();
@@ -411,7 +412,8 @@ public class Listener extends MicroBaseListener {
 	public void enterString_decl(MicroParser.String_declContext ctx) {
 		String name = ctx.getText().split(":=")[0].split("STRING")[1];
 		String Value = ctx.getText().split(":=")[1].split(";")[0];
-		Listener.SymbolList.addSymbol("STRING", name, Value);	
+		Listener.SymbolList.addSymbol("STRING", name, Value);
+		typeTable.put(name, "STRING");
 	}
 	@Override
 	public void exitVar_decl(MicroParser.Var_declContext ctx) {
@@ -445,6 +447,14 @@ public class Listener extends MicroBaseListener {
 	public void enterFunc_decl(MicroParser.Func_declContext ctx) {
 		Listener.paramNum = 1;
 		localNum = 1;
+
+		String funcRetVal = ctx.getChild(1).getText();
+		if(funcRetVal.equals("FLOAT"))
+			retType = 2;
+		else if(funcRetVal.equals("INT"))
+			retType = 1;
+		else
+			retType = 0;
 
 		String name = ctx.getText().split("FUNCTION")[1].split("(FLOAT)|(VOID)|(INT)")[1].split("\\(")[0];
 		Listener.SymbolList.pushNewSymbolTable(name);
@@ -638,9 +648,13 @@ public class Listener extends MicroBaseListener {
 					tempList.appendIRNode("STOREI", expression, "", "$T" + Integer.toString(Listener.tempRegNum));
 				else {
 					String tempReg = getTempRegName(expression);
+					if(tempReg.contains("null"))
+						tempReg = expression;
 					tempList.appendIRNode("STOREI", tempReg, "", "$T" + Integer.toString(Listener.tempRegNum));
 				}
 				String resultReg = getTempRegName(result);
+				if(resultReg.contains("null"))
+					resultReg = result;
 				tempList.appendIRNode("STOREI", "$T" + Integer.toString(Listener.tempRegNum), "", resultReg);
 				Listener.tempRegNum += 1;
 			}
@@ -648,6 +662,8 @@ public class Listener extends MicroBaseListener {
 				tempList = pdt.inOrderTraverse(tempList, node);
 				Listener.tempRegNum -= 1;
 				String resultReg = getTempRegName(result);
+				if(resultReg.contains("null"))
+					resultReg = result;
 				tempList.appendIRNode("STOREI", "$T" + Integer.toString(Listener.tempRegNum), "", resultReg);
 				Listener.tempRegNum += 1;
 			}
@@ -658,9 +674,13 @@ public class Listener extends MicroBaseListener {
 					tempList.appendIRNode("STOREF", expression, "", "$T" + Integer.toString(Listener.tempRegNum));
 				else {
 					String tempReg = getTempRegName(expression);
+					if(tempReg.contains("null"))
+						tempReg = expression;
 					tempList.appendIRNode("STOREF", tempReg, "", "$T" + Integer.toString(Listener.tempRegNum));
 				}
 				String resultReg = getTempRegName(result);
+				if(resultReg.contains("null"))
+					resultReg = result;
 				tempList.appendIRNode("STOREF", "$T" + Integer.toString(Listener.tempRegNum), "", resultReg);
 				Listener.tempRegNum += 1;
 			}
@@ -668,6 +688,8 @@ public class Listener extends MicroBaseListener {
 				tempList = pdt.inOrderTraverseFloat(tempList, node);
 				Listener.tempRegNum -= 1;
 				String resultReg = getTempRegName(result);
+				if(resultReg.contains("null"))
+					resultReg = result;
 				tempList.appendIRNode("STOREF", "$T" + Integer.toString(Listener.tempRegNum), "", resultReg);
 				Listener.tempRegNum += 1;
 			}
@@ -677,17 +699,33 @@ public class Listener extends MicroBaseListener {
 	}
 	@Override 
 	public void enterWrite_stmt(MicroParser.Write_stmtContext ctx) { 
-		/*IRList tempList = new IRList();
-		String var = ctx.getText();
-		String var2 = var.split("\\(")[1].split("\\)")[0];
-		if(typeTable.get(var2).equals("INT")) {
-			tempList.appendIRNode("WRITEI", ctx.getChild(2).getText(), "", "");
-		}
-		else {
-			tempList.appendIRNode("WRITEF", ctx.getChild(2).getText(), "", "");
+		IRList tempList = new IRList();
+		String [] varList = ctx.getChild(2).getText().split(",");
+		for(int i = 0; i < varList.length; i++) {
+			if(typeTable.get(varList[i]).equals("INT")) {
+				String old_val = varList[i];
+				varList[i] = getTempRegName(varList[i]);
+				if(varList[i].contains("null"))
+					varList[i] = old_val;
+				tempList.appendIRNode("WRITEI", varList[i], "", "");
+			}
+			else if(typeTable.get(varList[i]).equals("FLOAT")) {
+				String old_val = varList[i];
+				varList[i] = getTempRegName(varList[i]);
+				if(varList[i].contains("null"))
+					varList[i] = old_val;
+				tempList.appendIRNode("WRITEF", varList[i], "", "");
+			}
+			else {
+				String old_val = varList[i];
+				varList[i] = getTempRegName(varList[i]);
+				if(varList[i].contains("null"))
+					varList[i] = old_val;
+				tempList.appendIRNode("WRITES", varList[i], "", "");
+			}
 		}
 		tempList.printList();
-		ListIR.add(tempList);*/
+		ListIR.add(tempList);
 
 
 	}
@@ -724,7 +762,33 @@ public class Listener extends MicroBaseListener {
 	}
 
 	@Override public void enterReturn_stmt(MicroParser.Return_stmtContext ctx) {
-
+		String ret_val = ctx.getChild(1).getText();
+		IRList tempList = new IRList();
+		if(ret_val.matches("\\d+(?:\\.\\d+)?$") && retType == 2) {
+			tempList.appendIRNode("STOREF", ret_val, "", "$T" + Integer.toString(Listener.tempRegNum));
+			tempList.appendIRNode("STOREF", "$T" + Integer.toString(Listener.tempRegNum), "", "$R");
+		}
+		else if(ret_val.matches("\\d+(?:\\.\\d+)?$") && retType == 1) {
+			tempList.appendIRNode("STOREI", ret_val, "", "$T" + Integer.toString(Listener.tempRegNum));
+			tempList.appendIRNode("STOREI", "$T" + Integer.toString(Listener.tempRegNum), "", "$R");
+		}
+		else if(!ret_val.matches("\\d+(?:\\.\\d+)?$") && retType == 2) {
+			String old_val = ret_val;
+			ret_val = getTempRegName(ret_val);
+			if(ret_val.contains("null"))
+				ret_val = old_val;
+			tempList.appendIRNode("STOREF", ret_val, "", "$R");
+		}
+		else if(!ret_val.matches("\\d+(?:\\.\\d+)?$") && retType == 1) {
+			String old_val = ret_val;
+			ret_val = getTempRegName(ret_val);
+			if(ret_val.contains("null"))
+				ret_val = old_val;
+			tempList.appendIRNode("STOREF", ret_val, "", "$R");
+		}
+		else {}
+		tempList.printList();
+		ListIR.add(tempList);
 	}
 
     public String getTempRegName(String operand) {
@@ -732,9 +796,9 @@ public class Listener extends MicroBaseListener {
 	    String scope = tempTable.getScope();
 	    Hashtable <String, Symbol> varTable = tempTable.getVariableTable();
 	    int pos = Listener.SymbolList.getListLen();
-	    while(pos > 0) {
+	    while(pos >= 0) {
 	        if(!scope.equals("GLOBAL") && !scope.contains("BLOCK"))
-	            pos = 2;
+	            pos = 1;
 	        if(varTable.containsKey(operand)) {
 	            Symbol tempSymbol = varTable.get(operand);
 	            return tempSymbol.getTempName();
