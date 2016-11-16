@@ -714,9 +714,7 @@ public class Listener extends MicroBaseListener {
 	}
 
 	@Override public void exitFunc_decl(MicroParser.Func_declContext ctx) {
-		SymbolTable tempTable = Listener.SymbolList.getSymbolTable();
-
-		//tempTable.printTable();
+		//Listener.SymbolList.printSymbolList();
 
 		IRList tempList = new IRList();
 		tempList.appendIRNode("RET", "", "", "");
@@ -725,21 +723,27 @@ public class Listener extends MicroBaseListener {
 		ListIR.add(tempList);
 	}
 
+	@Override public void enterReturn_stmt(MicroParser.Return_stmtContext ctx) {
+
+	}
+
     public String getTempRegName(String operand) {
 	    SymbolTable tempTable = Listener.SymbolList.getSymbolTable();
 	    String scope = tempTable.getScope();
 	    Hashtable <String, Symbol> varTable = tempTable.getVariableTable();
-	    while(true) {
-	        if(scope.equals("GLOBAL"))
-	            return null;
+	    int pos = Listener.SymbolList.getListLen();
+	    while(pos > 0) {
+	        if(!scope.equals("GLOBAL") && !scope.contains("BLOCK"))
+	            pos = 2;
 	        if(varTable.containsKey(operand)) {
 	            Symbol tempSymbol = varTable.get(operand);
 	            return tempSymbol.getTempName();
 	        }
-	        tempTable = Listener.SymbolList.getSymbolTable();
+	        pos--;
+	        tempTable = Listener.SymbolList.getSymbolTable(pos);
 	        scope = tempTable.getScope();
 	        varTable = tempTable.getVariableTable();
 	    }
+	    return null;
 	}
 }
-

@@ -37,4 +37,7 @@ public class SymbolTableList {
 	public SymbolTable getSymbolTable() {
 		return this.SymbolList.get(this.SymbolList.size() - 1);
 	}
+	public int getListLen() {
+		return this.SymbolList.size() - 1;
+	}
 }
