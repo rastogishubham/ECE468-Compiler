@@ -55,6 +55,9 @@ public class Listener extends MicroBaseListener {
 		SymbolTable tempTable = Listener.SymbolList.getSymbolTable(0);
 		List nameList = tempTable.getNameList();
 
+
+		//SymbolList.printSymbolList();
+
 		for(int i = 0; i < nameList.size(); i ++) {
 			System.out.println("var " + nameList.get(i));
 		}
@@ -412,7 +415,13 @@ public class Listener extends MicroBaseListener {
 	public void enterString_decl(MicroParser.String_declContext ctx) {
 		String name = ctx.getText().split(":=")[0].split("STRING")[1];
 		String Value = ctx.getText().split(":=")[1].split(";")[0];
-		Listener.SymbolList.addSymbol("STRING", name, Value);
+		SymbolTable tempTable = Listener.SymbolList.getSymbolTable();
+		if(!tempTable.getScope().equals("GLOBAL")) {
+			Listener.SymbolList.addSymbolLocalParam("STRING", name, Value, "L");
+		}
+		else {
+			Listener.SymbolList.addSymbol("STRING", name, Value);
+		}
 		typeTable.put(name, "STRING");
 	}
 	@Override
@@ -421,7 +430,7 @@ public class Listener extends MicroBaseListener {
 
 		SymbolTable tempTable = Listener.SymbolList.getSymbolTable();
 		if(!tempTable.getScope().equals("GLOBAL")) {
-			Listener.SymbolList.addSymbolLocalParam(Var_type, name_list, "L");
+			Listener.SymbolList.addSymbolLocalParam(Var_type, name_list, null, "L");
 		}
 		else {
 			Listener.SymbolList.addSymbol(Var_type, name_list, null);
@@ -435,7 +444,7 @@ public class Listener extends MicroBaseListener {
 	@Override
 	public void exitParam_decl(MicroParser.Param_declContext ctx) {
 		String name = ctx.getText().split("(FLOAT)|(INT)")[1];
-		Listener.SymbolList.addSymbolLocalParam(Var_type, name, "P");
+		Listener.SymbolList.addSymbolLocalParam(Var_type, name, null, "P");
 		String paramlist = ctx.getChild(1).getText();
 		String [] param_list = paramlist.split(",");
 		 for(int i = 0; i < param_list.length; i ++) {
@@ -740,12 +749,29 @@ public class Listener extends MicroBaseListener {
 	@Override
 	public void enterRead_stmt(MicroParser.Read_stmtContext ctx) {
 		IRList tempList = new IRList();
-		String id = ctx.getChild(2).getText();
-		if(typeTable.get(id).equals("INT")) {
-			tempList.appendIRNode("READI", id, "", "");
-		}
-		else {
-			tempList.appendIRNode("READF", id, "", "");
+		String [] varList = ctx.getChild(2).getText().split(",");
+		for(int i = 0; i < varList.length; i++) {
+			if(typeTable.get(varList[i]).equals("INT")) {
+				String old_val = varList[i];
+				varList[i] = getTempRegName(varList[i]);
+				if(varList[i].contains("null"))
+					varList[i] = old_val;
+				tempList.appendIRNode("READI", varList[i], "", "");
+			}
+			else if(typeTable.get(varList[i]).equals("FLOAT")) {
+				String old_val = varList[i];
+				varList[i] = getTempRegName(varList[i]);
+				if(varList[i].contains("null"))
+					varList[i] = old_val;
+				tempList.appendIRNode("READF", varList[i], "", "");
+			}
+			else {
+				String old_val = varList[i];
+				varList[i] = getTempRegName(varList[i]);
+				if(varList[i].contains("null"))
+					varList[i] = old_val;
+				tempList.appendIRNode("READS", varList[i], "", "");
+			}
 		}
 		tempList.printList();
 		ListIR.add(tempList);

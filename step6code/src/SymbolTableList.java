@@ -19,9 +19,9 @@ public class SymbolTableList {
 		SymbolList.remove(SymbolList.size() - 1);
 		SymbolList.add(tempTable);
 	}
-	public void addSymbolLocalParam(String type, String name, String regType) {
+	public void addSymbolLocalParam(String type, String name, String value, String regType) {
 		SymbolTable tempTable = SymbolList.get(SymbolList.size() - 1);
-		tempTable.insertNewVariable(type, name, null, regType);
+		tempTable.insertNewVariable(type, name, value, regType);
 		SymbolList.remove(SymbolList.size() - 1);
 		SymbolList.add(tempTable);
 	}
