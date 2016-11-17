@@ -55,6 +55,9 @@ public class Listener extends MicroBaseListener {
 		SymbolTable tempTable = Listener.SymbolList.getSymbolTable(0);
 		List nameList = tempTable.getNameList();
 
+
+		//SymbolList.printSymbolList();
+
 		for(int i = 0; i < nameList.size(); i ++) {
 			System.out.println("var " + nameList.get(i));
 		}
@@ -412,7 +415,13 @@ public class Listener extends MicroBaseListener {
 	public void enterString_decl(MicroParser.String_declContext ctx) {
 		String name = ctx.getText().split(":=")[0].split("STRING")[1];
 		String Value = ctx.getText().split(":=")[1].split(";")[0];
-		Listener.SymbolList.addSymbol("STRING", name, Value);
+		SymbolTable tempTable = Listener.SymbolList.getSymbolTable();
+		if(!tempTable.getScope().equals("GLOBAL")) {
+			Listener.SymbolList.addSymbolLocalParam("STRING", name, Value, "L");
+		}
+		else {
+			Listener.SymbolList.addSymbol("STRING", name, Value);
+		}
 		typeTable.put(name, "STRING");
 	}
 	@Override
@@ -421,7 +430,7 @@ public class Listener extends MicroBaseListener {
 
 		SymbolTable tempTable = Listener.SymbolList.getSymbolTable();
 		if(!tempTable.getScope().equals("GLOBAL")) {
-			Listener.SymbolList.addSymbolLocalParam(Var_type, name_list, "L");
+			Listener.SymbolList.addSymbolLocalParam(Var_type, name_list, null, "L");
 		}
 		else {
 			Listener.SymbolList.addSymbol(Var_type, name_list, null);
@@ -435,7 +444,7 @@ public class Listener extends MicroBaseListener {
 	@Override
 	public void exitParam_decl(MicroParser.Param_declContext ctx) {
 		String name = ctx.getText().split("(FLOAT)|(INT)")[1];
-		Listener.SymbolList.addSymbolLocalParam(Var_type, name, "P");
+		Listener.SymbolList.addSymbolLocalParam(Var_type, name, null, "P");
 		String paramlist = ctx.getChild(1).getText();
 		String [] param_list = paramlist.split(",");
 		 for(int i = 0; i < param_list.length; i ++) {
@@ -447,6 +456,8 @@ public class Listener extends MicroBaseListener {
 	public void enterFunc_decl(MicroParser.Func_declContext ctx) {
 		Listener.paramNum = 1;
 		localNum = 1;
+
+		Listener.tempRegNum = 1;
 
 		String funcRetVal = ctx.getChild(1).getText();
 		if(funcRetVal.equals("FLOAT"))
@@ -506,6 +517,10 @@ public class Listener extends MicroBaseListener {
 			Listener.tempRegNum += 1;
 			tempList.appendIRNode("STOREI", "1", "", ("$T" + Integer.toString(Listener.tempRegNum)));
 		}
+		String operand_old = operand;
+		operand = getTempRegName(operand);
+		if(operand.contains("null"))
+			operand = operand_old;
 		tempList.appendIRNode(logOperatorTable.get(operator), operand, ("$T" + Integer.toString(Listener.tempRegNum)), labelName);
 		tempList.printList();
 		ListIR.add(tempList);
@@ -555,6 +570,10 @@ public class Listener extends MicroBaseListener {
 				else {
 					parseExp(expression, operand);
 				}
+				String operand_old = operand;
+				operand = getTempRegName(operand);
+				if(operand.contains("null"))
+					operand = operand_old;
 				tempList.appendIRNode(logOperatorTable.get(operator), operand, ("$T" + Integer.toString(Listener.tempRegNum)), labelName);
 			}
 			else if(typeTable.containsKey(operand) && typeTable.get(operand).equals("FLOAT")) {
@@ -565,6 +584,10 @@ public class Listener extends MicroBaseListener {
 				else {
 					parseExp(expression, operand);
 				}
+				String operand_old = operand;
+				operand = getTempRegName(operand);
+				if(operand.contains("null"))
+					operand = operand_old;
 				tempList.appendIRNode(logOperatorTable.get(operator), operand, ("$T" + Integer.toString(Listener.tempRegNum)), labelName);
 			}
 			else {
@@ -621,6 +644,10 @@ public class Listener extends MicroBaseListener {
 			Listener.tempRegNum += 1;
 			tempList.appendIRNode("STOREI", "1", "", ("$T" + Integer.toString(Listener.tempRegNum)));
 		}
+		String operand_old = operand;
+		operand = getTempRegName(operand);
+		if(operand.contains("null"))
+			operand = operand_old;
 		tempList.appendIRNode(logOperatorTable.get(operator), operand, ("$T" + Integer.toString(Listener.tempRegNum)), labelName);
 
 		labelName = exitLabelStack.pop();
@@ -694,7 +721,35 @@ public class Listener extends MicroBaseListener {
 				Listener.tempRegNum += 1;
 			}
 		}
-		tempList.printList();
+		else {
+			tempList.appendIRNode("PUSH", "", "", "");
+			String args = ctx.getChild(2).getText().split("\\(")[1].split("\\)")[0];
+			String func_name = ctx.getChild(2).getText().split("\\(")[0];
+			String [] argList = args.split(",");
+			for(int i = 0; i < argList.length; i++) {
+				String oldArg = argList[i];
+				argList[i] = getTempRegName(argList[i]);
+				if(argList[i].contains("null"))
+					argList[i] = oldArg;
+				tempList.appendIRNode("PUSH", argList[i], "", "");
+			}
+			tempList.appendIRNode("JSR", func_name, "", "");
+			for(int i = 0; i < argList.length; i++) {
+				tempList.appendIRNode("POP", "", "", "");
+			}
+			tempList.appendIRNode("POP", "$T" + Integer.toString(Listener.tempRegNum), "", "");
+			String resultReg = getTempRegName(result);
+			if(result.contains("null"))
+				resultReg = result;
+			if(typeTable.get(result).equals("FLOAT")) {
+				tempList.appendIRNode("STOREF", "$T" + Integer.toString(Listener.tempRegNum), resultReg, "");
+			}
+			else {
+				tempList.appendIRNode("STOREI", "$T" + Integer.toString(Listener.tempRegNum), resultReg, "");
+			}
+			Listener.tempRegNum += 1;
+		}
+		tempList.printList(); 
 		ListIR.add(tempList);
 	}
 	@Override 
@@ -740,12 +795,29 @@ public class Listener extends MicroBaseListener {
 	@Override
 	public void enterRead_stmt(MicroParser.Read_stmtContext ctx) {
 		IRList tempList = new IRList();
-		String id = ctx.getChild(2).getText();
-		if(typeTable.get(id).equals("INT")) {
-			tempList.appendIRNode("READI", id, "", "");
-		}
-		else {
-			tempList.appendIRNode("READF", id, "", "");
+		String [] varList = ctx.getChild(2).getText().split(",");
+		for(int i = 0; i < varList.length; i++) {
+			if(typeTable.get(varList[i]).equals("INT")) {
+				String old_val = varList[i];
+				varList[i] = getTempRegName(varList[i]);
+				if(varList[i].contains("null"))
+					varList[i] = old_val;
+				tempList.appendIRNode("READI", varList[i], "", "");
+			}
+			else if(typeTable.get(varList[i]).equals("FLOAT")) {
+				String old_val = varList[i];
+				varList[i] = getTempRegName(varList[i]);
+				if(varList[i].contains("null"))
+					varList[i] = old_val;
+				tempList.appendIRNode("READF", varList[i], "", "");
+			}
+			else {
+				String old_val = varList[i];
+				varList[i] = getTempRegName(varList[i]);
+				if(varList[i].contains("null"))
+					varList[i] = old_val;
+				tempList.appendIRNode("READS", varList[i], "", "");
+			}
 		}
 		tempList.printList();
 		ListIR.add(tempList);
@@ -753,12 +825,7 @@ public class Listener extends MicroBaseListener {
 
 	@Override public void exitFunc_decl(MicroParser.Func_declContext ctx) {
 		//Listener.SymbolList.printSymbolList();
-
-		IRList tempList = new IRList();
-		tempList.appendIRNode("RET", "", "", "");
-		tempList.printList();
 		System.out.println();
-		ListIR.add(tempList);
 	}
 
 	@Override public void enterReturn_stmt(MicroParser.Return_stmtContext ctx) {
@@ -767,10 +834,12 @@ public class Listener extends MicroBaseListener {
 		if(ret_val.matches("\\d+(?:\\.\\d+)?$") && retType == 2) {
 			tempList.appendIRNode("STOREF", ret_val, "", "$T" + Integer.toString(Listener.tempRegNum));
 			tempList.appendIRNode("STOREF", "$T" + Integer.toString(Listener.tempRegNum), "", "$R");
+			Listener.tempRegNum ++;
 		}
 		else if(ret_val.matches("\\d+(?:\\.\\d+)?$") && retType == 1) {
 			tempList.appendIRNode("STOREI", ret_val, "", "$T" + Integer.toString(Listener.tempRegNum));
 			tempList.appendIRNode("STOREI", "$T" + Integer.toString(Listener.tempRegNum), "", "$R");
+			Listener.tempRegNum ++;
 		}
 		else if(!ret_val.matches("\\d+(?:\\.\\d+)?$") && retType == 2) {
 			String old_val = ret_val;
@@ -787,6 +856,7 @@ public class Listener extends MicroBaseListener {
 			tempList.appendIRNode("STOREF", ret_val, "", "$R");
 		}
 		else {}
+		tempList.appendIRNode("RET", "", "", "");
 		tempList.printList();
 		ListIR.add(tempList);
 	}
