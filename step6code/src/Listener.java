@@ -729,7 +729,8 @@ public class Listener extends MicroBaseListener {
 			for(int i = 0; i < argList.length; i++) {
 				String oldArg = argList[i];
 				argList[i] = getTempRegName(argList[i]);
-				if(argList[i].contains("null"))
+				System.out.println("argList[i]" + argList[i]);
+				if(argList[i].contains("null") || argList[i] == null)
 					argList[i] = oldArg;
 				tempList.appendIRNode("PUSH", argList[i], "", "");
 			}
@@ -829,6 +830,56 @@ public class Listener extends MicroBaseListener {
 	}
 
 	@Override public void enterReturn_stmt(MicroParser.Return_stmtContext ctx) {
+		String expression = ctx.getChild(1).getText();
+		IRList tempList = new IRList();
+		ExpressionStack expstack = new ExpressionStack();
+		String expr = expstack.createExprStack(expression);
+		PemdasTree pdt = new PemdasTree();
+		Node node = pdt.createBinaryTree(expr);
+		if(retType == 1) {
+			if(node.getLeftNode() == null && node.getRightNode() == null) {
+				if(expression.matches("\\d+(?:\\.\\d+)?$")) {
+					tempList.appendIRNode("STOREI", expression, "", "$T" + Integer.toString(Listener.tempRegNum));
+					tempList.appendIRNode("STOREI", "$T" + Integer.toString(Listener.tempRegNum), "", "$R");
+					Listener.tempRegNum += 1;
+				}
+				else {
+					String tempReg = getTempRegName(expression);
+					if(tempReg.contains("null"))
+						tempReg = expression;
+					tempList.appendIRNode("STOREI", tempReg, "", "$R");
+				}
+			}
+			else {
+				tempList = pdt.inOrderTraverse(tempList, node);
+				Listener.tempRegNum -= 1;
+				tempList.appendIRNode("STOREI", "$T" + Integer.toString(Listener.tempRegNum), "", "$R");
+				Listener.tempRegNum += 1;
+			}
+		}
+		else if(retType == 2) {
+			if(node.getLeftNode() == null && node.getRightNode() == null) {
+				if(expression.matches("\\d+(?:\\.\\d+)?$")) {
+					tempList.appendIRNode("STOREF", expression, "", "$T" + Integer.toString(Listener.tempRegNum));
+					tempList.appendIRNode("STOREF", "$T" + Integer.toString(Listener.tempRegNum), "", "$R");
+					Listener.tempRegNum += 1;
+				}
+				else {
+					String tempReg = getTempRegName(expression);
+					if(tempReg.contains("null"))
+						tempReg = expression;
+					tempList.appendIRNode("STOREF", tempReg, "", "$R");
+				}
+			}
+			else {
+				tempList = pdt.inOrderTraverseFloat(tempList, node);
+				Listener.tempRegNum -= 1;
+				tempList.appendIRNode("STOREF", "$T" + Integer.toString(Listener.tempRegNum), "", "$R");
+				Listener.tempRegNum += 1;
+			}
+		}
+
+		/*
 		String ret_val = ctx.getChild(1).getText();
 		IRList tempList = new IRList();
 		if(ret_val.matches("\\d+(?:\\.\\d+)?$") && retType == 2) {
@@ -855,7 +906,7 @@ public class Listener extends MicroBaseListener {
 				ret_val = old_val;
 			tempList.appendIRNode("STOREF", ret_val, "", "$R");
 		}
-		else {}
+		else {}*/
 		tempList.appendIRNode("RET", "", "", "");
 		tempList.printList();
 		ListIR.add(tempList);
