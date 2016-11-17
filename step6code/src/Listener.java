@@ -719,7 +719,7 @@ public class Listener extends MicroBaseListener {
 				Listener.tempRegNum += 1;
 			}
 		}
-		tempList.printList();
+		tempList.printList(); 
 		ListIR.add(tempList);
 	}
 	@Override 
