@@ -3,7 +3,12 @@ import java.lang.*;
 import java.util.*;
 
 public class TinyConverter  { 
-    private boolean enter = true; 
+    
+    private boolean enter = true;
+    private int localCount = 1; // negative
+    private int paramCount = 6; // pointer on stack starting at 6
+    private int tempCount = 0; // r 
+
    // private IRList list; 
     private Hashtable <String, String> registerTypeTable = new Hashtable<String, String>();
     private Hashtable<String, String> typeTable = new Hashtable<String, String>();
@@ -23,19 +28,69 @@ public class TinyConverter  {
                 String result = tempNode.getResult();
 
 
+
                 if(operand1.matches("\\$T\\d+$")) {
-                    operand1 = "r" + operand1.split("T")[1];
+                    operand1 = "r" + Integer.toString(tempCount);
+                    tempCount++;
                 }
 
-                if(operand2.matches("\\$T\\d+$")) {
-                    operand2 = "r" + operand2.split("T")[1];
+                if(operand1.matches("\\$L\\d+$")) {
+                    operand1 = "$-" + Integer.toString(localCount);
+                    localCount++; 
                 }
 
-                if(result.matches("\\$T\\d+$")) {
-                    result = "r" + result.split("T")[1];
+                if(operand1.matches("\\$P\\d+$")) {
+                    operand1 = "$" + Integer.toString(paramCount); // change number to include original number 
+                    paramCount++; 
+                }
+                if(operand1.matches("\\$R\\d+$")) {
+                    operand1 = "$" + Integer.toString(paramCount);
+                    paramCount++; 
+                }
+                 if(operand2.matches("\\$T\\d+$")) {
+                    operand2 = "r" + Integer.toString(tempCount);
                 }
 
+                if(operand2.matches("\\$L\\d+$")) {
+                    operand2 = "$-" + Integer.toString(localCount);
+                    localCount++; 
+                }
+
+                if(operand2.matches("\\$P\\d+$")) {
+                    operand2 = "$" + Integer.toString(paramCount);
+                    paramCount++; 
+                }
+                if(operand2.matches("\\$R\\d+$")) {
+                    operand2 = "$" + Integer.toString(paramCount);
+                    paramCount++; 
+                }
                 
+
+                 if(result.matches("\\$T\\d+$")) {
+                    result = "r" + Integer.toString(tempCount);
+                    tempCount++;
+                }
+
+                if(result.matches("\\$L\\d+$")) {
+                    result = "$-" + Integer.toString(localCount);
+                    localCount++; 
+                }
+
+                if(result.matches("\\$P\\d+$")) {
+                    result = "$" + Integer.toString(paramCount);
+                    paramCount++; 
+                }
+                if(result.matches("$R")) {
+                    result = "$" + Integer.toString(paramCount);
+                    paramCount++; 
+                }
+                
+
+               if(opcode.contains("LINK")) { 
+                    localCount = 1; // negative 
+                    paramCount = 6; //starts at pointer 6  
+                    tempCount = 0; // r
+               }
 
                 if(opcode.contains("LABEL") && enter) { 
                     System.out.println("push");
