@@ -35,7 +35,7 @@ public class TinyConverter  {
                 }
 
                 if(operand1.matches("\\$L\\d+$")) {
-                    operand1 = "$-" + Integer.toString(localCount);
+                    operand1 = "$-" + operand1.split("L")[1];
                     localCount++; 
                 }
 
@@ -52,7 +52,7 @@ public class TinyConverter  {
                 }
 
                 if(operand2.matches("\\$L\\d+$")) {
-                    operand2 = "$-" + Integer.toString(localCount);
+                    operand2 = "$-" + operand2.split("L")[1];
                     localCount++; 
                 }
 
@@ -60,7 +60,7 @@ public class TinyConverter  {
                     operand2 = "$" + Integer.toString(paramCount);
                     paramCount++; 
                 }
-                if(operand2.matches("\\$R\\d+$")) {
+                if(operand2.matches("\\$R")) {
                     operand2 = "$" + Integer.toString(paramCount);
                     paramCount++; 
                 }
@@ -72,7 +72,7 @@ public class TinyConverter  {
                 }
 
                 if(result.matches("\\$L\\d+$")) {
-                    result = "$-" + Integer.toString(localCount);
+                    result = "$-" + result.split("L")[1];
                     localCount++; 
                 }
 
@@ -80,7 +80,7 @@ public class TinyConverter  {
                     result = "$" + Integer.toString(paramCount);
                     paramCount++; 
                 }
-                if(result.matches("$R")) {
+                if(result.matches("\\$R")) {
                     result = "$" + Integer.toString(paramCount);
                     paramCount++; 
                 }
@@ -104,7 +104,7 @@ public class TinyConverter  {
                 }
 
                 
-
+              
                 if(opcode.contains("STOREI")) {
 
                     if(operand1.matches("\\r\\d+$")) {
@@ -217,7 +217,7 @@ public class TinyConverter  {
 
                     System.out.print("move");
                     System.out.print(" " + operand1);
-                    System.out.println(" " + result);
+                    System.out.println(" " + operand2);
                 }
                 else if(opcode.contains("ADDF")) {
 
@@ -451,6 +451,25 @@ public class TinyConverter  {
                 else if (opcode.contains("RET")) { 
                     System.out.println("unlnk"); 
                     System.out.println("ret");
+                } 
+
+                else  if (opcode.contains("PUSH")) { 
+                    System.out.println("push " + operand1);
+                }
+                else if (opcode.contains("POP")) { 
+                    System.out.println("pop " + operand1);
+                }
+
+                else if (opcode.contains("JSR")) { 
+                    System.out.println("push r0");
+                    System.out.println("push r1");
+                    System.out.println("push r2");
+                    System.out.println("push r3");
+                    System.out.println("jsr " + operand1);
+                    System.out.println("pop r3");
+                    System.out.println("pop r2");
+                    System.out.println("pop r1");
+                    System.out.println("pop r0");
                 } 
             }
     }
