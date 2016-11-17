@@ -909,7 +909,7 @@ public class Listener extends MicroBaseListener {
 		else {}*/
 		tempList.appendIRNode("RET", "", "", "");
 		tempList.printList();
-		ListIR.add(tempList);
+		ListIR.add(tempList); 
 	}
 
     public String getTempRegName(String operand) {
