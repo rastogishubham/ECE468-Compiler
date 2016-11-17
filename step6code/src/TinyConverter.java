@@ -8,6 +8,7 @@ public class TinyConverter  {
     private int localCount = 1; // negative
     private int paramCount = 6; // pointer on stack starting at 6
     private int tempCount = 0; // r 
+    int temp = 0; 
 
    // private IRList list; 
     private Hashtable <String, String> registerTypeTable = new Hashtable<String, String>();
@@ -30,8 +31,9 @@ public class TinyConverter  {
 
 
                 if(operand1.matches("\\$T\\d+$")) {
-                    operand1 = "r" + Integer.toString(tempCount);
-                    tempCount++;
+                    temp = Integer.parseInt(operand1.split("T")[1]); 
+                    temp = temp - 1; 
+                    operand1 = "r" + Integer.toString(temp);
                 }
 
                 if(operand1.matches("\\$L\\d+$")) {
@@ -48,7 +50,9 @@ public class TinyConverter  {
                     paramCount++; 
                 }
                  if(operand2.matches("\\$T\\d+$")) {
-                    operand2 = "r" + Integer.toString(tempCount);
+                    temp = Integer.parseInt(operand2.split("T")[1]); 
+                    temp = temp - 1; 
+                    operand2 = "r" + Integer.toString(temp);
                 }
 
                 if(operand2.matches("\\$L\\d+$")) {
@@ -67,8 +71,9 @@ public class TinyConverter  {
                 
 
                  if(result.matches("\\$T\\d+$")) {
-                    result = "r" + Integer.toString(tempCount);
-                    tempCount++;
+                    temp = Integer.parseInt(result.split("T")[1]); 
+                    temp = temp - 1; 
+                    result = "r" + Integer.toString(temp);
                 }
 
                 if(result.matches("\\$L\\d+$")) {
