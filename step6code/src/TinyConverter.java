@@ -3,6 +3,7 @@ import java.lang.*;
 import java.util.*;
 
 public class TinyConverter  { 
+    private boolean enter = true; 
    // private IRList list; 
     private Hashtable <String, String> registerTypeTable = new Hashtable<String, String>();
     private Hashtable<String, String> typeTable = new Hashtable<String, String>();
@@ -13,7 +14,6 @@ public class TinyConverter  {
     }
 
     public void printTinyCode(IRList tempList) {
-            System.out.println("comes here");
             for(int j = 0; j < tempList.getSize(); j++) 
             {
                 IRNode tempNode = tempList.getIRNode(j);
@@ -21,6 +21,7 @@ public class TinyConverter  {
                 String operand1 = tempNode.getOperand1();
                 String operand2 = tempNode.getOperand2();
                 String result = tempNode.getResult();
+
 
                 if(operand1.matches("\\$T\\d+$")) {
                     operand1 = "r" + operand1.split("T")[1];
@@ -33,6 +34,21 @@ public class TinyConverter  {
                 if(result.matches("\\$T\\d+$")) {
                     result = "r" + result.split("T")[1];
                 }
+
+                
+
+                if(opcode.contains("LABEL") && enter) { 
+                    System.out.println("push");
+                    System.out.println("push r0");
+                    System.out.println("push r1");
+                    System.out.println("push r2");
+                    System.out.println("push r3");
+                    System.out.println("jsr main");
+                    System.out.println("sys halt");
+                    enter = false; 
+                }
+
+                
 
                 if(opcode.contains("STOREI")) {
 
@@ -373,13 +389,13 @@ public class TinyConverter  {
                     System.out.println("str " + operand1 + " " + operand2);
                 }
                 else if(opcode.contains("LINK")) { 
-                    System.out.println("push");
-                    System.out.println("push r0"); 
-                    System.out.println("push r1"); 
-                    System.out.println("push r2"); 
-                    System.out.println("push r3"); 
-
+                    
                     System.out.println("link");
+                } 
+
+                else if (opcode.contains("RET")) { 
+                    System.out.println("unlnk"); 
+                    System.out.println("ret");
                 } 
             }
     }
