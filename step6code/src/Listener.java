@@ -457,6 +457,8 @@ public class Listener extends MicroBaseListener {
 		Listener.paramNum = 1;
 		localNum = 1;
 
+		Listener.tempRegNum = 1;
+
 		String funcRetVal = ctx.getChild(1).getText();
 		if(funcRetVal.equals("FLOAT"))
 			retType = 2;
@@ -718,6 +720,34 @@ public class Listener extends MicroBaseListener {
 				tempList.appendIRNode("STOREF", "$T" + Integer.toString(Listener.tempRegNum), "", resultReg);
 				Listener.tempRegNum += 1;
 			}
+		}
+		else {
+			tempList.appendIRNode("PUSH", "", "", "");
+			String args = ctx.getChild(2).getText().split("\\(")[1].split("\\)")[0];
+			String func_name = ctx.getChild(2).getText().split("\\(")[0];
+			String [] argList = args.split(",");
+			for(int i = 0; i < argList.length; i++) {
+				String oldArg = argList[i];
+				argList[i] = getTempRegName(argList[i]);
+				if(argList[i].contains("null"))
+					argList[i] = oldArg;
+				tempList.appendIRNode("PUSH", argList[i], "", "");
+			}
+			tempList.appendIRNode("JSR", func_name, "", "");
+			for(int i = 0; i < argList.length; i++) {
+				tempList.appendIRNode("POP", "", "", "");
+			}
+			tempList.appendIRNode("POP", "$T" + Integer.toString(Listener.tempRegNum), "", "");
+			String resultReg = getTempRegName(result);
+			if(result.contains("null"))
+				resultReg = result;
+			if(typeTable.get(result).equals("FLOAT")) {
+				tempList.appendIRNode("STOREF", "$T" + Integer.toString(Listener.tempRegNum), resultReg, "");
+			}
+			else {
+				tempList.appendIRNode("STOREI", "$T" + Integer.toString(Listener.tempRegNum), resultReg, "");
+			}
+			Listener.tempRegNum += 1;
 		}
 		tempList.printList(); 
 		ListIR.add(tempList);
