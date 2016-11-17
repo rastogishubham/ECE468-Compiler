@@ -80,15 +80,16 @@ public class PemdasTree
                 operand2 = exprTree.getRightNode().getValue();
             }
             else {
-                if(operand1.matches("\\$T\\d+$"))
+                if(operand1.matches("\\$T\\d+$") || operand1.matches("\\d+(?:\\.\\d+)?$")) {
                     operand1 = exprTree.getLeftNode().getValue();
+                }
                 else {
                     String op1 = exprTree.getLeftNode().getValue();
                     operand1 = getTempRegName(op1);
                     if(operand1.contains("null"))
                         operand1 = op1;
                 }
-                if(operand2.matches("\\$T\\d+$")) {
+                if(operand2.matches("\\$T\\d+$") || operand2.matches("\\d+(?:\\.\\d+)?$")) {
                     operand2 = exprTree.getRightNode().getValue();
                 }
                 else {
@@ -138,7 +139,7 @@ public class PemdasTree
                 operand2 = exprTree.getRightNode().getValue();
             }
             else {
-                if(operand1.matches("\\$T\\d+$"))
+                if(operand1.matches("\\$T\\d+$") || operand1.matches("\\d+(?:\\.\\d+)?$"))
                     operand1 = exprTree.getLeftNode().getValue();
                 else {
                     String op1 = exprTree.getLeftNode().getValue();
@@ -146,7 +147,7 @@ public class PemdasTree
                     if(operand1.contains("null"))
                         operand1 = op1;
                 }
-                if(operand2.matches("\\$T\\d+$")) {
+                if(operand2.matches("\\$T\\d+$") || operand2.matches("\\d+(?:\\.\\d+)?$")) {
                     operand2 = exprTree.getRightNode().getValue();
                 }
                 else {

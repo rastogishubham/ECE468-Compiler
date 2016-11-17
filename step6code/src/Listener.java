@@ -634,9 +634,17 @@ public class Listener extends MicroBaseListener {
 			operator = expression.split(operand)[1].split(val)[0];
 		}
 		if(typeTable.containsKey(operand) && typeTable.get(operand).equals("INT")) {
+			String oldVal = val;
+			val = getTempRegName(val);
+			if(val.contains("null"))
+				val = oldVal;
 			tempList.appendIRNode("STOREI", val, "", ("$T" + Integer.toString(Listener.tempRegNum)));
 		}
 		else if(typeTable.containsKey(operand) && typeTable.get(operand).equals("FLOAT")) {
+			String oldVal = val;
+			val = getTempRegName(val);
+			if(val.contains("null"))
+				val = oldVal;
 			tempList.appendIRNode("STOREF", val, "", ("$T" + Integer.toString(Listener.tempRegNum)));
 		}
 		else {
@@ -726,13 +734,19 @@ public class Listener extends MicroBaseListener {
 			String args = ctx.getChild(2).getText().split("\\(")[1].split("\\)")[0];
 			String func_name = ctx.getChild(2).getText().split("\\(")[0];
 			String [] argList = args.split(",");
+			String lhs = ctx.getChild(0).getText();
 			for(int i = 0; i < argList.length; i++) {
-				String oldArg = argList[i];
-				argList[i] = getTempRegName(argList[i]);
-				System.out.println("argList[i]" + argList[i]);
-				if(argList[i].contains("null") || argList[i] == null)
-					argList[i] = oldArg;
-				tempList.appendIRNode("PUSH", argList[i], "", "");
+				if(!argList[i].matches("(\\d+(?:\\.\\d+)?$)|([A-Za-z]+$)")) {
+					parseExp(argList[i], lhs);
+					tempList.appendIRNode("PUSH", "$T" + Integer.toString(Listener.tempRegNum - 1), "", "");
+				}
+				else {
+					String oldArg = argList[i];
+					argList[i] = getTempRegName(argList[i]);
+					if(argList[i].contains("null"))
+						argList[i] = oldArg;
+					tempList.appendIRNode("PUSH", argList[i], "", "");
+				}
 			}
 			tempList.appendIRNode("JSR", func_name, "", "");
 			for(int i = 0; i < argList.length; i++) {
