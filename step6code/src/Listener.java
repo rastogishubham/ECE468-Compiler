@@ -11,6 +11,7 @@ public class Listener extends MicroBaseListener {
 	public static int paramNum = 1;
 	public static int localNum = 1;
 	public int retType = 0;
+	public static List <String> funcList = new ArrayList<String>();
 	TinyConverter tiny = new TinyConverter(); 
 	private List <IRList> ListIR = new ArrayList<IRList>();
 	private Hashtable<String, String> typeTable = new Hashtable<String, String>();
@@ -55,12 +56,16 @@ public class Listener extends MicroBaseListener {
 	public void exitPgm_body(MicroParser.Pgm_bodyContext ctx) {
 		SymbolTable tempTable = Listener.SymbolList.getSymbolTable(0);
 		List nameList = tempTable.getNameList();
-
-
-		//SymbolList.printSymbolList();
-
+		Hashtable<String, Symbol> tempVarTable = tempTable.getVariableTable();
 		for(int i = 0; i < nameList.size(); i ++) {
-			System.out.println("var " + nameList.get(i));
+			String varType = tempVarTable.get(nameList.get(i)).getType();
+			if(varType.equals("STRING")) {
+				String value = tempVarTable.get(nameList.get(i)).getValue();
+				System.out.println("str " + nameList.get(i) + " " + value);
+			}
+			else {
+				System.out.println("var " + nameList.get(i));
+			}
 		}
 		for(int i = 0; i < ListIR.size(); i++) {
 			IRList tempList = ListIR.get(i);
@@ -92,7 +97,6 @@ public class Listener extends MicroBaseListener {
 		else {
 			Listener.SymbolList.addSymbol(Var_type, name_list, null);
 		}
-		//Listener.localNum++;
 	}
 	@Override
 	public void enterVar_type(MicroParser.Var_typeContext ctx) {
@@ -107,7 +111,6 @@ public class Listener extends MicroBaseListener {
 		 for(int i = 0; i < param_list.length; i ++) {
 		 	typeTable.put(param_list[i], ctx.getChild(0).getText());
 		 }
-		//Listener.paramNum++;
 	}
 	@Override
 	public void enterFunc_decl(MicroParser.Func_declContext ctx) {
@@ -128,6 +131,7 @@ public class Listener extends MicroBaseListener {
 		Listener.SymbolList.pushNewSymbolTable(name);
 
 		IRList tempList = new IRList();
+		funcList.add(name);
 		tempList.appendIRNode("LABEL", name, "", "");
 		tempList.appendIRNode("LINK", "", "", "");
 		tempList.printList();
@@ -496,7 +500,7 @@ public class Listener extends MicroBaseListener {
 	}
 
 	@Override public void exitFunc_decl(MicroParser.Func_declContext ctx) {
-		//Listener.SymbolList.printSymbolList();
+	//	Listener.SymbolList.printSymbolList();
 		System.out.println();
 	}
 
@@ -549,35 +553,6 @@ public class Listener extends MicroBaseListener {
 				Listener.tempRegNum += 1;
 			}
 		}
-
-		/*
-		String ret_val = ctx.getChild(1).getText();
-		IRList tempList = new IRList();
-		if(ret_val.matches("\\d+(?:\\.\\d+)?$") && retType == 2) {
-			tempList.appendIRNode("STOREF", ret_val, "", "$T" + Integer.toString(Listener.tempRegNum));
-			tempList.appendIRNode("STOREF", "$T" + Integer.toString(Listener.tempRegNum), "", "$R");
-			Listener.tempRegNum ++;
-		}
-		else if(ret_val.matches("\\d+(?:\\.\\d+)?$") && retType == 1) {
-			tempList.appendIRNode("STOREI", ret_val, "", "$T" + Integer.toString(Listener.tempRegNum));
-			tempList.appendIRNode("STOREI", "$T" + Integer.toString(Listener.tempRegNum), "", "$R");
-			Listener.tempRegNum ++;
-		}
-		else if(!ret_val.matches("\\d+(?:\\.\\d+)?$") && retType == 2) {
-			String old_val = ret_val;
-			ret_val = getTempRegName(ret_val);
-			if(ret_val.contains("null"))
-				ret_val = old_val;
-			tempList.appendIRNode("STOREF", ret_val, "", "$R");
-		}
-		else if(!ret_val.matches("\\d+(?:\\.\\d+)?$") && retType == 1) {
-			String old_val = ret_val;
-			ret_val = getTempRegName(ret_val);
-			if(ret_val.contains("null"))
-				ret_val = old_val;
-			tempList.appendIRNode("STOREF", ret_val, "", "$R");
-		}
-		else {}*/
 		tempList.appendIRNode("RET", "", "", "");
 		tempList.printList();
 		ListIR.add(tempList); 

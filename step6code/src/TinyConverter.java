@@ -8,17 +8,10 @@ public class TinyConverter  {
     private int localCount = 1; // negative
     private int paramCount = 6; // pointer on stack starting at 6
     private int tempCount = 0; // r 
+    private int funcCount = 0;
     int temp = 0; 
-
-   // private IRList list; 
     private Hashtable <String, String> registerTypeTable = new Hashtable<String, String>();
     private Hashtable<String, String> typeTable = new Hashtable<String, String>();
-    //private List <IRList> ListIR = new ArrayList<IRList>();
-
-    public TinyConverter() {
-        // list = irlist ; 
-    }
-
     public void printTinyCode(IRList tempList) {
             for(int j = 0; j < tempList.getSize(); j++) 
             {
@@ -27,8 +20,6 @@ public class TinyConverter  {
                 String operand1 = tempNode.getOperand1();
                 String operand2 = tempNode.getOperand2();
                 String result = tempNode.getResult();
-
-
 
                 if(operand1.matches("\\$T\\d+$")) {
                     temp = Integer.parseInt(operand1.split("T")[1]); 
@@ -449,8 +440,9 @@ public class TinyConverter  {
                     System.out.println("str " + operand1 + " " + operand2);
                 }
                 else if(opcode.contains("LINK")) { 
-                    
-                    System.out.println("link");
+                    String localCount = Integer.toString(getLocalVarCount(Listener.funcList.get(funcCount)));
+                    System.out.println("link " + localCount);
+                    funcCount++;
                 } 
 
                 else if (opcode.contains("RET")) { 
@@ -479,6 +471,34 @@ public class TinyConverter  {
             }
     }
     
-    //System.out.println("sys halt");
+    public int getLocalVarCount(String funcName) {
+        SymbolTable tempTable = Listener.SymbolList.getSymbolTable();
+        String scope = tempTable.getScope();
+        Hashtable <String, Symbol> varTable = tempTable.getVariableTable();
+        int pos = Listener.SymbolList.getListLen();
+        int localCount = 0;
+        while(pos >= 0) {
+            if(scope.equals(funcName))
+                break;
+            pos--;
+            tempTable = Listener.SymbolList.getSymbolTable(pos);
+            scope = tempTable.getScope();
+            varTable = tempTable.getVariableTable();
+        }
+        for(int i = pos; i <= Listener.SymbolList.getListLen(); i++) {
+            tempTable = Listener.SymbolList.getSymbolTable(i);
+            scope = tempTable.getScope();
+            varTable = tempTable.getVariableTable();
+            List <String> tempList = tempTable.getNameList();
+            if(!scope.equals(funcName) && !scope.contains("BLOCK"))
+                return localCount;
+            for(String varName : tempList) {
+                String tempRegName = varTable.get(varName).getTempName();
+                if(tempRegName.contains("$L"))
+                    localCount++;
+            }
+        }
+        return localCount;
+    }
     
 }
