@@ -500,7 +500,15 @@ public class Listener extends MicroBaseListener {
 	}
 
 	@Override public void exitFunc_decl(MicroParser.Func_declContext ctx) {
-	//	Listener.SymbolList.printSymbolList();
+	//	Listener.SymbolList.printSymbolList()
+		IRList lastList = ListIR.get(ListIR.size() - 1);
+		IRNode lastNode = lastList.getIRNode(lastList.getSize() - 1);
+		if(!lastNode.getOpcode().equals("RET")) {
+			IRList tempList = new IRList();
+			tempList.appendIRNode("RET", "", "", "");
+			tempList.printList();
+			ListIR.add(tempList);
+		}
 		System.out.println();
 	}
 
