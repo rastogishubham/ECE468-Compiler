@@ -71,7 +71,7 @@ public class Listener extends MicroBaseListener {
 			IRList tempList = ListIR.get(i);
 			tiny.printTinyCode(tempList);
 		}
-		System.out.println("sys halt");
+		System.out.println("end");
 	}
 	@Override
 	public void enterString_decl(MicroParser.String_declContext ctx) {
@@ -418,10 +418,10 @@ public class Listener extends MicroBaseListener {
 			if(result.contains("null"))
 				resultReg = result;
 			if(typeTable.get(result).equals("FLOAT")) {
-				tempList.appendIRNode("STOREF", "$T" + Integer.toString(Listener.tempRegNum), resultReg, "");
+				tempList.appendIRNode("STOREF", "$T" + Integer.toString(Listener.tempRegNum), "", resultReg);
 			}
 			else {
-				tempList.appendIRNode("STOREI", "$T" + Integer.toString(Listener.tempRegNum), resultReg, "");
+				tempList.appendIRNode("STOREI", "$T" + Integer.toString(Listener.tempRegNum), "", resultReg);
 			}
 			Listener.tempRegNum += 1;
 		}
@@ -500,7 +500,6 @@ public class Listener extends MicroBaseListener {
 	}
 
 	@Override public void exitFunc_decl(MicroParser.Func_declContext ctx) {
-	//	Listener.SymbolList.printSymbolList()
 		IRList lastList = ListIR.get(ListIR.size() - 1);
 		IRNode lastNode = lastList.getIRNode(lastList.getSize() - 1);
 		if(!lastNode.getOpcode().equals("RET")) {
@@ -530,7 +529,9 @@ public class Listener extends MicroBaseListener {
 					String tempReg = getTempRegName(expression);
 					if(tempReg.contains("null"))
 						tempReg = expression;
-					tempList.appendIRNode("STOREI", tempReg, "", "$R");
+					tempList.appendIRNode("STOREI", tempReg, "", "$T" + Integer.toString(Listener.tempRegNum));
+					tempList.appendIRNode("STOREI", "$T" + Integer.toString(Listener.tempRegNum), "", "$R");
+					Listener.tempRegNum += 1;
 				}
 			}
 			else {
@@ -551,7 +552,9 @@ public class Listener extends MicroBaseListener {
 					String tempReg = getTempRegName(expression);
 					if(tempReg.contains("null"))
 						tempReg = expression;
-					tempList.appendIRNode("STOREF", tempReg, "", "$R");
+					tempList.appendIRNode("STOREF", tempReg, "", "$T" + Integer.toString(Listener.tempRegNum));
+					tempList.appendIRNode("STOREF", "$T" + Integer.toString(Listener.tempRegNum), "", "$R");
+					Listener.tempRegNum += 1;
 				}
 			}
 			else {
