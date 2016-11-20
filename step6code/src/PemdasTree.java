@@ -65,6 +65,9 @@ public class PemdasTree
                 exprTree.getLeftNode().setValue(result);
                 Listener.tempRegNum += 1;
             }
+            else if(operand1.matches("\\w+\\(.*\\)$")) {
+                
+            }
             if(operand2.matches("\\d+(?:\\.\\d+)?$")) {
                 result = "$T" + Integer.toString(Listener.tempRegNum);
                 listIR.appendIRNode("STOREI", exprTree.getRightNode().getValue(), "", result);
