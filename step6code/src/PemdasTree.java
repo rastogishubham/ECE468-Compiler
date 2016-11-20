@@ -83,12 +83,13 @@ public class PemdasTree
                 operand2 = exprTree.getRightNode().getValue();
             }
             else {
+                Helper Help = new Helper();
                 if(operand1.matches("\\$T\\d+$") || operand1.matches("\\d+(?:\\.\\d+)?$")) {
                     operand1 = exprTree.getLeftNode().getValue();
                 }
                 else {
                     String op1 = exprTree.getLeftNode().getValue();
-                    operand1 = getTempRegName(op1);
+                    operand1 = Help.getTempRegName(op1);
                     if(operand1.contains("null"))
                         operand1 = op1;
                 }
@@ -97,7 +98,7 @@ public class PemdasTree
                 }
                 else {
                     String op2 = exprTree.getRightNode().getValue();
-                    operand2 = getTempRegName(op2);
+                    operand2 = Help.getTempRegName(op2);
                     if(operand2.contains("null"))
                         operand2 = op2;
                 }
@@ -142,11 +143,12 @@ public class PemdasTree
                 operand2 = exprTree.getRightNode().getValue();
             }
             else {
+                Helper Help = new Helper();
                 if(operand1.matches("\\$T\\d+$") || operand1.matches("\\d+(?:\\.\\d+)?$"))
                     operand1 = exprTree.getLeftNode().getValue();
                 else {
                     String op1 = exprTree.getLeftNode().getValue();
-                    operand1 = getTempRegName(op1);
+                    operand1 = Help.getTempRegName(op1);
                     if(operand1.contains("null"))
                         operand1 = op1;
                 }
@@ -155,7 +157,7 @@ public class PemdasTree
                 }
                 else {
                     String op2 = exprTree.getRightNode().getValue();
-                    operand2 = getTempRegName(op2);
+                    operand2 = Help.getTempRegName(op2);
                     if(operand2.contains("null"))
                         operand2 = op2;
                 }
@@ -165,25 +167,5 @@ public class PemdasTree
             Listener.tempRegNum += 1;
         }
         return listIR;
-    }
-
-    public String getTempRegName(String operand) {
-        SymbolTable tempTable = Listener.SymbolList.getSymbolTable();
-        String scope = tempTable.getScope();
-        Hashtable <String, Symbol> varTable = tempTable.getVariableTable();
-        int pos = Listener.SymbolList.getListLen();
-        while(pos >= 0) {
-            if(!scope.equals("GLOBAL") && !scope.contains("BLOCK"))
-                pos = 1;
-            if(varTable.containsKey(operand)) {
-                Symbol tempSymbol = varTable.get(operand);
-                return tempSymbol.getTempName();
-            }
-            pos--;
-            tempTable = Listener.SymbolList.getSymbolTable(pos);
-            scope = tempTable.getScope();
-            varTable = tempTable.getVariableTable();
-        }
-        return null;
     }
 }

@@ -25,8 +25,16 @@ class IRList {
 			tempNode.printNode();
 		}
 	}
-
 	public int getSize() { 
 		return ListIR.size();
+	}
+	public void clear() {
+		this.ListIR.clear();
+	}
+	public List <IRNode> getList() {
+		return this.ListIR;
+	}
+	public void addAll(List <IRNode> tempList) {
+		this.ListIR.addAll(tempList);
 	}
 }
