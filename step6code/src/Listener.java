@@ -53,9 +53,6 @@ public class Listener extends MicroBaseListener {
 		}
 		for(int i = 0; i < ListIR.size(); i++) {
 			IRList tempList = ListIR.get(i);
-			/*System.out.println("\n");
-			tempList.printList();
-			System.out.println("\n");*/
 			tiny.printTinyCode(tempList);
 		}
 		System.out.println("end");
