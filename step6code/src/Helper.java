@@ -14,7 +14,7 @@ public class Helper {
 		IRList finalList = new IRList();
 		for(int i = 0; i < argList.length; i++) {
 			if(!argList[i].matches("(\\d+(?:\\.\\d+)?$)|([A-Za-z]+$)")) {
-				retList = parseExp(argList[i], lhs);
+				retList = parseExp(argList[i], lhs, 0);
 				finalList.addAll(retList.getList());
 				tempList.appendIRNode("PUSH", "$T" + Integer.toString(Listener.tempRegNum - 1), "", "");
 			}
@@ -45,30 +45,53 @@ public class Helper {
 		return finalList;
 	}
 
-	public IRList parseExp(String expression, String result) {
+	public IRList parseExp(String expression, String result, int isRetType) {
 		ExpressionStack expstack = new ExpressionStack();
 		String expr = expstack.createExprStack(expression);
 		PemdasTree pdt = new PemdasTree();
 		Node node = pdt.createBinaryTree(expr);
 		IRList tempList = new IRList();
-
-		if(Listener.typeTable.containsKey(result)) {
-
-			if(Listener.typeTable.get(result).equals("INT")) {
-				tempList = pdt.inOrderTraverse(tempList, node);
+		String resultType = Listener.typeTable.get(result);
+		resultType = (resultType == null) ? "null" : resultType;
+		if(result.equals("INT") || resultType.equals("INT")) {
+			if(node.getLeftNode() == null && node.getRightNode() == null) {
+				if(expression.matches("\\d+(?:\\.\\d+)?$")) {
+					tempList.appendIRNode("STOREI", expression, "", "$T" + Integer.toString(Listener.tempRegNum));
+				}
+				else {
+					String tempReg = getTempRegName(expression);
+					if(tempReg.contains("null"))
+						tempReg = expression;
+					tempList.appendIRNode("STOREI", tempReg, "", "$T" + Integer.toString(Listener.tempRegNum));
+				}
+			if(isRetType == 1)
+					tempList.appendIRNode("STOREI", "$T" + Integer.toString(Listener.tempRegNum), "", "$R");
+			Listener.tempRegNum += 1;
 			}
 			else {
-				tempList = pdt.inOrderTraverseFloat(tempList, node);
+				tempList = pdt.inOrderTraverse(tempList, node);
 			}
 		}
 		else {
-			if(Listener.typeTable.equals("INT")) {
-				tempList = pdt.inOrderTraverse(tempList, node);
+			if(node.getLeftNode() == null && node.getRightNode() == null) {
+				if(expression.matches("\\d+(?:\\.\\d+)?$")) {
+					tempList.appendIRNode("STOREF", expression, "", "$T" + Integer.toString(Listener.tempRegNum));
+				}
+				else {
+					String tempReg = getTempRegName(expression);
+					if(tempReg.contains("null"))
+						tempReg = expression;
+					tempList.appendIRNode("STOREF", tempReg, "", "$T" + Integer.toString(Listener.tempRegNum));
+				}
+				if(isRetType == 1)
+					tempList.appendIRNode("STOREI", "$T" + Integer.toString(Listener.tempRegNum), "", "$R");
+				Listener.tempRegNum += 1;
 			}
 			else {
 				tempList = pdt.inOrderTraverseFloat(tempList, node);
 			}
 		}
+
 		return tempList;
 	}
 
@@ -85,11 +108,13 @@ public class Helper {
                 return tempSymbol.getTempName();
             }
             pos--;
-            tempTable = Listener.SymbolList.getSymbolTable(pos);
-            scope = tempTable.getScope();
-            varTable = tempTable.getVariableTable();
+            if(pos >= 0) {
+            	tempTable = Listener.SymbolList.getSymbolTable(pos);
+            	scope = tempTable.getScope();
+            	varTable = tempTable.getVariableTable();
+        	}
         }
-        return null;
+        return "null";
     }
 
 }

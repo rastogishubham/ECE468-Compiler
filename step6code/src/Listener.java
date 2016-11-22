@@ -147,7 +147,7 @@ public class Listener extends MicroBaseListener {
 			}
 			else {
 				Helper Help = new Helper();
-				tempList = Help.parseExp(val, operand);
+				tempList = Help.parseExp(val, operand, 0);
 			}
 		}
 		else if(typeTable.containsKey(operand) && typeTable.get(operand).equals("FLOAT")) {
@@ -156,7 +156,7 @@ public class Listener extends MicroBaseListener {
 			}
 			else {
 				Helper Help = new Helper();
-				tempList = Help.parseExp(val, operand);
+				tempList = Help.parseExp(val, operand, 0);
 			}
 		}
 		else {
@@ -220,7 +220,7 @@ public class Listener extends MicroBaseListener {
 				}
 				else {
 					Helper Help = new Helper();
-					retList = Help.parseExp(expression, operand);
+					retList = Help.parseExp(expression, operand, 0);
 				}
 				String operand_old = operand;
 				Helper Help = new Helper();
@@ -236,7 +236,7 @@ public class Listener extends MicroBaseListener {
 				}
 				else {
 					Helper Help = new Helper();
-					retList = Help.parseExp(expression, operand);
+					retList = Help.parseExp(expression, operand, 0);
 				}
 				String operand_old = operand;
 				Helper Help = new Helper();
@@ -291,6 +291,7 @@ public class Listener extends MicroBaseListener {
 		if(typeTable.containsKey(operand) && typeTable.get(operand).equals("INT")) {
 			String oldVal = val;
 			Helper Help = new Helper();
+			System.out.println("val: " + val);
 			val = Help.getTempRegName(val);
 			if(val.contains("null"))
 				val = oldVal;
@@ -335,18 +336,11 @@ public class Listener extends MicroBaseListener {
 		PemdasTree pdt = new PemdasTree();
 		Node node = pdt.createBinaryTree(expr);
 		IRList tempList = new IRList();
+		Helper Help = new Helper();
 		if(typeTable.get(result).equals("INT") && !expression.matches("\\w+\\(.*\\)$")) {
 			if(node.getLeftNode() == null && node.getRightNode() == null) {
-				if(expression.matches("\\d+(?:\\.\\d+)?$"))
-					tempList.appendIRNode("STOREI", expression, "", "$T" + Integer.toString(Listener.tempRegNum));
-				else {
-					Helper Help = new Helper();
-					String tempReg = Help.getTempRegName(expression);
-					if(tempReg.contains("null"))
-						tempReg = expression;
-					tempList.appendIRNode("STOREI", tempReg, "", "$T" + Integer.toString(Listener.tempRegNum));
-				}
-				Helper Help = new Helper();
+				tempList = Help.parseExp(expression, result, 0);
+				Listener.tempRegNum -= 1;
 				String resultReg = Help.getTempRegName(result);
 				if(resultReg.contains("null"))
 					resultReg = result;
@@ -354,9 +348,8 @@ public class Listener extends MicroBaseListener {
 				Listener.tempRegNum += 1;
 			}
 			else {
-				tempList = pdt.inOrderTraverse(tempList, node);
+				tempList = Help.parseExp(expression, result, 0);
 				Listener.tempRegNum -= 1;
-				Helper Help = new Helper();
 				String resultReg = Help.getTempRegName(result);
 				if(resultReg.contains("null"))
 					resultReg = result;
@@ -366,16 +359,8 @@ public class Listener extends MicroBaseListener {
 		}
 		else if(typeTable.get(result).equals("FLOAT") && !expression.matches("\\w+\\(.*\\)$")) {
 			if(node.getLeftNode() == null && node.getRightNode() == null) {
-				if(expression.matches("\\d+(?:\\.\\d+)?$"))
-					tempList.appendIRNode("STOREF", expression, "", "$T" + Integer.toString(Listener.tempRegNum));
-				else {
-					Helper Help = new Helper();
-					String tempReg = Help.getTempRegName(expression);
-					if(tempReg.contains("null"))
-						tempReg = expression;
-					tempList.appendIRNode("STOREF", tempReg, "", "$T" + Integer.toString(Listener.tempRegNum));
-				}
-				Helper Help = new Helper();
+				tempList = Help.parseExp(expression, result, 0);
+				Listener.tempRegNum -= 1;
 				String resultReg = Help.getTempRegName(result);
 				if(resultReg.contains("null"))
 					resultReg = result;
@@ -383,9 +368,8 @@ public class Listener extends MicroBaseListener {
 				Listener.tempRegNum += 1;
 			}
 			else {
-				tempList = pdt.inOrderTraverseFloat(tempList, node);
+				tempList = Help.parseExp(expression, result, 0);
 				Listener.tempRegNum -= 1;
-				Helper Help = new Helper();
 				String resultReg = Help.getTempRegName(result);
 				if(resultReg.contains("null"))
 					resultReg = result;
@@ -393,10 +377,9 @@ public class Listener extends MicroBaseListener {
 				Listener.tempRegNum += 1;
 			}
 		}
-		else {
-			Helper Help = new Helper();
+		else
 			tempList = Help.generateFuncCall(ctx.getChild(2).getText(), result);
-		}
+
 		tempList.printList(); 
 		ListIR.add(tempList);
 	}
@@ -496,45 +479,16 @@ public class Listener extends MicroBaseListener {
 		Node node = pdt.createBinaryTree(expr);
 		Helper Help = new Helper();
 		if(retType == 1) {
-			if(node.getLeftNode() == null && node.getRightNode() == null) {
-				if(expression.matches("\\d+(?:\\.\\d+)?$")) {
-					tempList.appendIRNode("STOREI", expression, "", "$T" + Integer.toString(Listener.tempRegNum));
-					tempList.appendIRNode("STOREI", "$T" + Integer.toString(Listener.tempRegNum), "", "$R");
-					Listener.tempRegNum += 1;
-				}
-				else {
-					String tempReg = Help.getTempRegName(expression);
-					if(tempReg.contains("null"))
-						tempReg = expression;
-					tempList.appendIRNode("STOREI", tempReg, "", "$T" + Integer.toString(Listener.tempRegNum));
-					tempList.appendIRNode("STOREI", "$T" + Integer.toString(Listener.tempRegNum), "", "$R");
-					Listener.tempRegNum += 1;
-				}
-			}
-			else {
-				tempList = pdt.inOrderTraverse(tempList, node);
+			tempList = Help.parseExp(expression, "INT", 1);
+			if(!(node.getLeftNode() == null && node.getRightNode() == null)) {
 				Listener.tempRegNum -= 1;
 				tempList.appendIRNode("STOREI", "$T" + Integer.toString(Listener.tempRegNum), "", "$R");
 				Listener.tempRegNum += 1;
 			}
 		}
 		else if(retType == 2) {
-			if(node.getLeftNode() == null && node.getRightNode() == null) {
-				if(expression.matches("\\d+(?:\\.\\d+)?$")) {
-					tempList.appendIRNode("STOREF", expression, "", "$T" + Integer.toString(Listener.tempRegNum));
-					tempList.appendIRNode("STOREF", "$T" + Integer.toString(Listener.tempRegNum), "", "$R");
-					Listener.tempRegNum += 1;
-				}
-				else {
-					String tempReg = Help.getTempRegName(expression);
-					if(tempReg.contains("null"))
-						tempReg = expression;
-					tempList.appendIRNode("STOREF", tempReg, "", "$T" + Integer.toString(Listener.tempRegNum));
-					tempList.appendIRNode("STOREF", "$T" + Integer.toString(Listener.tempRegNum), "", "$R");
-					Listener.tempRegNum += 1;
-				}
-			}
-			else {
+			tempList = Help.parseExp(expression, "FLOAT", 1);
+			if(!(node.getLeftNode() == null && node.getRightNode() == null)) {
 				tempList = pdt.inOrderTraverseFloat(tempList, node);
 				Listener.tempRegNum -= 1;
 				tempList.appendIRNode("STOREF", "$T" + Integer.toString(Listener.tempRegNum), "", "$R");
