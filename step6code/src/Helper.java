@@ -53,45 +53,30 @@ public class Helper {
 		IRList tempList = new IRList();
 		String resultType = Listener.typeTable.get(result);
 		resultType = (resultType == null) ? "null" : resultType;
-		if(result.equals("INT") || resultType.equals("INT")) {
-			if(node.getLeftNode() == null && node.getRightNode() == null) {
-				if(expression.matches("\\d+(?:\\.\\d+)?$")) {
-					tempList.appendIRNode("STOREI", expression, "", "$T" + Integer.toString(Listener.tempRegNum));
-				}
-				else {
-					String tempReg = getTempRegName(expression);
-					if(tempReg.contains("null"))
-						tempReg = expression;
-					tempList.appendIRNode("STOREI", tempReg, "", "$T" + Integer.toString(Listener.tempRegNum));
-				}
-			if(isRetType == 1)
-					tempList.appendIRNode("STOREI", "$T" + Integer.toString(Listener.tempRegNum), "", "$R");
-			Listener.tempRegNum += 1;
+		String storeOpcode = "STORE";
+		String dataType = "";
+		if(result.equals("INT") || resultType.equals("INT")) 
+			dataType = "I";
+		else
+			dataType = "F";
+		storeOpcode += dataType;
+		if(node.getLeftNode() == null && node.getRightNode() == null) {
+			if(expression.matches("\\d+(?:\\.\\d+)?$")) {
+				tempList.appendIRNode(storeOpcode, expression, "", "$T" + Integer.toString(Listener.tempRegNum));
 			}
 			else {
-				tempList = pdt.inOrderTraverse(tempList, node, "I");
+				String tempReg = getTempRegName(expression);
+				if(tempReg.contains("null"))
+					tempReg = expression;
+				tempList.appendIRNode(storeOpcode, tempReg, "", "$T" + Integer.toString(Listener.tempRegNum));
 			}
+		if(isRetType == 1)
+				tempList.appendIRNode(storeOpcode, "$T" + Integer.toString(Listener.tempRegNum), "", "$R");
+		Listener.tempRegNum += 1;
 		}
 		else {
-			if(node.getLeftNode() == null && node.getRightNode() == null) {
-				if(expression.matches("\\d+(?:\\.\\d+)?$")) {
-					tempList.appendIRNode("STOREF", expression, "", "$T" + Integer.toString(Listener.tempRegNum));
-				}
-				else {
-					String tempReg = getTempRegName(expression);
-					if(tempReg.contains("null"))
-						tempReg = expression;
-					tempList.appendIRNode("STOREF", tempReg, "", "$T" + Integer.toString(Listener.tempRegNum));
-				}
-				if(isRetType == 1)
-					tempList.appendIRNode("STOREI", "$T" + Integer.toString(Listener.tempRegNum), "", "$R");
-				Listener.tempRegNum += 1;
-			}
-			else {
-				tempList = pdt.inOrderTraverse(tempList, node, "F");
-			}
+			tempList = pdt.inOrderTraverse(tempList, node, dataType);
 		}
-
 		return tempList;
 	}
 
