@@ -69,7 +69,7 @@ public class Helper {
 			Listener.tempRegNum += 1;
 			}
 			else {
-				tempList = pdt.inOrderTraverse(tempList, node);
+				tempList = pdt.inOrderTraverse(tempList, node, "I");
 			}
 		}
 		else {
@@ -88,7 +88,7 @@ public class Helper {
 				Listener.tempRegNum += 1;
 			}
 			else {
-				tempList = pdt.inOrderTraverseFloat(tempList, node);
+				tempList = pdt.inOrderTraverse(tempList, node, "F");
 			}
 		}
 
