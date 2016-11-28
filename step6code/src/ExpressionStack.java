@@ -9,12 +9,48 @@ public class ExpressionStack {
     private String postFixExpr = "";
     private List <String> tokenList = new ArrayList <String> ();
 
-    public void createTokenList(String expression) {
-        StringTokenizer tok = new StringTokenizer(expression, "/+-*()", true);
-        while(tok.hasMoreTokens()) {
-            tokenList.add(tok.nextToken());
+    private void createTokenList(String expression) {
+        String replaceExp = expression;
+        int subPos = 0;
+        for(int i = 0; i < expression.length(); i++) {
+            String curr = Character.toString(expression.charAt(i));
+            String prev = "";
+            if(i == expression.length())
+                break;
+            if(i > 0)
+                prev = Character.toString(expression.charAt(i - 1));
+            
+            if(prev.matches("[A-Za-z0-9]") && curr.equals("("))
+                i = findCloseParenPos(replaceExp, i);
+            else if(curr.matches("[\\*\\/\\+\\-\\(\\)]")) {
+                addtoList(expression, subPos, i);
+                subPos = i;
+                addtoList(expression, subPos, i+1);
+                subPos++;
+            }
         }
+        if(subPos < expression.length())
+            tokenList.add(expression.substring(subPos, expression.length()));
+    }
 
+    private int findCloseParenPos(String expression, int openPos) {
+        int numParen = 0;
+        for(int i = openPos + 1; i < expression.length(); i++) {
+            String curr = Character.toString(expression.charAt(i));
+            if(curr.equals("("))
+                numParen++;
+            if(curr.equals(")")) {
+                if(numParen == 0)
+                    return i;
+                else
+                    numParen--;
+            }
+        }
+        return 0;
+    }
+    private void addtoList(String expression, int begin, int end) {
+        if(!expression.substring(begin, end).equals(""))
+            tokenList.add(expression.substring(begin, end));
     }
 
     public String createExprStack(String expression) {

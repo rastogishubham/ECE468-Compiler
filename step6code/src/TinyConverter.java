@@ -11,7 +11,6 @@ public class TinyConverter  {
     private int funcCount = -1;
     int temp = 0; 
     private Hashtable <String, String> registerTypeTable = new Hashtable<String, String>();
-    private Hashtable<String, String> typeTable = new Hashtable<String, String>();
     public void printTinyCode(IRList tempList) {
         for(int j = 0; j < tempList.getSize(); j++) {
             IRNode tempNode = tempList.getIRNode(j);
@@ -307,8 +306,8 @@ public class TinyConverter  {
                         System.out.println("cmpr " + operand1 + " " + operand2);
                     }
                 }
-                else if(typeTable.containsKey(operand1)) {
-                    if(typeTable.get(operand1).equals("INT")) {
+                else if(Listener.typeTable.containsKey(operand1)) {
+                    if(Listener.typeTable.get(operand1).equals("INT")) {
                         System.out.println("cmpi " + operand1 + " " + operand2);
                     }
                     else {
@@ -329,8 +328,9 @@ public class TinyConverter  {
                         System.out.println("cmpr " + operand1 + " " + operand2);
                     }
                 }
-                else if(typeTable.containsKey(operand1)) {
-                    if(typeTable.get(operand1).equals("INT")) {
+                else if(Listener.typeTable.containsKey(operand1)) {
+                    System.out.println("back to the lab again");
+                    if(Listener.typeTable.get(operand1).equals("INT")) {
                         System.out.println("cmpi " + operand1 + " " + operand2);
                     }
                     else {
@@ -351,8 +351,8 @@ public class TinyConverter  {
                         System.out.println("cmpr " + operand1 + " " + operand2);
                     }
                 }
-                else if(typeTable.containsKey(operand1)) {
-                    if(typeTable.get(operand1).equals("INT")) {
+                else if(Listener.typeTable.containsKey(operand1)) {
+                    if(Listener.typeTable.get(operand1).equals("INT")) {
                         System.out.println("cmpi " + operand1 + " " + operand2);
                     }
                     else {
@@ -373,8 +373,8 @@ public class TinyConverter  {
                         System.out.println("cmpr " + operand1 + " " + operand2);
                     }
                 }
-                else if(typeTable.containsKey(operand1)) {
-                    if(typeTable.get(operand1).equals("INT")) {
+                else if(Listener.typeTable.containsKey(operand1)) {
+                    if(Listener.typeTable.get(operand1).equals("INT")) {
                         System.out.println("cmpi " + operand1 + " " + operand2);
                     }
                     else {
@@ -395,8 +395,8 @@ public class TinyConverter  {
                         System.out.println("cmpr " + operand1 + " " + operand2);
                     }
                 }
-                else if(typeTable.containsKey(operand1)) {
-                    if(typeTable.get(operand1).equals("INT")) {
+                else if(Listener.typeTable.containsKey(operand1)) {
+                    if(Listener.typeTable.get(operand1).equals("INT")) {
                         System.out.println("cmpi " + operand1 + " " + operand2);
                     }
                     else {
@@ -417,8 +417,8 @@ public class TinyConverter  {
                         System.out.println("cmpr " + operand1 + " " + operand2);
                     }
                 }
-                else if(typeTable.containsKey(operand1)) {
-                    if(typeTable.get(operand1).equals("INT")) {
+                else if(Listener.typeTable.containsKey(operand1)) {
+                    if(Listener.typeTable.get(operand1).equals("INT")) {
                         System.out.println("cmpi " + operand1 + " " + operand2);
                     }
                     else {

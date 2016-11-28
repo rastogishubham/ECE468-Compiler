@@ -54,15 +54,23 @@ public class PemdasTree
             String operand2 = exprTree.getRightNode().getValue(); 
             String result = "$T" + Integer.toString(Listener.tempRegNum); 
 
+          //  System.out.println("operand1: " + operand1);
+         //   System.out.println("operand2: " + operand2);
             if(operand1.matches("\\d+(?:\\.\\d+)?$")) {
                 listIR.appendIRNode(storeOpcode, exprTree.getLeftNode().getValue(), "", result);
                 exprTree.getLeftNode().setValue(result);
                 Listener.tempRegNum += 1;
             }
+            else if(operand1.matches("\\w+\\(.*\\)$")) {       
+                System.out.println("Function call");        
+            }
             if(operand2.matches("\\d+(?:\\.\\d+)?$")) {
                 listIR.appendIRNode(storeOpcode, exprTree.getRightNode().getValue(), "", result);
                 exprTree.getRightNode().setValue(result);
                 Listener.tempRegNum += 1;
+            }
+            else if(operand2.matches("\\w+\\(.*\\)$")) {        
+                System.out.println("Function call");        
             }
             result = "$T" + Integer.toString(Listener.tempRegNum);
             SymbolTable tempTable = Listener.SymbolList.getSymbolTable();

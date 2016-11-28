@@ -368,9 +368,8 @@ public class Listener extends MicroBaseListener {
 	public void enterVar_decl(MicroParser.Var_declContext ctx) {
 		String varlist = ctx.getChild(1).getText();
 		String [] var_list = varlist.split(",");
-		 for(int i = 0; i < var_list.length; i ++) {
+		 for(int i = 0; i < var_list.length; i ++)
 		 	typeTable.put(var_list[i], ctx.getChild(0).getText());
-		 }
 	}
 	@Override
 	public void enterRead_stmt(MicroParser.Read_stmtContext ctx) {
