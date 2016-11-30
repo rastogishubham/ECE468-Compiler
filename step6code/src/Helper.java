@@ -8,21 +8,27 @@ public class Helper {
 		IRList tempList = new IRList();
 		String func_name = funcCall.split("\\(")[0];
 		List <String> argList = createArgList(funcCall);
-
 		tempList.appendIRNode("PUSH", "", "", "");
+
 		IRList retList = new IRList();
 		IRList finalList = new IRList();
 		String lhsType = Listener.typeTable.get(lhs);
 		lhsType = (lhsType == null) ? "null" : lhsType;
+		String newLhs = "";
+		if(lhsType.equals("null"))
+			newLhs = lhs;
+		else
+			newLhs = lhsType;
 		for(int i = 0; i < argList.size(); i++) {
 			String currArg = argList.get(i);
+			
 			if(!currArg.matches("(\\d+(?:\\.\\d+)?$)|([A-Za-z]+$)") && !currArg.matches("\\w+\\(.*\\)$")) {
 				retList = parseExp(currArg, lhs, 0);
 				finalList.addAll(retList.getList());
 				tempList.appendIRNode("PUSH", "$T" + Integer.toString(Listener.tempRegNum - 1), "", "");
 			}
 			else if(currArg.matches("\\w+\\(.*\\)$")) {
-				retList = generateFuncCall(currArg, Listener.typeTable.get(lhs));
+				retList = generateFuncCall(currArg, newLhs);
 				finalList.addAll(retList.getList());
 				tempList.appendIRNode("PUSH", "$T" + Integer.toString(Listener.tempRegNum - 1), "", "");
 			}
@@ -34,6 +40,7 @@ public class Helper {
 				tempList.appendIRNode("PUSH", currArg, "", "");
 			}
 		}
+		
 		tempList.appendIRNode("JSR", func_name, "", "");
 		for(int i = 0; i < argList.size(); i++) {
 			tempList.appendIRNode("POP", "", "", "");
@@ -66,6 +73,7 @@ public class Helper {
 		else
 			dataType = "F";
 		storeOpcode += dataType;
+		
 		if(node.getLeftNode() == null && node.getRightNode() == null) {
 			if(expression.matches("\\d+(?:\\.\\d+)?$")) {
 				tempList.appendIRNode(storeOpcode, expression, "", "$T" + Integer.toString(Listener.tempRegNum));
@@ -76,9 +84,9 @@ public class Helper {
 					tempReg = expression;
 				tempList.appendIRNode(storeOpcode, tempReg, "", "$T" + Integer.toString(Listener.tempRegNum));
 			}
-		if(isRetType == 1)
+			if(isRetType == 1)
 				tempList.appendIRNode(storeOpcode, "$T" + Integer.toString(Listener.tempRegNum), "", "$R");
-		Listener.tempRegNum += 1;
+			Listener.tempRegNum += 1;
 		}
 		else {
 			tempList = pdt.inOrderTraverse(tempList, node, dataType);

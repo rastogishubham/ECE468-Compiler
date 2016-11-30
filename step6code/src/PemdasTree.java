@@ -74,7 +74,7 @@ public class PemdasTree
                 exprTree.getRightNode().setValue(result);
                 Listener.tempRegNum += 1;
             }
-            else if(operand2.matches("\\w+\\(.*\\)$")) {    
+            else if(operand2.matches("\\w+\\(.*\\)$")) {
                 IRList tempList = help.generateFuncCall(operand2, expType);  
                 listIR.addAll(tempList.getList());
                 exprTree.getRightNode().setValue("$T" + Integer.toString(Listener.tempRegNum - 1));       

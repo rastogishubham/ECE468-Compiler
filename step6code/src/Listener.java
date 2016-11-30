@@ -317,6 +317,7 @@ public class Listener extends MicroBaseListener {
 				Listener.tempRegNum += 1;
 			}
 			else {
+		//		System.out.println("over here");
 				tempList = Help.parseExp(expression, result, 0);
 				Listener.tempRegNum -= 1;
 				String resultReg = Help.getTempRegName(result);
