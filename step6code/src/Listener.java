@@ -431,7 +431,10 @@ public class Listener extends MicroBaseListener {
 			storeOpcode += "F";
 			resultType = "FLOAT";
 		}
-		tempList = Help.parseExp(expression, resultType, 1);
+		if(!expression.matches("\\w+\\(.*\\)$")) 
+			tempList = Help.parseExp(expression, resultType, 1);
+		else
+			tempList = Help.generateFuncCall(expression, resultType);
 		if(!(node.getLeftNode() == null && node.getRightNode() == null)) {
 			Listener.tempRegNum -= 1;
 			tempList.appendIRNode(storeOpcode, "$T" + Integer.toString(Listener.tempRegNum), "", "$R");
