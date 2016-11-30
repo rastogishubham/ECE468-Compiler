@@ -329,7 +329,7 @@ public class TinyConverter  {
                     }
                 }
                 else if(Listener.typeTable.containsKey(operand1)) {
-                    System.out.println("back to the lab again");
+                    //System.out.println("back to the lab again");
                     if(Listener.typeTable.get(operand1).equals("INT")) {
                         System.out.println("cmpi " + operand1 + " " + operand2);
                     }

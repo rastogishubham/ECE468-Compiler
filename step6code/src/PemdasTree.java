@@ -39,8 +39,13 @@ public class PemdasTree
     }
 
     public IRList inOrderTraverse(IRList listIR, Node exprTree , String iType) {
-
         String storeOpcode = "STORE" + iType;
+        String expType = "";
+        Helper help = new Helper();
+        if(iType.equals("F"))
+            expType = "FLOAT";
+        else
+            expType = "INT";
         if(exprTree.getLeftNode() != null) {
             inOrderTraverse(listIR, exprTree.getLeftNode(), iType);
         }
@@ -54,23 +59,25 @@ public class PemdasTree
             String operand2 = exprTree.getRightNode().getValue(); 
             String result = "$T" + Integer.toString(Listener.tempRegNum); 
 
-          //  System.out.println("operand1: " + operand1);
-         //   System.out.println("operand2: " + operand2);
             if(operand1.matches("\\d+(?:\\.\\d+)?$")) {
                 listIR.appendIRNode(storeOpcode, exprTree.getLeftNode().getValue(), "", result);
                 exprTree.getLeftNode().setValue(result);
                 Listener.tempRegNum += 1;
             }
             else if(operand1.matches("\\w+\\(.*\\)$")) {       
-                System.out.println("Function call");        
+                IRList tempList = help.generateFuncCall(operand1, expType);
+                listIR.addAll(tempList.getList());
+                exprTree.getLeftNode().setValue("$T" + Integer.toString(Listener.tempRegNum - 1));
             }
             if(operand2.matches("\\d+(?:\\.\\d+)?$")) {
                 listIR.appendIRNode(storeOpcode, exprTree.getRightNode().getValue(), "", result);
                 exprTree.getRightNode().setValue(result);
                 Listener.tempRegNum += 1;
             }
-            else if(operand2.matches("\\w+\\(.*\\)$")) {        
-                System.out.println("Function call");        
+            else if(operand2.matches("\\w+\\(.*\\)$")) {    
+                IRList tempList = help.generateFuncCall(operand2, expType);  
+                listIR.addAll(tempList.getList());
+                exprTree.getRightNode().setValue("$T" + Integer.toString(Listener.tempRegNum - 1));       
             }
             result = "$T" + Integer.toString(Listener.tempRegNum);
             SymbolTable tempTable = Listener.SymbolList.getSymbolTable();

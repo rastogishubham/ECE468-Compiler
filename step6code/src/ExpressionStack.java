@@ -25,7 +25,7 @@ public class ExpressionStack {
             else if(curr.matches("[\\*\\/\\+\\-\\(\\)]")) {
                 addtoList(expression, subPos, i);
                 subPos = i;
-                addtoList(expression, subPos, i+1);
+                addtoList(expression, subPos, i + 1);
                 subPos++;
             }
         }

@@ -6,40 +6,50 @@ public class Helper {
 	
 	public IRList generateFuncCall(String funcCall, String lhs) {
 		IRList tempList = new IRList();
-		String args = funcCall.split("\\(")[1].split("\\)")[0];
 		String func_name = funcCall.split("\\(")[0];
-		String [] argList = args.split(",");
+		System.out.println("funcCall: " + funcCall);
+		List <String> argList = createArgList(funcCall);
+
+		for(int i = 0; i < argList.size(); i++)
+			System.out.println("arglist val: " + argList.get(i));
+
 		tempList.appendIRNode("PUSH", "", "", "");
 		IRList retList = new IRList();
 		IRList finalList = new IRList();
-		for(int i = 0; i < argList.length; i++) {
-			if(!argList[i].matches("(\\d+(?:\\.\\d+)?$)|([A-Za-z]+$)")) {
-				retList = parseExp(argList[i], lhs, 0);
+		String lhsType = Listener.typeTable.get(lhs);
+		lhsType = (lhsType == null) ? "null" : lhsType;
+		for(int i = 0; i < argList.size(); i++) {
+			String currArg = argList.get(i);
+			if(!currArg.matches("(\\d+(?:\\.\\d+)?$)|([A-Za-z]+$)") && !currArg.matches("\\w+\\(.*\\)$")) {
+				retList = parseExp(currArg, lhs, 0);
+				finalList.addAll(retList.getList());
+				tempList.appendIRNode("PUSH", "$T" + Integer.toString(Listener.tempRegNum - 1), "", "");
+			}
+			else if(currArg.matches("\\w+\\(.*\\)$")) {
+				retList = generateFuncCall(currArg, lhs);
 				finalList.addAll(retList.getList());
 				tempList.appendIRNode("PUSH", "$T" + Integer.toString(Listener.tempRegNum - 1), "", "");
 			}
 			else {
-				String oldArg = argList[i];
-				argList[i] = getTempRegName(argList[i]);
-				if(argList[i].contains("null"))
-					argList[i] = oldArg;
-				tempList.appendIRNode("PUSH", argList[i], "", "");
+				String oldArg = currArg;
+				currArg = getTempRegName(currArg);
+				if(currArg.contains("null"))
+					currArg = oldArg;
+				tempList.appendIRNode("PUSH", currArg, "", "");
 			}
 		}
 		tempList.appendIRNode("JSR", func_name, "", "");
-		for(int i = 0; i < argList.length; i++) {
+		for(int i = 0; i < argList.size(); i++) {
 			tempList.appendIRNode("POP", "", "", "");
 		}
 		tempList.appendIRNode("POP", "$T" + Integer.toString(Listener.tempRegNum), "", "");
 		String resultReg = getTempRegName(lhs);
 		if(lhs.contains("null"))
 			resultReg = lhs;
-		if(Listener.typeTable.get(lhs).equals("FLOAT")) {
+		if(lhsType.equals("FLOAT"))
 			tempList.appendIRNode("STOREF", "$T" + Integer.toString(Listener.tempRegNum), "", resultReg);
-		}
-		else {
+		else if(lhsType.equals("INT"))
 			tempList.appendIRNode("STOREI", "$T" + Integer.toString(Listener.tempRegNum), "", resultReg);
-		}
 		finalList.addAll(tempList.getList());
 		Listener.tempRegNum += 1; 
 		return finalList;
@@ -61,6 +71,7 @@ public class Helper {
 			dataType = "F";
 		storeOpcode += dataType;
 		if(node.getLeftNode() == null && node.getRightNode() == null) {
+			System.out.println("Expression parseExp: " + expression);
 			if(expression.matches("\\d+(?:\\.\\d+)?$")) {
 				tempList.appendIRNode(storeOpcode, expression, "", "$T" + Integer.toString(Listener.tempRegNum));
 			}
@@ -101,5 +112,62 @@ public class Helper {
         }
         return "null";
     }
-
+    private List<String> createArgList(String args) {
+        String replaceExp = args;
+        int subPos = 0;
+        int numParen = 0;
+        int closeParenPos = 0;
+        int openParenPos = 0;
+        List <String> argList = new ArrayList <String> ();
+        for(int i = 0; i < args.length(); i++) {
+            String curr = Character.toString(replaceExp.charAt(i));
+            String prev = "";
+            if(i == args.length())
+                break;
+            if(i > 0)
+                prev = Character.toString(replaceExp.charAt(i - 1));
+            
+            if(prev.matches("[A-Za-z0-9]") && curr.equals("(")) {
+                closeParenPos = findCloseParenPos(replaceExp, i);
+                openParenPos = i;
+                break;
+            }
+        }
+        subPos = openParenPos + 1;
+        for(int i = openParenPos + 1; i < closeParenPos; i++) {
+        	String curr = Character.toString(replaceExp.charAt(i));
+	        if(curr.equals("("))
+	            numParen++;
+	        else if(curr.equals(")") && numParen > 0)
+	        	numParen--;
+	        if(curr.equals(",") && numParen == 0) {
+                argList = addtoList(replaceExp, subPos, i, argList);
+                subPos = i + 1;
+            }
+        }
+        if(subPos < replaceExp.length())
+            argList.add(replaceExp.substring(subPos, replaceExp.length() - 1));
+       	return argList;
+    }
+    private List<String> addtoList(String expression, int begin, int end, List<String> argList) {
+        if(!expression.substring(begin, end).equals(""))
+            argList.add(expression.substring(begin, end));
+        return argList;
+    }
+    
+    private int findCloseParenPos(String expression, int openPos) {
+        int numParen = 0;
+        for(int i = openPos + 1; i < expression.length(); i++) {
+            String curr = Character.toString(expression.charAt(i));
+            if(curr.equals("("))
+                numParen++;
+            if(curr.equals(")")) {
+                if(numParen == 0)
+                    return i;
+                else
+                    numParen--;
+            }
+        }
+        return 0;
+    }
 }
