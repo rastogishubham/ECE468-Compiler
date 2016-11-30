@@ -7,11 +7,7 @@ public class Helper {
 	public IRList generateFuncCall(String funcCall, String lhs) {
 		IRList tempList = new IRList();
 		String func_name = funcCall.split("\\(")[0];
-		System.out.println("funcCall: " + funcCall);
 		List <String> argList = createArgList(funcCall);
-
-		for(int i = 0; i < argList.size(); i++)
-			System.out.println("arglist val: " + argList.get(i));
 
 		tempList.appendIRNode("PUSH", "", "", "");
 		IRList retList = new IRList();
@@ -26,7 +22,7 @@ public class Helper {
 				tempList.appendIRNode("PUSH", "$T" + Integer.toString(Listener.tempRegNum - 1), "", "");
 			}
 			else if(currArg.matches("\\w+\\(.*\\)$")) {
-				retList = generateFuncCall(currArg, lhs);
+				retList = generateFuncCall(currArg, Listener.typeTable.get(lhs));
 				finalList.addAll(retList.getList());
 				tempList.appendIRNode("PUSH", "$T" + Integer.toString(Listener.tempRegNum - 1), "", "");
 			}
@@ -71,7 +67,6 @@ public class Helper {
 			dataType = "F";
 		storeOpcode += dataType;
 		if(node.getLeftNode() == null && node.getRightNode() == null) {
-			System.out.println("Expression parseExp: " + expression);
 			if(expression.matches("\\d+(?:\\.\\d+)?$")) {
 				tempList.appendIRNode(storeOpcode, expression, "", "$T" + Integer.toString(Listener.tempRegNum));
 			}
