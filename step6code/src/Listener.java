@@ -146,7 +146,7 @@ public class Listener extends MicroBaseListener {
 				tempList = Help.parseExp(val, operand, 0);
 			}
 		}
-		else {
+		else if(operand.equals("")) {
 			tempList.appendIRNode("STOREI", "1", "", ("$T" + Integer.toString(Listener.tempRegNum)));
 			Listener.tempRegNum += 1;
 			tempList.appendIRNode("STOREI", "1", "", ("$T" + Integer.toString(Listener.tempRegNum)));
@@ -433,8 +433,10 @@ public class Listener extends MicroBaseListener {
 		}
 		if(!expression.matches("\\w+\\(.*\\)$")) 
 			tempList = Help.parseExp(expression, resultType, 1);
-		else
+		else {
 			tempList = Help.generateFuncCall(expression, resultType);
+			tempList.appendIRNode(storeOpcode, "$T" + Integer.toString(Listener.tempRegNum - 1), "", "$R");
+		}
 		if(!(node.getLeftNode() == null && node.getRightNode() == null)) {
 			Listener.tempRegNum -= 1;
 			tempList.appendIRNode(storeOpcode, "$T" + Integer.toString(Listener.tempRegNum), "", "$R");
