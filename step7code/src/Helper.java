@@ -197,4 +197,46 @@ public class Helper {
     	}
     	return "null";
     }
+
+    public void createLeaderSet(IRList tempList) {
+    	for(int i = 0; i < tempList.getSize(); i++) {
+    		IRNode tempNode = tempList.getIRNode(i);
+    		String instruction = tempNode.getNodeVal();
+
+    		if(instruction.matches("LABEL [A-Za-z][A-Za-z0-9]{0,30}\\s+$") && !instruction.matches("LABEL label[0-9]+\\s+$")) {
+    			Listener.leaderSet.clear();
+    			Listener.leaderSet.add(instruction);
+    		}
+    		/*else if(instruction.matches()){
+
+    		}*/
+    	}
+    }
+    public void printSet() {
+    	for(String s : Listener.leaderSet) {
+    		System.out.println("Set value is: " + s);
+    	}
+    	System.out.println();
+    }
+
+    public List<IRList> enumerateProg(List <IRList> listIR) {
+    	int lineNum = 1;
+    	for(int i = 0; i < listIR.size(); ++i) {
+    		IRList tempList = listIR.get(i);
+    		for(int j = 0; j < tempList.getSize(); ++j) {
+    			IRNode tempNode = tempList.getIRNode(j);
+
+    			if(tempNode.getOperand1().matches("label[0-9]+$")) {
+    				Listener.labelTable.put("LABEL " + tempNode.getOperand1(), lineNum);
+    			}
+
+    			tempNode.setLineNum(lineNum);
+    			tempList.setIRNode(j, tempNode);
+
+    			++lineNum;
+    		}
+    		listIR.set(i, tempList);
+    	}
+    return listIR;
+    }
 }
