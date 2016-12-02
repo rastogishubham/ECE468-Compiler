@@ -5,14 +5,18 @@ import java.util.*;
 public class Listener extends MicroBaseListener {
 	
 	public static SymbolTableList SymbolList = new SymbolTableList();
+
 	private String Var_type;
+	
 	public static int tempRegNum = 1;
 	public static int labelNum = 1;
 	public static int paramNum = 1;
 	public static int localNum = 1;
+
 	public int retType = 0;
+
 	public static List <String> funcList = new ArrayList<String>();
-	TinyConverter tiny = new TinyConverter(); 
+	private TinyConverter tiny = new TinyConverter(); 
 	private List <IRList> ListIR = new ArrayList<IRList>();
 	public static Hashtable <String, String> typeTable = new Hashtable<String, String>();
 	public static Hashtable <String, String> funcTable = new Hashtable<String, String>();
@@ -20,9 +24,14 @@ public class Listener extends MicroBaseListener {
 	private Stack <String> labelStack = new Stack<String>();
 	private Stack <String> exitLabelStack = new Stack<String>();
 	private Hashtable <String, String> registerTypeTable = new Hashtable<String, String>();
+	public static Set <String>  leaderSet = new HashSet <String>();
+	private List <ControlFlowGraph> cfgList = new ArrayList <ControlFlowGraph>();
+	public static Hashtable <String, Integer> labelTable = new Hashtable <String, Integer> ();
+
 	public Listener() {
 		createLogicalTable();
 	}
+
 	private void createLogicalTable() {
 		logOperatorTable.put(">", "LE");
 		logOperatorTable.put(">=", "LT");
@@ -40,6 +49,18 @@ public class Listener extends MicroBaseListener {
 		SymbolTable tempTable = Listener.SymbolList.getSymbolTable(0);
 		List nameList = tempTable.getNameList();
 		Hashtable<String, Symbol> tempVarTable = tempTable.getVariableTable();
+		Helper help = new Helper();
+
+		ListIR = help.enumerateProg(ListIR);
+		System.out.println("Hashtable: " + Listener.labelTable);
+
+		for(int i = 0; i < ListIR.size(); i++) {
+			IRList tempList = ListIR.get(i);
+			help.createLeaderSet(tempList);
+		}
+
+		help.printSet();
+
 		for(int i = 0; i < nameList.size(); i ++) {
 			String varType = tempVarTable.get(nameList.get(i)).getType();
 			if(varType.equals("STRING")) {

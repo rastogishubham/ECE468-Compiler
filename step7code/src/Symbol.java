@@ -9,19 +9,19 @@ public class Symbol {
 		this.tempName = tempName;
 	}
 	public String getType() { 
-		return type; 
+		return this.type; 
 	}
 	public void setType(String tempType) { 
 		this.type  = tempType; 
 	}
 	public String getValue() { 
-		return value; 
+		return this.value; 
 	}
 	public String setValue(String setValue) {  
-		return value; 
+		return this.value; 
 	}
 	public String getTempName() { 
-		return tempName;
+		return this.tempName;
 	}
 	public void setTempName(String name) { 
 		this.tempName = name; 
