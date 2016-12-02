@@ -9,7 +9,7 @@ public class ExpressionStack {
     private String postFixExpr = "";
     private List <String> tokenList = new ArrayList <String> ();
 
-    private void createTokenList(String expression) {
+    public void createTokenList(String expression) {
         String replaceExp = expression;
         int subPos = 0;
         for(int i = 0; i < expression.length(); i++) {
@@ -31,6 +31,10 @@ public class ExpressionStack {
         }
         if(subPos < expression.length())
             tokenList.add(expression.substring(subPos, expression.length()));
+    }
+
+    public List <String> getTokenList() {
+        return this.tokenList;
     }
 
     private int findCloseParenPos(String expression, int openPos) {
