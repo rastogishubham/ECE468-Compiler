@@ -13,6 +13,9 @@ class IRList {
 	public void appendIRNode(IRNode tempNode) {
 			ListIR.add(tempNode);
 	}
+	public void setIRNode(int index, IRNode tempNode) {
+		this.ListIR.set(index, tempNode);
+	}
 	public IRNode getIRNode(int index) {
 		return ListIR.get(index);
 	}
