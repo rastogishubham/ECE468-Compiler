@@ -159,7 +159,6 @@ public class Listener extends MicroBaseListener {
 			tempList.appendIRNode(logOperatorTable.get(operator), operand, ("$T" + Integer.toString(Listener.tempRegNum)), labelName);
 		}
 		else if(operand.equals("")) {
-			System.out.println("It is true");
 			tempList.appendIRNode("STOREI", "1", "", ("$T" + Integer.toString(Listener.tempRegNum)));
 			Listener.tempRegNum += 1;
 			tempList.appendIRNode("STOREI", "1", "", ("$T" + Integer.toString(Listener.tempRegNum)));
@@ -307,7 +306,6 @@ public class Listener extends MicroBaseListener {
 				storeOpcode += "F";
 			String oldVal = val;
 			Helper Help = new Helper();
-			System.out.println("val: " + val);
 			val = Help.getTempRegName(val);
 			if(val.contains("null"))
 				val = oldVal;

@@ -186,7 +186,6 @@ public class Helper {
     	List <String> tokenList = expstack.getTokenList();
     	for(int i = 0; i < tokenList.size(); i++) {
     		String token = tokenList.get(i);
-    		System.out.println("token: " + token);
     		if(token.matches("\\d+$"))
     			return "INT";
     		else if(token.matches("\\d+\\.\\d+$"))
