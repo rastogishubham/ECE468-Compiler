@@ -7,12 +7,14 @@ class IRNode {
 	private String Operand1;
 	private String Operand2;
 	private String Result;
+	private int lineNum;
 	
 	public IRNode(String Opcode, String Operand1, String Operand2, String Result) {
 			this.Opcode = Opcode;
 			this.Operand1 = Operand1;
 			this.Operand2 = Operand2;
 			this.Result = Result;
+			this.lineNum = 0;
 	}
 
 	public String getOpcode() {
@@ -39,7 +41,16 @@ class IRNode {
 	public void setResult(String Result) {
 		this.Opcode = Result;
 	}
+	public int getLineNum() {
+		return this.lineNum;
+	}
+	public void setLineNum(int lineNum) {
+		this.lineNum = lineNum;
+	}
 	public void printNode() {
 		System.out.println(";" + this.Opcode + " " + this.Operand1 + " " + this.Operand2 + " " +this.Result);
+	}
+	public String getNodeVal() {
+		return this.Opcode + " " + this.Operand1 + " " + this.Operand2 + " " +this.Result;
 	}
 }
