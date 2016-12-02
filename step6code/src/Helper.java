@@ -73,10 +73,17 @@ public class Helper {
 		else
 			dataType = "F";
 		storeOpcode += dataType;
+		if(resultType.equals("null"))
+			resultType = result;
 		
 		if(node.getLeftNode() == null && node.getRightNode() == null) {
 			if(expression.matches("\\d+(?:\\.\\d+)?$")) {
 				tempList.appendIRNode(storeOpcode, expression, "", "$T" + Integer.toString(Listener.tempRegNum));
+			}
+			else if(expression.matches("\\w+\\(.*\\)$")) {
+				tempList = generateFuncCall(expression, resultType);
+				Listener.tempRegNum -= 1;
+				//tempList.appendIRNode(storeOpcode, "$T" + Integer.toString(Listener.tempRegNum), )
 			}
 			else {
 				String tempReg = getTempRegName(expression);
@@ -172,5 +179,23 @@ public class Helper {
             }
         }
         return 0;
+    }
+
+    public String findReturnType(String expression) {
+    	ExpressionStack expstack = new ExpressionStack();
+    	List <String> tokenList = expstack.getTokenList();
+    	for(int i = 0; i < tokenList.size(); i++) {
+    		String token = tokenList.get(i);
+    		System.out.println("token: " + token);
+    		if(token.matches("\\d+$"))
+    			return "INT";
+    		else if(token.matches("\\d+\\.\\d+$"))
+    			return "FLOAT";
+    		else if(token.matches("[A-Za-z][A-Za-z0-9]{0,30}$"))
+    			return Listener.typeTable.get(token);
+    		else if(token.matches("[A-Za-z][A-Za-z0-9]{0,30}\\(.*$"))
+    			return Listener.funcTable.get(token);
+    	}
+    	return "null";
     }
 }
