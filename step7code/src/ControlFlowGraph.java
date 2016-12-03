@@ -12,6 +12,8 @@ class ControlFlowGraph {
 		this.end = end; 
 		if(workList.size() > 0) { 
 			generateLeaderTable(workList);
+			createAdjacencyList(workList);
+			printGraph(workList);
 		}
 	}
 
@@ -25,25 +27,25 @@ class ControlFlowGraph {
 			instrList = createInstrList(workList.get(i), workList.get(i+1), irList); 
 			node.setInstrList(instrList);
 			leaderTable.put(workList.get(i), node); 
-			System.out.println("Leader node: ");
+		/*	System.out.println("Leader node: ");
 			tempNode.printNode();
 			System.out.println("Cfg node: ");
 			node = leaderTable.get(tempNode);
-			node.printCFNode();
+			node.printCFNode();*/
 		}
 		node = new ControlFlowNode();
 		instrList = lastInstrList(workList.get(i), irList.getIRNode(), irList); 
 		node.setInstrList(instrList);
 		leaderTable.put(workList.get(i), node);
-		System.out.println("Leader node: ");
+		/*System.out.println("Leader node: ");
 		IRNode irnode = workList.get(i);
 		irnode.printNode();
 		System.out.println("Cfg node: ");
 		node = leaderTable.get(irnode);
-		node.printCFNode();
+		node.printCFNode();*/
 	}
 
-	public List<IRNode> createInstrList (IRNode leader1, IRNode leader2, IRList irList) { 
+	public List<IRNode> createInstrList(IRNode leader1, IRNode leader2, IRList irList) { 
 		List<IRNode> instrList = new ArrayList<IRNode>();
 		IRNode temp;
 		for (int i = leader1.getLineNum(); i < leader2.getLineNum(); i++) {
@@ -53,27 +55,60 @@ class ControlFlowGraph {
 		return instrList; 
 	}
 
-	public List<IRNode> lastInstrList (IRNode leader1, IRNode leader2, IRList irList) { 
+	public List<IRNode> lastInstrList(IRNode leader1, IRNode leader2, IRList irList) { 
 		List<IRNode> instrList = new ArrayList<IRNode>();
 		IRNode temp; 
 		for (int i = leader1.getLineNum(); i < this.end; i++) {
 			 temp = irList.getIRNode(i-1); 
 			 instrList.add(temp); 
 		}
-
 		return instrList; 
 	}
 
-	public void printMap() {
-		System.out.println("Printing control flow group");
-		for(Map.Entry<IRNode, ControlFlowNode> entry : leaderTable.entrySet()) {
-			IRNode tempNode = entry.getKey();
-			ControlFlowNode cfnode = entry.getValue();
-			System.out.println("Printing leader node: ");
-			tempNode.printNode();
-			cfnode.printCFNode();
-
+	public void createAdjacencyList(List<IRNode> workList) {
+		for(int i = 0; i < workList.size(); i++) {
+			List <ControlFlowNode> adjList = new ArrayList<ControlFlowNode>();
+			IRNode node = workList.get(i);
+			ControlFlowNode cfnode = leaderTable.get(node);
+			IRNode lastNode = cfnode.getLastNode();
+			String instruction = lastNode.getNodeVal();
+			if(instruction.matches("JUMP label[0-9]+\\s+$")) {
+				IRNode jumpIRNode = new IRNode("LABEL", lastNode.getOperand1(), "", "");
+				int lineNum = Listener.labelTable.get("LABEL " + lastNode.getOperand1());
+				jumpIRNode.setLineNum(lineNum);
+				ControlFlowNode jumpNode = leaderTable.get(jumpIRNode);
+				adjList.add(jumpNode);
+			}
+			else if(instruction.matches("(LE|LT|GE|GT|EQ|NE).*$")) {
+				IRNode branchIRNode = new IRNode("LABEL", lastNode.getResult(), "", "");
+				int lineNum = Listener.labelTable.get("LABEL " + lastNode.getResult());
+				branchIRNode.setLineNum(lineNum);
+				ControlFlowNode branchNode = leaderTable.get(branchIRNode);
+				adjList.add(branchNode);
+				if(i + 1 < workList.size()) {
+					IRNode nextNode = workList.get(i + 1);
+					ControlFlowNode nextCFNode = leaderTable.get(nextNode);
+					adjList.add(nextCFNode);
+				}
+			}
+			else if(i + 1 < workList.size()) {
+				IRNode nextNode = workList.get(i + 1);
+				ControlFlowNode nextCFNode = leaderTable.get(nextNode);
+				adjList.add(nextCFNode);
+			}
+			cfnode.setAdjacencyList(adjList);
+			leaderTable.put(node, cfnode);
 		}
 	}
 
+	public void printGraph(List<IRNode> workList) {
+		for(int i = 0; i < workList.size(); i++) {
+			IRNode node = workList.get(i);
+			ControlFlowNode cfnode = leaderTable.get(node);
+			System.out.println("Printing the CFNode");
+			cfnode.printCFNode();
+			System.out.println("Printing the ADJ list");
+			cfnode.printADJList();
+		}
+	}
 }
