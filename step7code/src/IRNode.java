@@ -48,9 +48,20 @@ class IRNode {
 		this.lineNum = lineNum;
 	}
 	public void printNode() {
-		System.out.println(";" + this.Opcode + " " + this.Operand1 + " " + this.Operand2 + " " +this.Result);
+		System.out.println(";" + this.lineNum + " " + this.Opcode + " " + this.Operand1 + " " + this.Operand2 + " " +this.Result);
 	}
 	public String getNodeVal() {
 		return this.Opcode + " " + this.Operand1 + " " + this.Operand2 + " " +this.Result;
+	}
+
+
+	@Override
+	public int hashCode() {
+		return this.Opcode.hashCode() + this.Operand1.hashCode() + this.Operand2.hashCode() + this.Result.hashCode() + this.lineNum;
+	}
+
+	@Override
+	public boolean equals(Object node) {
+		return (this.hashCode() == node.hashCode());
 	}
 }
