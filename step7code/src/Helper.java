@@ -199,15 +199,19 @@ public class Helper {
     }
 
     public void createLeaderSet(IRList tempList) {
+    	IRNode tempNode = new IRNode("", "", "", "");
+    /*	int num = Listener.labelTable.get("LABEL label6");
+    	System.out.println("LABEL label 6: " + num);
+*/
     	for(int i = 0; i < tempList.getSize(); i++) {
-    		IRNode tempNode = tempList.getIRNode(i);
+    		tempNode = tempList.getIRNode(i);
     		String instruction = tempNode.getNodeVal();
 
     		if(instruction.matches("LABEL [A-Za-z][A-Za-z0-9]{0,30}\\s+$") && !instruction.matches("LABEL label[0-9]+\\s+$")) {
+    			//printSet();
     			List<IRNode> workList = createWorkList(Listener.leaderSet);
-    			printSet();
-    			System.out.println("\n\ntempNode.getLineNum: " + tempNode.getLineNum() + " \n\n");
     			ControlFlowGraph cfg = new ControlFlowGraph(workList, tempList, tempNode.getLineNum());
+    			Listener.cfgList.add(cfg);
     			Listener.leaderSet.clear();
     			Listener.leaderSet.add(tempNode);
     		}
@@ -225,17 +229,20 @@ public class Helper {
     			Listener.leaderSet.add(targetNode);
     		}
     	}
-    	List<IRNode> workList = createWorkList(Listener.leaderSet); 
+    	//printSet();
+    	List<IRNode> workList = createWorkList(Listener.leaderSet);
+    	ControlFlowGraph cfg = new ControlFlowGraph(workList, tempList, tempNode.getLineNum());
+    	Listener.cfgList.add(cfg);
     }
 
     public List<IRNode> createWorkList(Set<IRNode> leaderSet) {
 
-    	printSet(leaderSet);
+    	//printSet(leaderSet);
     	List<IRNode> leaderList = new ArrayList<IRNode>(leaderSet);
 
-    	for(IRNode node : leaderList) {
+    	/*for(IRNode node : leaderList) {
     		node.printNode();
-    	}
+    	}*/
 
 
     	Collections.sort(leaderList, new Comparator<IRNode>() {
@@ -244,9 +251,9 @@ public class Helper {
     			return irnode1.getLineNum() - irnode2.getLineNum();
     		}
     	});
-    	for(IRNode node : leaderList) {
+    	/*for(IRNode node : leaderList) {
     		node.printNode();
-    	}
+    	}*/
     	return leaderList;
     }
 
@@ -273,7 +280,7 @@ public class Helper {
     		for(int j = 0; j < tempList.getSize(); ++j) {
     			IRNode tempNode = tempList.getIRNode(j);
 
-    			if(tempNode.getOperand1().matches("label[0-9]+$")) {
+    			if(tempNode.getOperand1().matches("label[0-9]+$") && tempNode.getOpcode().equals("LABEL")) {
     				Listener.labelTable.put("LABEL " + tempNode.getOperand1(), lineNum);
     			}
     			tempNode.setLineNum(lineNum);
