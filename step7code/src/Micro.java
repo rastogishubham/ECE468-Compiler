@@ -13,14 +13,9 @@ public class Micro {
 			CommonTokenStream tokenStream = new CommonTokenStream(lexEngine);
 			tokenStream.fill();
 			MicroParser parser = new MicroParser(tokenStream);
-			try {
-				MicroParser.ProgramContext context = parser.program();
-				ParseTreeWalker walker = new ParseTreeWalker();
-				Listener listener = new Listener();
-				walker.walk(listener, context);
-			}
-			catch(Exception e) {
-				
-			}
+			MicroParser.ProgramContext context = parser.program();
+			ParseTreeWalker walker = new ParseTreeWalker();
+			Listener listener = new Listener();
+			walker.walk(listener, context);
 	}
 }
