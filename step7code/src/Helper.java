@@ -204,23 +204,70 @@ public class Helper {
     		String instruction = tempNode.getNodeVal();
 
     		if(instruction.matches("LABEL [A-Za-z][A-Za-z0-9]{0,30}\\s+$") && !instruction.matches("LABEL label[0-9]+\\s+$")) {
+    			List<IRNode> workList = createWorkList(Listener.leaderSet);
+    			printSet();
+    			System.out.println("\n\ntempNode.getLineNum: " + tempNode.getLineNum() + " \n\n");
+    			ControlFlowGraph cfg = new ControlFlowGraph(workList, tempList, tempNode.getLineNum());
     			Listener.leaderSet.clear();
-    			Listener.leaderSet.add(instruction);
+    			Listener.leaderSet.add(tempNode);
     		}
-    		/*else if(instruction.matches()){
-
-    		}*/
+    		else if(instruction.matches("(LE|LT|GE|GT|EQ|NE).*$")) {
+    			IRNode targetNode = new IRNode("LABEL", tempNode.getResult(), "", "");
+    			targetNode.setLineNum(Listener.labelTable.get("LABEL " + tempNode.getResult()));
+    			Listener.leaderSet.add(targetNode);
+    			if(i < tempList.getSize()) {
+    				Listener.leaderSet.add(tempList.getIRNode(i + 1));
+    			}
+    		}
+    		else if(instruction.matches("JUMP.*$")) {
+    			IRNode targetNode = new IRNode("LABEL", tempNode.getOperand1(), "", "");
+    			targetNode.setLineNum(Listener.labelTable.get("LABEL " + tempNode.getOperand1()));
+    			Listener.leaderSet.add(targetNode);
+    		}
     	}
+    	List<IRNode> workList = createWorkList(Listener.leaderSet); 
     }
+
+    public List<IRNode> createWorkList(Set<IRNode> leaderSet) {
+
+    	printSet(leaderSet);
+    	List<IRNode> leaderList = new ArrayList<IRNode>(leaderSet);
+
+    	for(IRNode node : leaderList) {
+    		node.printNode();
+    	}
+
+
+    	Collections.sort(leaderList, new Comparator<IRNode>() {
+    		@Override
+    		public int compare(IRNode irnode1, IRNode irnode2) {
+    			return irnode1.getLineNum() - irnode2.getLineNum();
+    		}
+    	});
+    	for(IRNode node : leaderList) {
+    		node.printNode();
+    	}
+    	return leaderList;
+    }
+
     public void printSet() {
-    	for(String s : Listener.leaderSet) {
-    		System.out.println("Set value is: " + s);
+    	for(IRNode node : Listener.leaderSet) {
+    		System.out.println("Set value is: " + node.getLineNum() + " " +  node.getNodeVal());
+    	}
+    	System.out.println();
+    }
+
+    public void printSet(Set<IRNode> leaderSet) {
+    	for(IRNode node : leaderSet) {
+    		System.out.println("Set value is: " + node.getLineNum() + " " +  node.getNodeVal());
     	}
     	System.out.println();
     }
 
     public List<IRList> enumerateProg(List <IRList> listIR) {
     	int lineNum = 1;
+    	List <IRList> flatList = new ArrayList <IRList>();
+    	IRList flatIRList = new IRList();
     	for(int i = 0; i < listIR.size(); ++i) {
     		IRList tempList = listIR.get(i);
     		for(int j = 0; j < tempList.getSize(); ++j) {
@@ -229,14 +276,14 @@ public class Helper {
     			if(tempNode.getOperand1().matches("label[0-9]+$")) {
     				Listener.labelTable.put("LABEL " + tempNode.getOperand1(), lineNum);
     			}
-
     			tempNode.setLineNum(lineNum);
     			tempList.setIRNode(j, tempNode);
 
     			++lineNum;
     		}
-    		listIR.set(i, tempList);
+    		flatIRList.addAll(tempList.getList());
     	}
-    return listIR;
+    	flatList.add(flatIRList);
+    return flatList;
     }
 }
