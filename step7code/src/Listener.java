@@ -24,8 +24,8 @@ public class Listener extends MicroBaseListener {
 	private Stack <String> labelStack = new Stack<String>();
 	private Stack <String> exitLabelStack = new Stack<String>();
 	private Hashtable <String, String> registerTypeTable = new Hashtable<String, String>();
-	public static Set <String>  leaderSet = new HashSet <String>();
-	private List <ControlFlowGraph> cfgList = new ArrayList <ControlFlowGraph>();
+	public static Set <IRNode>  leaderSet = new HashSet <IRNode>();
+	private List <ControlFlowNode> cfgList = new ArrayList <ControlFlowNode>();
 	public static Hashtable <String, Integer> labelTable = new Hashtable <String, Integer> ();
 
 	public Listener() {
@@ -52,14 +52,12 @@ public class Listener extends MicroBaseListener {
 		Helper help = new Helper();
 
 		ListIR = help.enumerateProg(ListIR);
-		System.out.println("Hashtable: " + Listener.labelTable);
+		IRList temp = ListIR.get(0);
 
 		for(int i = 0; i < ListIR.size(); i++) {
 			IRList tempList = ListIR.get(i);
 			help.createLeaderSet(tempList);
 		}
-
-		help.printSet();
 
 		for(int i = 0; i < nameList.size(); i ++) {
 			String varType = tempVarTable.get(nameList.get(i)).getType();
