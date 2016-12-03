@@ -11,17 +11,8 @@ class ControlFlowGraph {
 		this.irList = listIR; 
 		this.end = end; 
 		if(workList.size() > 0) { 
-			
-			/*for(IRNode node : workList) {
-
-
-				node.printNode();
-			}*/
-
 			generateLeaderTable(workList);
-		//	System.out.println("Map \n");
-		//	printMap();
-		} 
+		}
 	}
 
 	public void generateLeaderTable (List<IRNode> workList) {
@@ -33,18 +24,25 @@ class ControlFlowGraph {
 			IRNode tempNode = workList.get(i);
 			instrList = createInstrList(workList.get(i), workList.get(i+1), irList); 
 			node.setInstrList(instrList);
-			System.out.print("Pooji partner can not compile");
-			node.printCFNode();
 			leaderTable.put(workList.get(i), node); 
+			System.out.println("Leader node: ");
+			tempNode.printNode();
+			System.out.println("Cfg node: ");
+			node = leaderTable.get(tempNode);
+			node.printCFNode();
 		}
 		node = new ControlFlowNode();
-
 		instrList = lastInstrList(workList.get(i), irList.getIRNode(), irList); 
 		node.setInstrList(instrList);
 		leaderTable.put(workList.get(i), node);
-		System.out.print("Pooji partner can not compile");
-			node.printCFNode();
+		System.out.println("Leader node: ");
+		IRNode irnode = workList.get(i);
+		irnode.printNode();
+		System.out.println("Cfg node: ");
+		node = leaderTable.get(irnode);
+		node.printCFNode();
 	}
+
 	public List<IRNode> createInstrList (IRNode leader1, IRNode leader2, IRList irList) { 
 		List<IRNode> instrList = new ArrayList<IRNode>();
 		IRNode temp;
@@ -52,14 +50,13 @@ class ControlFlowGraph {
 			 temp = irList.getIRNode(i-1);
 			 instrList.add(temp); 
 		}
-
 		return instrList; 
 	}
 
-	public List<IRNode> lastInstrList (IRNode leader1, IRNode leader2 ,IRList irList) { 
+	public List<IRNode> lastInstrList (IRNode leader1, IRNode leader2, IRList irList) { 
 		List<IRNode> instrList = new ArrayList<IRNode>();
 		IRNode temp; 
-		for (int i = leader1.getLineNum(); i <= end; i++) {
+		for (int i = leader1.getLineNum(); i < this.end; i++) {
 			 temp = irList.getIRNode(i-1); 
 			 instrList.add(temp); 
 		}
