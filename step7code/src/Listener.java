@@ -25,7 +25,7 @@ public class Listener extends MicroBaseListener {
 	private Stack <String> exitLabelStack = new Stack<String>();
 	private Hashtable <String, String> registerTypeTable = new Hashtable<String, String>();
 	public static Set <IRNode>  leaderSet = new HashSet <IRNode>();
-	private List <ControlFlowNode> cfgList = new ArrayList <ControlFlowNode>();
+	public static List <ControlFlowGraph> cfgList = new ArrayList <ControlFlowGraph>();
 	public static Hashtable <String, Integer> labelTable = new Hashtable <String, Integer> ();
 
 	public Listener() {
