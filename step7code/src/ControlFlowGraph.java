@@ -12,8 +12,29 @@ class ControlFlowGraph {
 		this.end = end; 
 		if(workList.size() > 0) { 
 			generateLeaderTable(workList);
-			createAdjacencyList(workList);
+			createSuccessorAndPredecessorList(workList);
+			createStatementGraph(workList);
 			printGraph(workList);
+		}
+	}
+
+	public void createStatementGraph(List<IRNode> workList) {
+		for(IRNode leaderNode : workList) {
+			ControlFlowNode cfNode = new ControlFlowNode(leaderTable.get(leaderNode));
+			leaderTable.remove(leaderNode);
+			List <IRNode> instrList = cfNode.getInstrList();
+			for(int i = 0; i < instrList.size(); i++) {
+				ControlFlowNode instrCFNode = new ControlFlowNode();
+				if(i == (instrList.size() - 1))
+					instrCFNode.setSuccessorList(cfNode.getSuccessorList());
+				else if(i == 0)
+					instrCFNode.setPredecessorList(cfNode.getPredecessorList());
+				else {
+					instrCFNode.appendPredList(leaderTable.get)
+				}
+
+				instrCFNode.appendInstrList(instrList.get(i));
+			}
 		}
 	}
 
@@ -54,9 +75,9 @@ class ControlFlowGraph {
 		return instrList; 
 	}
 
-	public void createAdjacencyList(List<IRNode> workList) {
+	public void createSuccessorAndPredecessorList(List<IRNode> workList) {
 		for(int i = 0; i < workList.size(); i++) {
-			List <ControlFlowNode> adjList = new ArrayList<ControlFlowNode>();
+			List <ControlFlowNode> successorList = new ArrayList<ControlFlowNode>();
 			IRNode node = workList.get(i);
 			ControlFlowNode cfnode = leaderTable.get(node);
 			IRNode lastNode = cfnode.getLastNode();
@@ -66,8 +87,8 @@ class ControlFlowGraph {
 				int lineNum = Listener.labelTable.get("LABEL " + lastNode.getOperand1());
 				jumpIRNode.setLineNum(lineNum);
 				ControlFlowNode jumpNode = leaderTable.get(jumpIRNode);
-				adjList.add(jumpNode);
-				cfnode.setAdjacencyList(adjList);
+				successorList.add(jumpNode);
+				cfnode.setSuccessorList(successorList);
 				leaderTable.put(node, cfnode);
 				jumpNode.appendPredList(cfnode);
 				leaderTable.put(jumpIRNode, jumpNode);
@@ -77,15 +98,15 @@ class ControlFlowGraph {
 				int lineNum = Listener.labelTable.get("LABEL " + lastNode.getResult());
 				branchIRNode.setLineNum(lineNum);
 				ControlFlowNode branchNode = leaderTable.get(branchIRNode);
-				adjList.add(branchNode);
+				successorList.add(branchNode);
 				if(i + 1 < workList.size()) {
 					IRNode nextNode = workList.get(i + 1);
 					ControlFlowNode nextCFNode = leaderTable.get(nextNode);
-					adjList.add(nextCFNode);
+					successorList.add(nextCFNode);
 					nextCFNode.appendPredList(cfnode);
 					leaderTable.put(nextNode, nextCFNode);
 				}
-				cfnode.setAdjacencyList(adjList);
+				cfnode.setSuccessorList(successorList);
 				leaderTable.put(node, cfnode);
 				branchNode.appendPredList(cfnode);
 				leaderTable.put(branchIRNode, branchNode);
@@ -93,8 +114,8 @@ class ControlFlowGraph {
 			else if(i + 1 < workList.size()) {
 				IRNode nextNode = workList.get(i + 1);
 				ControlFlowNode nextCFNode = leaderTable.get(nextNode);
-				adjList.add(nextCFNode);
-				cfnode.setAdjacencyList(adjList);
+				successorList.add(nextCFNode);
+				cfnode.setSuccessorList(successorList);
 				leaderTable.put(node, cfnode);
 				nextCFNode.appendPredList(cfnode);
 				leaderTable.put(nextNode, nextCFNode);
@@ -110,7 +131,7 @@ class ControlFlowGraph {
 			cfnode.printCFNode();
 			System.out.println();
 			System.out.println("Printing the ADJ list");
-			cfnode.printADJList();
+			cfnode.printSuccessorList();
 			System.out.println();
 			System.out.println("Printing the Pred list");
 			cfnode.printPredList();

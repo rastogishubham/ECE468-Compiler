@@ -52,7 +52,6 @@ public class Listener extends MicroBaseListener {
 		Helper help = new Helper();
 
 		ListIR = help.enumerateProg(ListIR);
-		IRList temp = ListIR.get(0);
 
 		for(int i = 0; i < ListIR.size(); i++) {
 			IRList tempList = ListIR.get(i);
