@@ -27,22 +27,11 @@ class ControlFlowGraph {
 			instrList = createInstrList(workList.get(i), workList.get(i+1), irList); 
 			node.setInstrList(instrList);
 			leaderTable.put(workList.get(i), node); 
-		/*	System.out.println("Leader node: ");
-			tempNode.printNode();
-			System.out.println("Cfg node: ");
-			node = leaderTable.get(tempNode);
-			node.printCFNode();*/
 		}
 		node = new ControlFlowNode();
 		instrList = lastInstrList(workList.get(i), irList.getIRNode(), irList); 
 		node.setInstrList(instrList);
 		leaderTable.put(workList.get(i), node);
-		/*System.out.println("Leader node: ");
-		IRNode irnode = workList.get(i);
-		irnode.printNode();
-		System.out.println("Cfg node: ");
-		node = leaderTable.get(irnode);
-		node.printCFNode();*/
 	}
 
 	public List<IRNode> createInstrList(IRNode leader1, IRNode leader2, IRList irList) { 
@@ -78,6 +67,10 @@ class ControlFlowGraph {
 				jumpIRNode.setLineNum(lineNum);
 				ControlFlowNode jumpNode = leaderTable.get(jumpIRNode);
 				adjList.add(jumpNode);
+				cfnode.setAdjacencyList(adjList);
+				leaderTable.put(node, cfnode);
+				jumpNode.appendPredList(cfnode);
+				leaderTable.put(jumpIRNode, jumpNode);
 			}
 			else if(instruction.matches("(LE|LT|GE|GT|EQ|NE).*$")) {
 				IRNode branchIRNode = new IRNode("LABEL", lastNode.getResult(), "", "");
@@ -89,15 +82,23 @@ class ControlFlowGraph {
 					IRNode nextNode = workList.get(i + 1);
 					ControlFlowNode nextCFNode = leaderTable.get(nextNode);
 					adjList.add(nextCFNode);
+					nextCFNode.appendPredList(cfnode);
+					leaderTable.put(nextNode, nextCFNode);
 				}
+				cfnode.setAdjacencyList(adjList);
+				leaderTable.put(node, cfnode);
+				branchNode.appendPredList(cfnode);
+				leaderTable.put(branchIRNode, branchNode);
 			}
 			else if(i + 1 < workList.size()) {
 				IRNode nextNode = workList.get(i + 1);
 				ControlFlowNode nextCFNode = leaderTable.get(nextNode);
 				adjList.add(nextCFNode);
+				cfnode.setAdjacencyList(adjList);
+				leaderTable.put(node, cfnode);
+				nextCFNode.appendPredList(cfnode);
+				leaderTable.put(nextNode, nextCFNode);
 			}
-			cfnode.setAdjacencyList(adjList);
-			leaderTable.put(node, cfnode);
 		}
 	}
 
@@ -107,8 +108,12 @@ class ControlFlowGraph {
 			ControlFlowNode cfnode = leaderTable.get(node);
 			System.out.println("Printing the CFNode");
 			cfnode.printCFNode();
+			System.out.println();
 			System.out.println("Printing the ADJ list");
 			cfnode.printADJList();
+			System.out.println();
+			System.out.println("Printing the Pred list");
+			cfnode.printPredList();
 		}
 	}
 }
