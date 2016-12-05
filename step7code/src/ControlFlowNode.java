@@ -8,8 +8,24 @@ class ControlFlowNode {
 	private List<ControlFlowNode> successorList = new ArrayList<ControlFlowNode>();
 	private List<ControlFlowNode> predecessorList = new ArrayList<ControlFlowNode>();
 
-	public void getPredecessorList() {
-		return this.predecessorList
+	public ControlFlowNode() {
+		this.instrList = new ArrayList<IRNode>();
+		this.successorList = new ArrayList<ControlFlowNode>();
+		this.predecessorList = new ArrayList<ControlFlowNode>();
+	}
+
+	public ControlFlowNode(ControlFlowNode cfNode) {
+		this.instrList = cfNode.getInstrList();
+		this.successorList = cfNode.getSuccessorList();
+		this.predecessorList = cfNode.getPredecessorList();
+	}
+
+	public List<ControlFlowNode> getPredecessorList() {
+		return this.predecessorList;
+	}
+
+	public void clearSuccessorList() {
+		this.successorList.clear();
 	}
 
 	public void setPredecessorList(List<ControlFlowNode> predList) {
@@ -31,13 +47,17 @@ class ControlFlowNode {
 	public IRNode getFirstNode() {
 		return this.instrList.get(0);
 	}
-
-	public List<IRNode> getSuccessorList () { 
+	
+	public List<ControlFlowNode> getSuccessorList () { 
 		return this.successorList;
 	}
 
 	public void setSuccessorList (List<ControlFlowNode> succList) { 
 		this.successorList = succList;
+	}
+
+	public void appendSuccList(ControlFlowNode cfNode) {
+		this.successorList.add(cfNode);
 	}
 
 	public void printCFNode() {
@@ -53,20 +73,24 @@ class ControlFlowNode {
 	public void printSuccessorList() {
 
 		for(ControlFlowNode cfnode : this.successorList) {
-			IRNode node = cfnode.getFirstNode();
-			node.printNode();
+			for(IRNode tempNode : cfnode.getInstrList()) {
+				//IRNode node = cfnode.getFirstNode();
+				tempNode.printNode();
+			}
 		}
 	}
 
 	public void printPredList() {
 
 		for(ControlFlowNode cfnode : this.predecessorList) {
-			IRNode node = cfnode.getFirstNode();
-			node.printNode();
+			for(IRNode tempNode : cfnode.getInstrList()) {
+				//IRNode node = cfnode.getFirstNode();
+				tempNode.printNode();
+			}
 		}
 	}
 
 	public List<IRNode> getInstrList() {
-		return this.instrList();
+		return this.instrList;
 	}
 }

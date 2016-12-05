@@ -4,7 +4,8 @@ import java.util.*;
 
 class ControlFlowGraph {
 	
-	private HashMap<IRNode, ControlFlowNode> leaderTable = new HashMap<IRNode, ControlFlowNode>(); 
+	private HashMap<IRNode, ControlFlowNode> leaderTable = new HashMap<IRNode, ControlFlowNode>();
+	private HashMap<IRNode, ControlFlowNode> statementTable = new HashMap<IRNode, ControlFlowNode>();
 	private IRList irList = new IRList(); 
 	private int end; 
 	public ControlFlowGraph (List<IRNode> workList, IRList listIR, int end) {
@@ -14,28 +15,63 @@ class ControlFlowGraph {
 			generateLeaderTable(workList);
 			createSuccessorAndPredecessorList(workList);
 			createStatementGraph(workList);
-			printGraph(workList);
 		}
 	}
 
 	public void createStatementGraph(List<IRNode> workList) {
+		List <IRNode> newWorkList = new ArrayList<IRNode>();
 		for(IRNode leaderNode : workList) {
 			ControlFlowNode cfNode = new ControlFlowNode(leaderTable.get(leaderNode));
-			leaderTable.remove(leaderNode);
 			List <IRNode> instrList = cfNode.getInstrList();
 			for(int i = 0; i < instrList.size(); i++) {
 				ControlFlowNode instrCFNode = new ControlFlowNode();
-				if(i == (instrList.size() - 1))
-					instrCFNode.setSuccessorList(cfNode.getSuccessorList());
-				else if(i == 0)
-					instrCFNode.setPredecessorList(cfNode.getPredecessorList());
-				else {
-					instrCFNode.appendPredList(leaderTable.get)
+				if(i != 0 && i == (instrList.size() - 1)) {
+					if(!instrList.get(i - 1).getNodeVal().matches("RET\\s+$"))
+						instrCFNode.appendPredList(statementTable.get(instrList.get(i - 1)));
 				}
-
+				else if(i == 0) {
+					List<ControlFlowNode> cfPredList = cfNode.getPredecessorList();
+					for(ControlFlowNode tempNode : cfPredList) {
+						IRNode lastNode = tempNode.getLastNode();
+						if(!lastNode.getNodeVal().matches("RET\\s+$")) {
+							ControlFlowNode predNode = statementTable.get(lastNode);
+							if(predNode != null) {
+								instrCFNode.appendPredList(predNode);
+							}
+							else {
+								instrCFNode.appendPredList(leaderTable.get(lastNode));
+							}
+						}
+					}
+				}
+				else {
+					if(!instrList.get(i - 1).getNodeVal().matches("RET\\s+$"))
+						instrCFNode.appendPredList(statementTable.get(instrList.get(i - 1)));
+				}
 				instrCFNode.appendInstrList(instrList.get(i));
+				statementTable.put(instrList.get(i), instrCFNode);
+				newWorkList.add(instrList.get(i));
+			}
+			for(int i = 0; i < instrList.size(); i++) {
+				IRNode instrNode = instrList.get(i);
+				String instruction = instrNode.getNodeVal();
+				ControlFlowNode newNode = new ControlFlowNode(statementTable.get(instrNode));
+				if(!instruction.matches("RET\\s+$") && (i == instrList.size() - 1)) {
+					for(ControlFlowNode tempNode : cfNode.getSuccessorList()) {
+						IRNode succIRNode = tempNode.getFirstNode();
+						ControlFlowNode succNode = leaderTable.get(succIRNode);
+						newNode.appendSuccList(succNode);
+					}
+				}
+				else if(!instruction.matches("RET\\s+$")) {
+					IRNode succNode = instrList.get(i + 1);
+					ControlFlowNode statementNode = statementTable.get(succNode);
+					newNode.appendSuccList(statementNode);
+				}
+				statementTable.put(instrNode, newNode);
 			}
 		}
+		printGraph(newWorkList);
 	}
 
 	public void generateLeaderTable (List<IRNode> workList) {
@@ -126,15 +162,16 @@ class ControlFlowGraph {
 	public void printGraph(List<IRNode> workList) {
 		for(int i = 0; i < workList.size(); i++) {
 			IRNode node = workList.get(i);
-			ControlFlowNode cfnode = leaderTable.get(node);
+			ControlFlowNode cfnode = statementTable.get(node);
 			System.out.println("Printing the CFNode");
 			cfnode.printCFNode();
 			System.out.println();
-			System.out.println("Printing the ADJ list");
+			System.out.println("Printing the Succ list");
 			cfnode.printSuccessorList();
 			System.out.println();
 			System.out.println("Printing the Pred list");
 			cfnode.printPredList();
+			System.out.println();
 		}
 	}
 }
