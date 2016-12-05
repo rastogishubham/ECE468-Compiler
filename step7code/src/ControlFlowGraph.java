@@ -52,6 +52,10 @@ class ControlFlowGraph {
 				statementTable.put(instrList.get(i), instrCFNode);
 				newWorkList.add(instrList.get(i));
 			}
+		}
+		for(IRNode leaderNode : workList) {
+			ControlFlowNode cfNode = new ControlFlowNode(leaderTable.get(leaderNode));
+			List <IRNode> instrList = cfNode.getInstrList();
 			for(int i = 0; i < instrList.size(); i++) {
 				IRNode instrNode = instrList.get(i);
 				String instruction = instrNode.getNodeVal();
@@ -59,7 +63,7 @@ class ControlFlowGraph {
 				if(!instruction.matches("RET\\s+$") && (i == instrList.size() - 1)) {
 					for(ControlFlowNode tempNode : cfNode.getSuccessorList()) {
 						IRNode succIRNode = tempNode.getFirstNode();
-						ControlFlowNode succNode = leaderTable.get(succIRNode);
+						ControlFlowNode succNode = statementTable.get(succIRNode);
 						newNode.appendSuccList(succNode);
 					}
 				}
