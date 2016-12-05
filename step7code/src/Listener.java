@@ -53,10 +53,21 @@ public class Listener extends MicroBaseListener {
 
 		ListIR = help.enumerateProg(ListIR);
 
+		System.out.println("Printing List: ");
+		System.out.println();
+
+		for(IRList list : ListIR) {
+			for(IRNode node : list.getList()) {
+				node.printNode();
+			}
+		}
+
 		for(int i = 0; i < ListIR.size(); i++) {
 			IRList tempList = ListIR.get(i);
 			help.createLeaderSet(tempList);
 		}
+
+		System.out.println("\n\nLength of cfgList: " + Listener.cfgList.size());
 
 		for(int i = 0; i < nameList.size(); i ++) {
 			String varType = tempVarTable.get(nameList.get(i)).getType();

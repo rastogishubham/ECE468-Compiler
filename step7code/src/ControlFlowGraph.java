@@ -12,19 +12,23 @@ class ControlFlowGraph {
 		this.irList = listIR; 
 		this.end = end; 
 		if(workList.size() > 0) { 
+			System.out.println("Come into make new graph");
 			generateLeaderTable(workList);
 			createSuccessorAndPredecessorList(workList);
-			createStatementGraph(workList);
+			printBlockGraph(workList);
+			List<IRNode> statementWorkList = createStatementGraph(workList);
+			createLivenessSet(statementWorkList);
+			printGraph(statementWorkList);
 		}
 	}
 
-	public void createStatementGraph(List<IRNode> workList) {
+	public List<IRNode> createStatementGraph(List<IRNode> workList) {
 		List <IRNode> newWorkList = new ArrayList<IRNode>();
 		for(IRNode leaderNode : workList) {
 			ControlFlowNode cfNode = new ControlFlowNode(leaderTable.get(leaderNode));
 			List <IRNode> instrList = cfNode.getInstrList();
 			for(int i = 0; i < instrList.size(); i++) {
-				ControlFlowNode instrCFNode = new ControlFlowNode();
+				ControlFlowNode instrCFNode = new ControlFlowNode(instrList.get(i));
 				if(i != 0 && i == (instrList.size() - 1)) {
 					if(!instrList.get(i - 1).getNodeVal().matches("RET\\s+$"))
 						instrCFNode.appendPredList(statementTable.get(instrList.get(i - 1)));
@@ -48,7 +52,7 @@ class ControlFlowGraph {
 					if(!instrList.get(i - 1).getNodeVal().matches("RET\\s+$"))
 						instrCFNode.appendPredList(statementTable.get(instrList.get(i - 1)));
 				}
-				instrCFNode.appendInstrList(instrList.get(i));
+				//instrCFNode.appendInstrList(instrList.get(i));
 				statementTable.put(instrList.get(i), instrCFNode);
 				newWorkList.add(instrList.get(i));
 			}
@@ -59,7 +63,7 @@ class ControlFlowGraph {
 			for(int i = 0; i < instrList.size(); i++) {
 				IRNode instrNode = instrList.get(i);
 				String instruction = instrNode.getNodeVal();
-				ControlFlowNode newNode = new ControlFlowNode(statementTable.get(instrNode));
+				ControlFlowNode newNode = statementTable.get(instrNode);
 				if(!instruction.matches("RET\\s+$") && (i == instrList.size() - 1)) {
 					for(ControlFlowNode tempNode : cfNode.getSuccessorList()) {
 						IRNode succIRNode = tempNode.getFirstNode();
@@ -72,10 +76,14 @@ class ControlFlowGraph {
 					ControlFlowNode statementNode = statementTable.get(succNode);
 					newNode.appendSuccList(statementNode);
 				}
+				List <HashSet<String>> genAndKill = new ArrayList<HashSet<String>>(); 
+				genAndKill = createGenAndKill(instrList.get(i));
+				newNode.setGenSet(genAndKill.get(0));
+				newNode.setKillSet(genAndKill.get(1));
 				statementTable.put(instrNode, newNode);
 			}
 		}
-		printGraph(newWorkList);
+		return newWorkList; 
 	}
 
 	public void generateLeaderTable (List<IRNode> workList) {
@@ -167,15 +175,123 @@ class ControlFlowGraph {
 		for(int i = 0; i < workList.size(); i++) {
 			IRNode node = workList.get(i);
 			ControlFlowNode cfnode = statementTable.get(node);
+			System.out.println();
+			System.out.println();
 			System.out.println("Printing the CFNode");
 			cfnode.printCFNode();
-			System.out.println();
 			System.out.println("Printing the Succ list");
 			cfnode.printSuccessorList();
-			System.out.println();
 			System.out.println("Printing the Pred list");
 			cfnode.printPredList();
+			System.out.println("Printing the Gen Set");
+			cfnode.printGenSet();
+			System.out.println("Printing the Kill Set");
+			cfnode.printKillSet();
+			System.out.println("Printing In Set");
+			cfnode.printInSet();
+			System.out.println("Printing Out Set");
+			cfnode.printOutSet();
+			System.out.println();
 			System.out.println();
 		}
 	}
+
+	public void printBlockGraph(List<IRNode> workList) {
+		for(int i = 0; i < workList.size(); i++) {
+			IRNode node = workList.get(i);
+			ControlFlowNode cfnode = leaderTable.get(node);
+			System.out.println("Printing the CFNode");
+			cfnode.printCFNode();
+			System.out.println("Printing the Succ list");
+			cfnode.printSuccessorList();
+			System.out.println("Printing the Pred list");
+			cfnode.printPredList();
+		}
+	}
+
+	public List<HashSet<String>> createGenAndKill(IRNode node) {
+		List<HashSet<String>> genAndKill = new ArrayList<HashSet<String>>(); 
+		HashSet <String> genSet = new HashSet<String>();
+		HashSet <String> killSet = new HashSet<String>();
+		String opcode = node.getOpcode();
+		String operand1 = node.getOperand1(); 
+		String operand2 = node.getOperand2(); 
+		String result = node.getResult(); 
+		if(opcode.contains("STORE")) {
+
+			if(!operand1.matches("^\\d+"))
+				genSet.add(operand1);
+			if(!result.matches("^\\d+"))
+				killSet.add(result);
+		}
+		else if(opcode.contains("POP") && !operand1.equals("") && !operand1.matches("^\\d+")) 
+			killSet.add(operand1);
+		else if(opcode.contains("PUSH") && !operand1.equals("") && !operand1.matches("^\\d+"))
+			genSet.add(operand1);
+		else if(opcode.contains("WRITE") && !operand1.matches("^\\d+"))
+			genSet.add(operand1);
+		else if(opcode.contains("READ") && !operand1.matches("^\\d+"))
+			killSet.add(operand1);
+		else if(opcode.contains("JSR")) {
+			SymbolTable tempTable = Listener.SymbolList.getSymbolTable(0);
+			Hashtable<String, Symbol> variableTable = tempTable.getVariableTable();
+			for(String vars : variableTable.keySet())
+				genSet.add(vars);
+		}
+		else if(opcode.matches("(NE)|(LE)|(EQ)|(GT)|(LT).*")) {
+			if(!operand1.matches("^\\d+"))
+				genSet.add(operand1);
+			if(!operand2.matches("^\\d+"))
+				genSet.add(operand2);
+		}
+		else if(opcode.contains("RET") || opcode.contains("JUMP") || opcode.contains("LABEL") || opcode.contains("LINK")) {
+		}
+		else {
+			if(!operand1.matches("^\\d+") && !operand1.equals(""))
+				genSet.add(operand1);
+			if(!operand2.matches("^\\d+") && !operand2.equals("")) 
+				genSet.add(operand2);
+			if(!result.matches("^\\d+") && !result.equals(""))
+				killSet.add(result); 
+		}
+		genAndKill.add(genSet); 
+		genAndKill.add(killSet); 
+
+		return genAndKill;
+	}
+
+	public void createLivenessSet (List<IRNode> statementWorkList) {
+
+		for(int i = statementWorkList.size() - 1 ; i >= 0 ; i--) { 
+			HashSet<String> inSet = new HashSet<String>(); 
+			HashSet<String> outSet = new HashSet<String>(); 
+			IRNode irnode = statementWorkList.get(i); 
+			ControlFlowNode node = statementTable.get(irnode); 
+			
+			List<ControlFlowNode> successorList = node.getSuccessorList(); 
+			for(ControlFlowNode cfNode : successorList) { // out (s) = succ(out(s) ) U out(s) 
+				HashSet <String> inset = cfNode.getInSet();
+				outSet.addAll(cfNode.getInSet()); 
+			} 
+
+			inSet.addAll(outSet);
+			inSet.removeAll(node.getKillSet());
+			inSet.addAll(node.getGenSet());
+
+			if(irnode.getNodeVal().matches("RET\\s+$")) {
+				SymbolTable tempTable = Listener.SymbolList.getSymbolTable(0);
+				Hashtable<String, Symbol> variableTable = tempTable.getVariableTable();
+				for(String vars : variableTable.keySet())
+					outSet.add(vars);
+			}
+
+			// insets of all successors
+			node.setInSet(inSet);
+			node.setOutSet(outSet); 
+			// set node back
+
+			//statementTable.put(irnode, node);
+		}
+	}
+
 }

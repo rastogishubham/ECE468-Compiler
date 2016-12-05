@@ -205,11 +205,14 @@ public class Helper {
     		String instruction = tempNode.getNodeVal();
 
     		if(instruction.matches("LABEL [A-Za-z][A-Za-z0-9]{0,30}\\s+$") && !instruction.matches("LABEL label[0-9]+\\s+$")) {
-    			List<IRNode> workList = createWorkList(Listener.leaderSet);
-    			ControlFlowGraph cfg = new ControlFlowGraph(workList, tempList, tempNode.getLineNum());
-    			Listener.cfgList.add(cfg);
-    			Listener.leaderSet.clear();
-    			Listener.leaderSet.add(tempNode);
+    			if(!Listener.leaderSet.isEmpty()) {
+	    			List<IRNode> workList = createWorkList(Listener.leaderSet);
+	    			ControlFlowGraph cfg = new ControlFlowGraph(workList, tempList, tempNode.getLineNum());
+
+	    			Listener.cfgList.add(cfg);
+	    			Listener.leaderSet.clear();
+	    			Listener.leaderSet.add(tempNode);
+	    		}
     		}
     		else if(instruction.matches("(LE|LT|GE|GT|EQ|NE).*$")) {
     			IRNode targetNode = new IRNode("LABEL", tempNode.getResult(), "", "");
@@ -226,7 +229,7 @@ public class Helper {
     		}
     	}
     	List<IRNode> workList = createWorkList(Listener.leaderSet);
-    	ControlFlowGraph cfg = new ControlFlowGraph(workList, tempList, tempNode.getLineNum());
+    	ControlFlowGraph cfg = new ControlFlowGraph(workList, tempList, tempNode.getLineNum() + 1);
     	Listener.cfgList.add(cfg);
     }
 
