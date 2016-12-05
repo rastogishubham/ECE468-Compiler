@@ -8,6 +8,7 @@ class ControlFlowGraph {
 	private HashMap<IRNode, ControlFlowNode> statementTable = new HashMap<IRNode, ControlFlowNode>();
 	private IRList irList = new IRList(); 
 	private int end; 
+	 
 	public ControlFlowGraph (List<IRNode> workList, IRList listIR, int end) {
 		this.irList = listIR; 
 		this.end = end; 
@@ -262,6 +263,8 @@ class ControlFlowGraph {
 
 	public void createLivenessSet (List<IRNode> statementWorkList) {
 
+		boolean isEqual = false;
+
 		for(int i = statementWorkList.size() - 1 ; i >= 0 ; i--) { 
 			HashSet<String> inSet = new HashSet<String>(); 
 			HashSet<String> outSet = new HashSet<String>(); 
@@ -269,8 +272,8 @@ class ControlFlowGraph {
 			ControlFlowNode node = statementTable.get(irnode); 
 			
 			List<ControlFlowNode> successorList = node.getSuccessorList(); 
-			for(ControlFlowNode cfNode : successorList) { // out (s) = succ(out(s) ) U out(s) 
-				HashSet <String> inset = cfNode.getInSet();
+
+			for(ControlFlowNode cfNode : successorList) {
 				outSet.addAll(cfNode.getInSet()); 
 			} 
 
@@ -286,12 +289,41 @@ class ControlFlowGraph {
 			}
 
 			// insets of all successors
-			node.setInSet(inSet);
-			node.setOutSet(outSet); 
+			 node.setInSet(inSet);
+			 node.setOutSet(outSet); 
 			// set node back
 
 			//statementTable.put(irnode, node);
 		}
-	}
 
+		while(isEqual != true) {
+			isEqual = true;
+			for(int i = statementWorkList.size() - 1 ; i >= 0 ; i--) {
+				HashSet<String> inSet = new HashSet<String>(); 
+				HashSet<String> outSet = new HashSet<String>();
+				IRNode irnode = statementWorkList.get(i); 
+				ControlFlowNode node = statementTable.get(irnode);
+
+				List<ControlFlowNode> successorList = node.getSuccessorList();
+				for(ControlFlowNode cfNode : successorList) {
+					outSet.addAll(cfNode.getInSet()); 
+				}
+				inSet.addAll(outSet);
+				inSet.removeAll(node.getKillSet());
+				inSet.addAll(node.getGenSet());
+
+				if(irnode.getNodeVal().matches("RET\\s+$")) {
+					SymbolTable tempTable = Listener.SymbolList.getSymbolTable(0);
+					Hashtable<String, Symbol> variableTable = tempTable.getVariableTable();
+					for(String vars : variableTable.keySet())
+						outSet.add(vars);
+				}
+
+				if(!node.getInSet().equals(inSet) || !node.getOutSet().equals(outSet))
+					isEqual = false;
+				node.setInSet(inSet);
+			 	node.setOutSet(outSet); 
+			}
+		}
+	}
 }

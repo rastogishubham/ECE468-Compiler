@@ -208,11 +208,10 @@ public class Helper {
     			if(!Listener.leaderSet.isEmpty()) {
 	    			List<IRNode> workList = createWorkList(Listener.leaderSet);
 	    			ControlFlowGraph cfg = new ControlFlowGraph(workList, tempList, tempNode.getLineNum());
-
 	    			Listener.cfgList.add(cfg);
-	    			Listener.leaderSet.clear();
-	    			Listener.leaderSet.add(tempNode);
 	    		}
+	    		Listener.leaderSet.clear();
+	    		Listener.leaderSet.add(tempNode);
     		}
     		else if(instruction.matches("(LE|LT|GE|GT|EQ|NE).*$")) {
     			IRNode targetNode = new IRNode("LABEL", tempNode.getResult(), "", "");

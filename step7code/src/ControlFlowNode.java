@@ -8,7 +8,6 @@ class ControlFlowNode {
 	private List<ControlFlowNode> successorList = new ArrayList<ControlFlowNode>();
 	private List<ControlFlowNode> predecessorList = new ArrayList<ControlFlowNode>();
 	private HashSet<String> genSet = new HashSet<String>();
-	
 	private HashSet<String> inSet = new HashSet<String>(); 
 	private HashSet<String> outSet = new HashSet<String>(); 
 
@@ -152,4 +151,5 @@ class ControlFlowNode {
 	public void printOutSet() {
 		System.out.println(this.outSet);
 	}
+
 }
