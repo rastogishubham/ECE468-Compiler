@@ -8,6 +8,7 @@ class ControlFlowGraph {
 	private HashMap<IRNode, ControlFlowNode> statementTable = new HashMap<IRNode, ControlFlowNode>();
 	private IRList irList = new IRList(); 
 	private int end; 
+	private List<IRNode> statementWorkList = new ArrayList<IRNode>();
 	 
 	public ControlFlowGraph (List<IRNode> workList, IRList listIR, int end) {
 		this.irList = listIR; 
@@ -16,11 +17,15 @@ class ControlFlowGraph {
 			System.out.println("Come into make new graph");
 			generateLeaderTable(workList);
 			createSuccessorAndPredecessorList(workList);
-			printBlockGraph(workList);
-			List<IRNode> statementWorkList = createStatementGraph(workList);
+		//	printBlockGraph(workList);
+			this.statementWorkList = createStatementGraph(workList);
 			createLivenessSet(statementWorkList);
-			printGraph(statementWorkList);
+			//printGraph(statementWorkList);
 		}
+	}
+
+	public List<IRNode> getStatementWorkList() {
+		return this.statementWorkList;
 	}
 
 	public List<IRNode> createStatementGraph(List<IRNode> workList) {
