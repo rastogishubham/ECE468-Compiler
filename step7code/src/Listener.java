@@ -50,11 +50,7 @@ public class Listener extends MicroBaseListener {
 		List nameList = tempTable.getNameList();
 		Hashtable<String, Symbol> tempVarTable = tempTable.getVariableTable();
 		Helper help = new Helper();
-
 		ListIR = help.enumerateProg(ListIR);
-
-		System.out.println("Printing List: ");
-		System.out.println();
 
 		for(IRList list : ListIR) {
 			for(IRNode node : list.getList()) {
@@ -68,6 +64,12 @@ public class Listener extends MicroBaseListener {
 		}
 
 		System.out.println("\n\nLength of cfgList: " + Listener.cfgList.size());
+
+		for(ControlFlowGraph cfgraph : cfgList) {
+			List<IRNode> statementGraph = cfgraph.getStatementWorkList();
+			System.out.println("Printing cfgraph: ");
+			cfgraph.printGraph(statementGraph);
+		}
 
 		for(int i = 0; i < nameList.size(); i ++) {
 			String varType = tempVarTable.get(nameList.get(i)).getType();
