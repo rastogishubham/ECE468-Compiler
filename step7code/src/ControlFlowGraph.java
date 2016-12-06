@@ -291,6 +291,9 @@ class ControlFlowGraph {
 				Hashtable<String, Symbol> variableTable = tempTable.getVariableTable();
 				for(String vars : variableTable.keySet())
 					outSet.add(vars);
+				inSet.addAll(outSet);
+				inSet.removeAll(node.getKillSet());
+				inSet.addAll(node.getGenSet());
 			}
 
 			// insets of all successors
@@ -322,6 +325,9 @@ class ControlFlowGraph {
 					Hashtable<String, Symbol> variableTable = tempTable.getVariableTable();
 					for(String vars : variableTable.keySet())
 						outSet.add(vars);
+					inSet.addAll(outSet);
+					inSet.removeAll(node.getKillSet());
+					inSet.addAll(node.getGenSet());
 				}
 
 				if(!node.getInSet().equals(inSet) || !node.getOutSet().equals(outSet))

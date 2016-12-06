@@ -435,8 +435,8 @@ public class TinyConverter  {
             }
             else if(opcode.contains("LINK")) { 
                 funcCount++;
-                String localCount = Integer.toString(getLocalVarCount(Listener.funcList.get(funcCount)));
-                System.out.println("link " + localCount);
+            //    String localCount = Integer.toString(getLocalVarCount(Listener.funcList.get(funcCount)));
+                System.out.println("link 1000");// + localCount);
             } 
 
             else if (opcode.contains("RET")) { 

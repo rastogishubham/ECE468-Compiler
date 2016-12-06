@@ -14,8 +14,11 @@ public class Listener extends MicroBaseListener {
 	public static int localNum = 1;
 
 	public int retType = 0;
+	private int funcCount = 0;
 
 	public static List <String> funcList = new ArrayList<String>();
+	public static List <Integer> localVarList = new ArrayList<Integer>();
+	public static List <Integer> paramList = new ArrayList<Integer>();
 	private TinyConverter tiny = new TinyConverter(); 
 	private List <IRList> ListIR = new ArrayList<IRList>();
 	public static Hashtable <String, String> typeTable = new Hashtable<String, String>();
@@ -63,11 +66,8 @@ public class Listener extends MicroBaseListener {
 			help.createLeaderSet(tempList);
 		}
 
-		System.out.println("\n\nLength of cfgList: " + Listener.cfgList.size());
-
 		for(ControlFlowGraph cfgraph : cfgList) {
 			List<IRNode> statementGraph = cfgraph.getStatementWorkList();
-			System.out.println("Printing cfgraph: ");
 			cfgraph.printGraph(statementGraph);
 		}
 
@@ -434,6 +434,12 @@ public class Listener extends MicroBaseListener {
 		ListIR.add(tempList);
 	}
 	@Override public void exitFunc_decl(MicroParser.Func_declContext ctx) {
+		int localCount = getLocalVarCount(Listener.funcList.get(funcCount));
+		int paramCount = getParamCount(Listener.funcList.get(funcCount));
+		Listener.localVarList.add(localCount);
+		Listener.paramList.add(paramCount);
+		funcCount++;
+
 		IRList lastList = ListIR.get(ListIR.size() - 1);
 		IRNode lastNode = lastList.getIRNode(lastList.getSize() - 1);
 		if(!lastNode.getOpcode().equals("RET")) {
@@ -477,4 +483,64 @@ public class Listener extends MicroBaseListener {
 		tempList.printList();
 		ListIR.add(tempList); 
 	}
+
+	public int getLocalVarCount(String funcName) {
+        SymbolTable tempTable = Listener.SymbolList.getSymbolTable();
+        String scope = tempTable.getScope();
+        Hashtable <String, Symbol> varTable = tempTable.getVariableTable();
+        int pos = Listener.SymbolList.getListLen();
+        int localCount = 0;
+        while(pos >= 0) {
+            if(scope.equals(funcName))
+                break;
+            pos--;
+            tempTable = Listener.SymbolList.getSymbolTable(pos);
+            scope = tempTable.getScope();
+            varTable = tempTable.getVariableTable();
+        }
+        for(int i = pos; i <= Listener.SymbolList.getListLen(); i++) {
+            tempTable = Listener.SymbolList.getSymbolTable(i);
+            scope = tempTable.getScope();
+            varTable = tempTable.getVariableTable();
+            List <String> tempList = tempTable.getNameList();
+            if(!scope.equals(funcName) && !scope.contains("BLOCK"))
+                return localCount;
+            for(String varName : tempList) {
+                String tempRegName = varTable.get(varName).getTempName();
+                if(tempRegName.contains("$L"))
+                    localCount++;
+            }
+        }
+        return localCount;
+    }
+
+    public int getParamCount(String funcName) {
+        SymbolTable tempTable = Listener.SymbolList.getSymbolTable();
+        String scope = tempTable.getScope();
+        Hashtable <String, Symbol> varTable = tempTable.getVariableTable();
+        int pos = Listener.SymbolList.getListLen();
+        int paramCount = 0;
+        while(pos >= 0) {
+            if(scope.equals(funcName))
+                break;
+            pos--;
+            tempTable = Listener.SymbolList.getSymbolTable(pos);
+            scope = tempTable.getScope();
+            varTable = tempTable.getVariableTable();
+        }
+        for(int i = pos; i <= Listener.SymbolList.getListLen(); i++) {
+            tempTable = Listener.SymbolList.getSymbolTable(i);
+            scope = tempTable.getScope();
+            varTable = tempTable.getVariableTable();
+            List <String> tempList = tempTable.getNameList();
+            if(!scope.equals(funcName) && !scope.contains("BLOCK"))
+                return paramCount;
+            for(String varName : tempList) {
+                String tempRegName = varTable.get(varName).getTempName();
+                if(tempRegName.contains("$P"))
+                    paramCount++;
+            }
+        }
+        return paramCount;
+    }
 }
