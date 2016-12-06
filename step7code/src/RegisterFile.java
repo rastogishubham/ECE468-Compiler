@@ -17,14 +17,14 @@ class RegisterFile {
 		 return regFile.get(index); 
 	}
 
-	public int ensure(List <IRNode> allocatedIRList, String operand) { // checks whether the register 
+	public int ensure(List <IRNode> allocatedIRList, String operand, HashSet<String> outSet) { // checks whether the register 
 		for(int i = 0; i < this.regNum; i++) {
 			if(regFile.get(i).getRegValue().equals(operand))
 				return i;
 		}
 		int regNum = allocate(allocatedIRList, operand);
 	}
-	public int allocate(List <IRNode> allocatedIRList, String operand) { 
+	public int allocate(List <IRNode> allocatedIRList, String operand, HashSet<String> outSet) { 
 		int fileSize = this.regFile.getSize(); 
 		int isFree = 0; 
 		for(int i = 0; i < fileSize; i++) {
@@ -37,10 +37,10 @@ class RegisterFile {
 
 		}
 	}
-	//public int 
+	public int isFree()
 
 
-	public void free(Register r, List<String> outSet) {
+	public void free(Register r, List<String> outSet, HashSet<String> outSet) {
 		if(r.getDirty()) {
 			for(String var : outSet) {
 				String register = r.getRegister() + r.getDirty();
