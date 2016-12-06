@@ -40,4 +40,8 @@ class IRList {
 	public void addAll(List <IRNode> tempList) {
 		this.ListIR.addAll(tempList);
 	}
+
+	public void setListIR(List <IRNode> list) {
+		this.ListIR = list;
+	}
 }

@@ -66,10 +66,21 @@ public class Listener extends MicroBaseListener {
 			help.createLeaderSet(tempList);
 		}
 
-		for(ControlFlowGraph cfgraph : cfgList) {
+	/*	for(ControlFlowGraph cfgraph : cfgList) {
 			List<IRNode> statementGraph = cfgraph.getStatementWorkList();
 			cfgraph.printGraph(statementGraph);
+		}*/
+
+		RegisterAlloc regalloc = new RegisterAlloc(cfgList);
+		List <IRNode> list = regalloc.modifyIRCode();
+
+		System.out.println("\n\n;Printing new IR code: \n\n");
+		for(IRNode temp : list) {
+			temp.printNode();
 		}
+
+		IRList listIR = new IRList();
+		listIR.setListIR(list);
 
 		for(int i = 0; i < nameList.size(); i ++) {
 			String varType = tempVarTable.get(nameList.get(i)).getType();
@@ -81,10 +92,10 @@ public class Listener extends MicroBaseListener {
 				System.out.println("var " + nameList.get(i));
 			}
 		}
-		for(int i = 0; i < ListIR.size(); i++) {
-			IRList tempList = ListIR.get(i);
-			tiny.printTinyCode(tempList);
-		}
+		//for(int i = 0; i < ListIR.size(); i++) {
+		//	IRList tempList = ListIR.get(i);
+		tiny.printTinyCode(listIR);
+		//}
 		System.out.println("end");
 	}
 	@Override

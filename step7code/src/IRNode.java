@@ -48,7 +48,7 @@ class IRNode {
 		this.lineNum = lineNum;
 	}
 	public void printNode() {
-		System.out.println(";" + this.lineNum + " " + this.Opcode + " " + this.Operand1 + " " + this.Operand2 + " " +this.Result);
+		System.out.println(";" + this.Opcode + " " + this.Operand1 + " " + this.Operand2 + " " +this.Result);
 	}
 	public String getNodeVal() {
 		return this.Opcode + " " + this.Operand1 + " " + this.Operand2 + " " +this.Result;

@@ -14,18 +14,20 @@ class ControlFlowGraph {
 		this.irList = listIR; 
 		this.end = end; 
 		if(workList.size() > 0) { 
-			System.out.println("Come into make new graph");
+			//System.out.println("Come into make new graph");
 			generateLeaderTable(workList);
 			createSuccessorAndPredecessorList(workList);
-		//	printBlockGraph(workList);
 			this.statementWorkList = createStatementGraph(workList);
 			createLivenessSet(statementWorkList);
-			//printGraph(statementWorkList);
 		}
 	}
 
 	public List<IRNode> getStatementWorkList() {
 		return this.statementWorkList;
+	}
+
+	public HashMap<IRNode, ControlFlowNode> getStatementTable() {
+		return this.statementTable;
 	}
 
 	public List<IRNode> createStatementGraph(List<IRNode> workList) {
@@ -296,12 +298,8 @@ class ControlFlowGraph {
 				inSet.addAll(node.getGenSet());
 			}
 
-			// insets of all successors
 			 node.setInSet(inSet);
 			 node.setOutSet(outSet); 
-			// set node back
-
-			//statementTable.put(irnode, node);
 		}
 
 		while(isEqual != true) {
