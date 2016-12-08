@@ -27,33 +27,40 @@ class RegisterAlloc {
 				String result = tempNode.getResult();
 				String inst = tempNode.getNodeVal();
 
-
+				System.out.println(";Instruction is: " + inst);
 
 				if(opcode.contains("PUSH") || opcode.contains("POP")) {
 					HashSet<String> outSet = cfNode.getOutSet();
+					if(cfNode.getPredecessorList().size() > 1 || cfNode.getSuccessorList().size() > 1) {
+						regFile.clearRegs(allocatedIRList, Listener.localVarList.get(funcCount), Listener.paramList.get(funcCount));
+					}
 					if(!operand1.equals("") && !result.contains("label")) {
-						int regNum = regFile.allocate(allocatedIRList, operand1, outSet, Listener.localVarList.get(funcCount), Listener.paramList.get(funcCount), inst, true);
+						int regNum = regFile.allocate(allocatedIRList, operand1, outSet, inst, Listener.localVarList.get(funcCount), Listener.paramList.get(funcCount));
 						operand1 = "$T" + Integer.toString(regNum + 1);
 					}
 					IRNode node = new IRNode(opcode, operand1, operand2, result);
 					this.allocatedIRList.add(node);
 				}
+				else if(opcode.equals("LABEL") || opcode.equals("JUMP")) {
+					regFile.clearRegs(allocatedIRList, Listener.localVarList.get(funcCount), Listener.paramList.get(funcCount));
+					this.allocatedIRList.add(tempNode);
 
+				}
 
 				else if(!opcode.contains("LABEL") && !opcode.contains("JSR") && !opcode.contains("JUMP") && !opcode.contains("LINK") && !opcode.contains("RET") && !opcode.contains("WRITE")) {
 					HashSet<String> outSet = cfNode.getOutSet();
 					if(!operand1.equals("") && !operand1.matches("\\d+$") && !operand1.matches("\\d+\\.\\d+$")) {
-						int regNum = regFile.ensure(allocatedIRList, operand1, outSet, Listener.localVarList.get(funcCount), Listener.paramList.get(funcCount), 0 , inst);
+						int regNum = regFile.ensure(allocatedIRList, operand1, outSet, inst, Listener.localVarList.get(funcCount), Listener.paramList.get(funcCount));
 						operand1 = "$T" + Integer.toString(regNum + 1);
 					}
 					
 					if(!operand2.equals("") && !operand2.matches("\\d+$") && !operand2.matches("\\d+\\.\\d+$")) {
-						int regNum = regFile.ensure(allocatedIRList, operand2, outSet, Listener.localVarList.get(funcCount), Listener.paramList.get(funcCount), 0, inst);
+						int regNum = regFile.ensure(allocatedIRList, operand2, outSet, inst, Listener.localVarList.get(funcCount), Listener.paramList.get(funcCount));
 						operand2 = "$T" + Integer.toString(regNum + 1);
 					}
 
 					if(!result.equals("") && !result.contains("label")) {
-						int regNum = regFile.allocate(allocatedIRList, result, outSet, Listener.localVarList.get(funcCount), Listener.paramList.get(funcCount), inst, true);
+						int regNum = regFile.allocate(allocatedIRList, result, outSet, inst, Listener.localVarList.get(funcCount), Listener.paramList.get(funcCount));
 						result = "$T" + Integer.toString(regNum + 1);
 					}
 					
@@ -62,21 +69,52 @@ class RegisterAlloc {
 
 					if(!outSet.contains(operand1) && !operand1.equals("") && !operand1.matches("\\d+$") && !operand1.matches("\\d+\\.\\d+$")) {
 						int regNum = Integer.parseInt(operand1.replace("$T", "")) - 1;
-						regFile.free(outSet, regNum, allocatedIRList, Listener.localVarList.get(funcCount), Listener.paramList.get(funcCount));
+						regFile.free(regNum, allocatedIRList, Listener.localVarList.get(funcCount), Listener.paramList.get(funcCount));
 					}
 					if(!outSet.contains(operand2) && !operand2.equals("") && !operand2.matches("\\d+$") && !operand2.matches("\\d+\\.\\d+$")) {
 						int regNum = Integer.parseInt(operand2.replace("$T", "")) - 1;
-						regFile.free(outSet, regNum, allocatedIRList, Listener.localVarList.get(funcCount), Listener.paramList.get(funcCount));
+						regFile.free(regNum, allocatedIRList, Listener.localVarList.get(funcCount), Listener.paramList.get(funcCount));
+					}
+					if(cfNode.getPredecessorList().size() > 1 || cfNode.getSuccessorList().size() > 1) {
+						regFile.clearRegs(allocatedIRList, Listener.localVarList.get(funcCount), Listener.paramList.get(funcCount));
+					}
+					String jumpCode = "";
+					if(opcode.equals("GE")) {
+						jumpCode = "JGE";
+						IRNode jumpNode = new IRNode(jumpCode, "", "", result);
+						this.allocatedIRList.add(jumpNode);
+					}
+					else if(opcode.equals("LE")) {
+						jumpCode = "JLE";
+						IRNode jumpNode = new IRNode(jumpCode, "", "", result);
+						this.allocatedIRList.add(jumpNode);
+					}
+					else if(opcode.equals("EQ")) {
+						jumpCode = "JEQ";
+						IRNode jumpNode = new IRNode(jumpCode, "", "", result);
+						this.allocatedIRList.add(jumpNode);
+					}
+					else if(opcode.equals("GT")) {
+						jumpCode = "JGT";
+						IRNode jumpNode = new IRNode(jumpCode, "", "", result);
+						this.allocatedIRList.add(jumpNode);
+					}
+					else if(opcode.equals("LT")) {
+						jumpCode = "JLT";
+						IRNode jumpNode = new IRNode(jumpCode, "", "", result);
+						this.allocatedIRList.add(jumpNode);
 					}
 
 				}
 				else {
+					if(cfNode.getPredecessorList().size() > 1 || cfNode.getSuccessorList().size() > 1) {
+						regFile.clearRegs(allocatedIRList, Listener.localVarList.get(funcCount), Listener.paramList.get(funcCount));
+					}
 					this.allocatedIRList.add(tempNode);
 				}
-				if(cfNode.getPredecessorList().size() > 1 || cfNode.getSuccessorList().size() > 1) {
-					regFile.clearRegs(cfNode.getOutSet(), allocatedIRList, Listener.localVarList.get(funcCount), Listener.paramList.get(funcCount));
-				}
+				
 			}
+			regFile.clearRegs(allocatedIRList, Listener.localVarList.get(funcCount), Listener.paramList.get(funcCount));
 			funcCount++;
 		}
 		return this.allocatedIRList;

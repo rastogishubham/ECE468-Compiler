@@ -297,6 +297,16 @@ public class TinyConverter  {
             else if(opcode.contains("LABEL")) {
                 System.out.println("label " + operand1);
             }
+            else if(opcode.contains("JGE"))
+                System.out.println("jge " + result);
+            else if(opcode.contains("JLE"))
+                System.out.println("jle " + result);
+            else if(opcode.contains("JGT"))
+                System.out.println("jgt " + result);
+            else if(opcode.contains("JLT"))
+                System.out.println("jlt " + result);
+            else if(opcode.contains("JEQ"))
+                System.out.println("jeq " + result);
             else if(opcode.contains("GT")) {
                 if(registerTypeTable.containsKey(operand1)) {
                     if(registerTypeTable.get(operand1).equals("INT")) {
@@ -317,7 +327,7 @@ public class TinyConverter  {
                 else {
                     System.out.println("cmpi " + operand1 + " " + operand2);
                 }
-                System.out.println("jgt " + result);
+                //System.out.println("jgt " + result);
             }
             else if(opcode.contains("GE")) {
                 if(registerTypeTable.containsKey(operand1)) {
@@ -340,7 +350,7 @@ public class TinyConverter  {
                 else {
                     System.out.println("cmpi " + operand1 + " " + operand2);
                 }
-                System.out.println("jge " + result);
+                //System.out.println("jge " + result);
             }
             else if(opcode.contains("LT")) {
                 if(registerTypeTable.containsKey(operand1)) {
@@ -362,7 +372,7 @@ public class TinyConverter  {
                 else {
                     System.out.println("cmpi " + operand1 + " " + operand2);
                 }
-                System.out.println("jlt " + result);
+                //System.out.println("jlt " + result);
             }
             else if(opcode.contains("LE")) {
                 if(registerTypeTable.containsKey(operand1)) {
@@ -384,7 +394,7 @@ public class TinyConverter  {
                 else {
                     System.out.println("cmpi " + operand1 + " " + operand2);
                 }
-                System.out.println("jle " + result);
+                //System.out.println("jle " + result);
             }
             else if(opcode.contains("NE")) {
                 if(registerTypeTable.containsKey(operand1)) {
@@ -406,7 +416,7 @@ public class TinyConverter  {
                 else {
                     System.out.println("cmpi " + operand1 + " " + operand2);
                 }
-                System.out.println("jne " + result);
+               // System.out.println("jne " + result);
             }
             else if(opcode.contains("EQ")) {
                 if(registerTypeTable.containsKey(operand1)) {
@@ -428,7 +438,7 @@ public class TinyConverter  {
                 else {
                     System.out.println("cmpi " + operand1 + " "  + operand2);
                 }
-                System.out.println("jeq " + result);
+                //System.out.println("jeq " + result);
             }
             else if(opcode.contains("STRING")) {
                 System.out.println("str " + operand1 + " " + operand2);
@@ -461,7 +471,7 @@ public class TinyConverter  {
                 System.out.println("pop r2");
                 System.out.println("pop r1");
                 System.out.println("pop r0");
-            } 
+            }
         }
     }
     

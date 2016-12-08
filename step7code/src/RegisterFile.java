@@ -14,11 +14,11 @@ class RegisterFile {
 		this.regNum = regNum;
 	}
 
-	public void clearRegs(HashSet<String> outSet, List<IRNode> allocatedIRList, int localVarCount, int paramCount) {
+	public void clearRegs(List<IRNode> allocatedIRList, int localVarCount, int paramCount) {
 
-		for(int i = 0; i < this.regNum; i++) { 
+		for(int i = this.regNum - 1; i >= 0; i--) { 
 			if(regFile.get(i).getDirty())
-				free(outSet, i, allocatedIRList, localVarCount, paramCount);
+				free(i, allocatedIRList, localVarCount, paramCount);
 		}
 
 		this.regFile.clear();
@@ -28,13 +28,13 @@ class RegisterFile {
 		}
 	}
 
-	public int ensure(List <IRNode> allocatedIRList, String operand, HashSet<String> outSet, int localVarCount, int paramCount, int noStore, String inst) { // checks whether the register 
+	public int ensure(List <IRNode> allocatedIRList, String operand, HashSet<String> outSet, String inst, int localVarCount, int paramCount) { // checks whether the register 
 		for(int i = this.regNum - 1; i >= 0; i--) {
 			if(regFile.get(i).getRegValue().equals(operand)) {
 				return i;
 			}
 		}
-		int regNumber = allocate(allocatedIRList, operand, outSet, localVarCount, paramCount, inst, false);
+		int regNumber = allocate(allocatedIRList, operand, outSet, inst, localVarCount, paramCount);
 		IRNode tempNode;
 
 		if(spillTable.containsKey(operand)) {
@@ -49,13 +49,9 @@ class RegisterFile {
 			tempNode = new IRNode("STOREF", operand, "", "$T" + Integer.toString(regNumber + 1));
 		}
 		allocatedIRList.add(tempNode);
-		//if(noStore == 0) {
-		//	IRNode tempNode = new IRNode("STOREF", operand, "", "$T" + Integer.toString(regNumber + 1));
-		//	allocatedIRList.add(tempNode);
-		// }
 		return regNumber;
 	}
-	public int allocate(List <IRNode> allocatedIRList, String operand, HashSet<String> outSet, int localVarCount, int paramCount, String inst, boolean setDirty) { 
+	public int allocate(List <IRNode> allocatedIRList, String operand, HashSet<String> outSet, String inst, int localVarCount, int paramCount) { 
 		int fileSize = this.regFile.size(); 
 		boolean isFree = false; 
 		int allocateIndex = 0; 
@@ -73,26 +69,18 @@ class RegisterFile {
 				String op = regfromFile.getRegValue(); 
 				if(!outSet.contains(op) && !isFree){ 
 					isFree = true; 
-					allocateIndex = i;  // register index to spill 
-				//	System.out.println(";allocateIndex: " + allocateIndex);
+					allocateIndex = i; 
 				}
 			}
-			free(outSet, allocateIndex, allocatedIRList, localVarCount, paramCount);
+			free(allocateIndex, allocatedIRList, localVarCount, paramCount);
 		}
 
 		String name = "r" + Integer.toString(allocateIndex); 
 		Register reg = new Register(name); 
 		reg.setRegValue(operand);
-		if(setDirty == true)
-			reg.setDirty(true);
-		else
-			reg.setDirty(false); 
-		
+		reg.setDirty(true);
 		reg.setFree(false);
 		regFile.set(allocateIndex, reg);
-
-
-		System.out.println(";Instruction is: " + inst);
 
 		System.out.println(";Outset: " + outSet);
 
@@ -119,11 +107,11 @@ class RegisterFile {
 		return -1;
 	}
 
-	public void free(HashSet<String> outSet, int freeRegNum, List<IRNode> allocatedIRList, int localVarCount, int paramCount) {
+	public void free(int freeRegNum, List<IRNode> allocatedIRList, int localVarCount, int paramCount) {
 		
 		Register freeReg = regFile.get(freeRegNum);
 
-		if(freeReg.getDirty()) { //&& outSet.contains(freeReg.getRegValue())) {
+		if(freeReg.getDirty()) {
 			String regValue = freeReg.getRegValue();
 			String regName = freeReg.getRegName();
 			int stackVal;
@@ -132,6 +120,7 @@ class RegisterFile {
 			if(regValue.contains("$T")) {
 				int regNum = Integer.parseInt(regValue.replace("$T", ""));
 				stackVal = localVarCount + regNum;
+
 				tempNode = new IRNode("STOREF", regName, "", "$-" + Integer.toString(stackVal));//"$T" + Integer.toString(freeRegNum + 1), "", regValue);
 				spillTable.put(regValue, "$-" + Integer.toString(stackVal));
 			}
