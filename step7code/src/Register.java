@@ -12,7 +12,7 @@ class Register {
 	public Register(String regName) {
 		this.regName = regName;
 		this.dirty = false;
-		this.free = false; 
+		this.free = true; 
 		this.regValue = "";
 	}
 	public String getRegName() {

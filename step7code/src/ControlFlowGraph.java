@@ -13,8 +13,7 @@ class ControlFlowGraph {
 	public ControlFlowGraph (List<IRNode> workList, IRList listIR, int end) {
 		this.irList = listIR; 
 		this.end = end; 
-		if(workList.size() > 0) { 
-			//System.out.println("Come into make new graph");
+		if(workList.size() > 0) {
 			generateLeaderTable(workList);
 			createSuccessorAndPredecessorList(workList);
 			this.statementWorkList = createStatementGraph(workList);

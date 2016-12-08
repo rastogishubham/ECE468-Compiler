@@ -40,7 +40,7 @@ public class TinyConverter  {
             if(operand1.matches("\\$R$")) {
                 operand1 = "$" + Integer.toString(6 + paramCount);
             }
-             if(operand2.matches("\\$T\\d+$")) {
+            if(operand2.matches("\\$T\\d+$")) {
                 temp = Integer.parseInt(operand2.split("T")[1]); 
                 temp = temp - 1; 
                 operand2 = "r" + Integer.toString(temp);
