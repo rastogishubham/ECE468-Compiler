@@ -307,6 +307,8 @@ public class TinyConverter  {
                 System.out.println("jlt " + result);
             else if(opcode.contains("JEQ"))
                 System.out.println("jeq " + result);
+            else if(opcode.contains("JNE"))
+                System.out.println("jne " + result);
             else if(opcode.contains("GT")) {
                 if(registerTypeTable.containsKey(operand1)) {
                     if(registerTypeTable.get(operand1).equals("INT")) {

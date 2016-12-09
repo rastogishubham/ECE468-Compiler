@@ -56,7 +56,7 @@ class IRNode {
 
 	@Override
 	public int hashCode() {
-		return this.Opcode.hashCode() + this.Operand1.hashCode() + this.Operand2.hashCode() + this.Result.hashCode() + this.lineNum;
+		return this.Opcode.hashCode() + this.Operand1.hashCode() + this.Operand2.hashCode() + this.Result.hashCode() + (this.lineNum * this.lineNum);
 	}
 
 	@Override

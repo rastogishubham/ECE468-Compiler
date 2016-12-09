@@ -41,7 +41,7 @@ class RegisterAlloc {
 					IRNode node = new IRNode(opcode, operand1, operand2, result);
 					this.allocatedIRList.add(node);
 				}
-				else if(opcode.equals("LABEL") || opcode.equals("JUMP")) {
+				else if(opcode.equals("LABEL") || opcode.equals("JUMP") || opcode.equals("RET")) {
 					regFile.clearRegs(allocatedIRList, Listener.localVarList.get(funcCount), Listener.paramList.get(funcCount));
 					this.allocatedIRList.add(tempNode);
 
@@ -104,6 +104,11 @@ class RegisterAlloc {
 						IRNode jumpNode = new IRNode(jumpCode, "", "", result);
 						this.allocatedIRList.add(jumpNode);
 					}
+					/*else if(opcode.equals("NE")) {
+						jumpCode = "JNE";
+						IRNode jumpNode = new IRNode(jumpCode, "", "", result);
+						this.allocatedIRList.add(jumpNode);
+					}*/
 
 				}
 				else {
