@@ -70,6 +70,7 @@ public class PemdasTree
                 exprTree.getLeftNode().setValue("$T" + Integer.toString(Listener.tempRegNum - 1));
             }
             if(operand2.matches("\\d+(?:\\.\\d+)?$")) {
+                result = "$T" + Integer.toString(Listener.tempRegNum); 
                 listIR.appendIRNode(storeOpcode, exprTree.getRightNode().getValue(), "", result);
                 exprTree.getRightNode().setValue(result);
                 Listener.tempRegNum += 1;
