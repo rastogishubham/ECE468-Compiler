@@ -129,6 +129,7 @@ class RegisterFile {
 		}
 		freeReg.setFree(true);
 		freeReg.setDirty(false);
+		freeReg.setRegValue("");
 	} 
 
 	public void setDirty(int regNum) {
