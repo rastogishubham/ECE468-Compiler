@@ -29,14 +29,15 @@ class RegisterAlloc {
 
 				System.out.println(";Instruction is: " + inst);
 
-				if(opcode.contains("PUSH") || opcode.contains("POP")) {
+				if(opcode.contains("POP") || opcode.contains("READ")) {
 					HashSet<String> outSet = cfNode.getOutSet();
 					if(cfNode.getPredecessorList().size() > 1 || cfNode.getSuccessorList().size() > 1) {
 						regFile.clearRegs(allocatedIRList, Listener.localVarList.get(funcCount), Listener.paramList.get(funcCount));
 					}
-					if(!operand1.equals("") && !result.contains("label")) {
+					if(!operand1.equals("")) {
 						int regNum = regFile.allocate(allocatedIRList, operand1, outSet, inst, Listener.localVarList.get(funcCount), Listener.paramList.get(funcCount));
 						operand1 = "$T" + Integer.toString(regNum + 1);
+						regFile.setDirty(regNum);
 					}
 					IRNode node = new IRNode(opcode, operand1, operand2, result);
 					this.allocatedIRList.add(node);
@@ -47,7 +48,7 @@ class RegisterAlloc {
 
 				}
 
-				else if(!opcode.contains("LABEL") && !opcode.contains("JSR") && !opcode.contains("JUMP") && !opcode.contains("LINK") && !opcode.contains("RET") && !opcode.contains("WRITE")) {
+				else if(!opcode.contains("LABEL") && !opcode.contains("JSR") && !opcode.contains("JUMP") && !opcode.contains("LINK") && !opcode.contains("RET") && !opcode.equals("WRITES")) {
 					HashSet<String> outSet = cfNode.getOutSet();
 					if(!operand1.equals("") && !operand1.matches("\\d+$") && !operand1.matches("\\d+\\.\\d+$")) {
 						int regNum = regFile.ensure(allocatedIRList, operand1, outSet, inst, Listener.localVarList.get(funcCount), Listener.paramList.get(funcCount));
@@ -62,6 +63,7 @@ class RegisterAlloc {
 					if(!result.equals("") && !result.contains("label")) {
 						int regNum = regFile.allocate(allocatedIRList, result, outSet, inst, Listener.localVarList.get(funcCount), Listener.paramList.get(funcCount));
 						result = "$T" + Integer.toString(regNum + 1);
+						regFile.setDirty(regNum);
 					}
 					
 					IRNode node = new IRNode(opcode, operand1, operand2, result);
@@ -104,11 +106,11 @@ class RegisterAlloc {
 						IRNode jumpNode = new IRNode(jumpCode, "", "", result);
 						this.allocatedIRList.add(jumpNode);
 					}
-					/*else if(opcode.equals("NE")) {
+					else if(opcode.equals("NE")) {
 						jumpCode = "JNE";
 						IRNode jumpNode = new IRNode(jumpCode, "", "", result);
 						this.allocatedIRList.add(jumpNode);
-					}*/
+					}
 
 				}
 				else {
@@ -117,7 +119,22 @@ class RegisterAlloc {
 					}
 					this.allocatedIRList.add(tempNode);
 				}
-				
+
+				HashSet<String> outSet = cfNode.getOutSet();
+
+				System.out.println(";Outset: " + outSet);
+
+
+				System.out.println(";Printing register file");
+
+				for(Register r : regFile.getRegFile()) {
+					System.out.println(";RegName: " + r.getRegName());
+					System.out.println(";RegVal: " + r.getRegValue());
+					System.out.println(";RegDirty: " + r.getDirty());
+					System.out.println(";RegFree: " + r.getFree());
+					System.out.println("\n");
+				}
+			
 			}
 			regFile.clearRegs(allocatedIRList, Listener.localVarList.get(funcCount), Listener.paramList.get(funcCount));
 			funcCount++;
