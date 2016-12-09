@@ -48,7 +48,7 @@ class RegisterAlloc {
 
 				}
 
-				else if(!opcode.contains("LABEL") && !opcode.contains("JSR") && !opcode.contains("JUMP") && !opcode.contains("LINK") && !opcode.contains("RET") && !opcode.equals("WRITES")) {
+				else if(opcode.equals("GE") || opcode.equals("NE") || opcode.equals("LT") || opcode.equals("EQ") || opcode.equals("GT") || opcode.equals("LE")) {
 					HashSet<String> outSet = cfNode.getOutSet();
 					if(!operand1.equals("") && !operand1.matches("\\d+$") && !operand1.matches("\\d+\\.\\d+$")) {
 						int regNum = regFile.ensure(allocatedIRList, operand1, outSet, inst, Listener.localVarList.get(funcCount), Listener.paramList.get(funcCount));
@@ -110,6 +110,38 @@ class RegisterAlloc {
 						jumpCode = "JNE";
 						IRNode jumpNode = new IRNode(jumpCode, "", "", result);
 						this.allocatedIRList.add(jumpNode);
+					}
+				}
+
+				else if(!opcode.contains("LABEL") && !opcode.contains("JSR") && !opcode.contains("JUMP") && !opcode.contains("LINK") && !opcode.contains("RET") && !opcode.equals("WRITES")) {
+					HashSet<String> outSet = cfNode.getOutSet();
+					if(!operand1.equals("") && !operand1.matches("\\d+$") && !operand1.matches("\\d+\\.\\d+$")) {
+						int regNum = regFile.ensure(allocatedIRList, operand1, outSet, inst, Listener.localVarList.get(funcCount), Listener.paramList.get(funcCount));
+						operand1 = "$T" + Integer.toString(regNum + 1);
+					}
+					
+					if(!operand2.equals("") && !operand2.matches("\\d+$") && !operand2.matches("\\d+\\.\\d+$")) {
+						int regNum = regFile.ensure(allocatedIRList, operand2, outSet, inst, Listener.localVarList.get(funcCount), Listener.paramList.get(funcCount));
+						operand2 = "$T" + Integer.toString(regNum + 1);
+					}
+
+					if(!result.equals("") && !result.contains("label")) {
+						int regNum = regFile.allocate(allocatedIRList, result, outSet, inst, Listener.localVarList.get(funcCount), Listener.paramList.get(funcCount));
+						result = "$T" + Integer.toString(regNum + 1);
+						regFile.setDirty(regNum);
+					}
+					
+					IRNode node = new IRNode(opcode, operand1, operand2, result);
+					this.allocatedIRList.add(node);
+
+					if(!outSet.contains(operand1) && !operand1.equals("") && !operand1.matches("\\d+$") && !operand1.matches("\\d+\\.\\d+$")) {
+						int regNum = Integer.parseInt(operand1.replace("$T", "")) - 1;
+						regFile.free(regNum, allocatedIRList, Listener.localVarList.get(funcCount), Listener.paramList.get(funcCount));
+					}
+					if(!outSet.contains(operand2) && !operand2.equals("") && !operand2.matches("\\d+$") && !operand2.matches("\\d+\\.\\d+$")) {
+						System.out.println(";Freeing b");
+						int regNum = Integer.parseInt(operand2.replace("$T", "")) - 1;
+						regFile.free(regNum, allocatedIRList, Listener.localVarList.get(funcCount), Listener.paramList.get(funcCount));
 					}
 
 				}
