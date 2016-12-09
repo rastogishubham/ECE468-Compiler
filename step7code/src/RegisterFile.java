@@ -78,22 +78,9 @@ class RegisterFile {
 		String name = "r" + Integer.toString(allocateIndex); 
 		Register reg = new Register(name); 
 		reg.setRegValue(operand);
-		reg.setDirty(true);
+		reg.setDirty(false);
 		reg.setFree(false);
 		regFile.set(allocateIndex, reg);
-
-		System.out.println(";Outset: " + outSet);
-
-
-		System.out.println(";Printing register file");
-
-		for(Register r : regFile) {
-			System.out.println(";RegName: " + r.getRegName());
-			System.out.println(";RegVal: " + r.getRegValue());
-			System.out.println(";RegDirty: " + r.getDirty());
-			System.out.println(";RegFree: " + r.getFree());
-			System.out.println("\n");
-		}
 
 	 	return allocateIndex;
 	}
@@ -143,6 +130,12 @@ class RegisterFile {
 		freeReg.setFree(true);
 		freeReg.setDirty(false);
 	} 
+
+	public void setDirty(int regNum) {
+		Register reg = regFile.get(regNum);
+		reg.setDirty(true);
+		regFile.set(regNum, reg);
+	}
 
 	public List <Register> getRegFile() {
 		return this.regFile;
