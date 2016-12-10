@@ -38,7 +38,16 @@ class RegisterFile {
 		IRNode tempNode;
 
 		if(spillTable.containsKey(operand)) {
-			tempNode = new IRNode("STOREF", spillTable.get(operand), "", "$T" + Integer.toString(regNumber + 1));
+			if(Listener.typeTable.containsKey(operand)) {
+				String storeOp = "STORE";
+				if(Listener.typeTable.get(operand).equals("INT"))
+					storeOp += "I";
+				else
+					storeOp += "F";
+				tempNode = new IRNode(storeOp, spillTable.get(operand), "", "$T" + Integer.toString(regNumber + 1));
+			}	
+			else
+				tempNode = new IRNode("STOREF", spillTable.get(operand), "", "$T" + Integer.toString(regNumber + 1));
 		}
 		else if(operand.contains("$T")) { 
 			int regNum = Integer.parseInt(operand.replace("$T", ""));
@@ -46,7 +55,16 @@ class RegisterFile {
 			tempNode = new IRNode("STOREF", "$-" + Integer.toString(stackVal), "", "$T" + Integer.toString(regNumber + 1));
 		}
 		else {
-			tempNode = new IRNode("STOREF", operand, "", "$T" + Integer.toString(regNumber + 1));
+			if(Listener.typeTable.containsKey(operand)) {
+				String storeOp = "STORE";
+				if(Listener.typeTable.get(operand).equals("INT"))
+					storeOp += "I";
+				else
+					storeOp += "F";
+				tempNode = new IRNode(storeOp, operand, "", "$T" + Integer.toString(regNumber + 1));
+			}	
+			else
+				tempNode = new IRNode("STOREF", operand, "", "$T" + Integer.toString(regNumber + 1));
 		}
 		allocatedIRList.add(tempNode);
 		return regNumber;
