@@ -98,10 +98,10 @@ public class TinyConverter  {
             }
             if(opcode.contains("STOREI")) {
 
-                if(operand1.matches("\\r\\d+$")) {
+                if(operand1.matches("r\\d+$")) {
                     registerTypeTable.put(operand1, "INT");
                 }
-                if(result.matches("\\r\\d+$")) {
+                if(result.matches("r\\d+$")) {
                     registerTypeTable.put(result, "INT");
                 }
 
@@ -111,13 +111,13 @@ public class TinyConverter  {
             }
             else if(opcode.contains("ADDI")) {
 
-                if(operand1.matches("\\r\\d+$")) {
+                if(operand1.matches("r\\d+$")) {
                     registerTypeTable.put(operand1, "INT");
                 }
-                if(operand2.matches("\\r\\d+$")) {
+                if(operand2.matches("r\\d+$")) {
                     registerTypeTable.put(operand1, "INT");
                 }
-                if(result.matches("\\r\\d+$")) {
+                if(result.matches("r\\d+$")) {
                     registerTypeTable.put(result, "INT");
                 }
 
@@ -129,13 +129,13 @@ public class TinyConverter  {
             }
             else if(opcode.contains("SUBI")) {
 
-                if(operand1.matches("\\r\\d+$")) {
+                if(operand1.matches("r\\d+$")) {
                     registerTypeTable.put(operand1, "INT");
                 }
-                if(operand2.matches("\\r\\d+$")) {
+                if(operand2.matches("r\\d+$")) {
                     registerTypeTable.put(operand1, "INT");
                 }
-                if(result.matches("\\r\\d+$")) {
+                if(result.matches("r\\d+$")) {
                     registerTypeTable.put(result, "INT");
                 }
 
@@ -147,13 +147,13 @@ public class TinyConverter  {
             }
             else if(opcode.contains("MULTI")) {
 
-                if(operand1.matches("\\r\\d+$")) {
+                if(operand1.matches("r\\d+$")) {
                     registerTypeTable.put(operand1, "INT");
                 }
-                if(operand2.matches("\\r\\d+$")) {
+                if(operand2.matches("r\\d+$")) {
                     registerTypeTable.put(operand1, "INT");
                 }
-                if(result.matches("\\r\\d+$")) {
+                if(result.matches("r\\d+$")) {
                     registerTypeTable.put(result, "INT");
                 }
 
@@ -165,13 +165,13 @@ public class TinyConverter  {
             }
             else if(opcode.contains("DIVI")) {
 
-                if(operand1.matches("\\r\\d+$")) {
+                if(operand1.matches("r\\d+$")) {
                     registerTypeTable.put(operand1, "INT");
                 }
-                if(operand2.matches("\\r\\d+$")) {
+                if(operand2.matches("r\\d+$")) {
                     registerTypeTable.put(operand1, "INT");
                 }
-                if(result.matches("\\r\\d+$")) {
+                if(result.matches("r\\d+$")) {
                     registerTypeTable.put(result, "INT");
                 }
 
@@ -183,7 +183,7 @@ public class TinyConverter  {
             }
             else if(opcode.contains("WRITEI")) {
 
-                if(operand1.matches("\\r\\d+$")) {
+                if(operand1.matches("r\\d+$")) {
                     registerTypeTable.put(operand1, "INT");
                 }
 
@@ -191,7 +191,7 @@ public class TinyConverter  {
             }
              else if(opcode.contains("WRITES")) {
 
-                if(operand1.matches("\\r\\d+$")) {
+                if(operand1.matches("r\\d+$")) {
                     registerTypeTable.put(operand1, "INT");
                 }
 
@@ -199,10 +199,11 @@ public class TinyConverter  {
             }
             else if(opcode.contains("STOREF")) {
 
-                if(operand1.matches("\\r\\d+$")) {
+                if(operand1.matches("r\\d+$")) {
+                    System.out.println("; comes here " + operand1);
                     registerTypeTable.put(operand1, "FLOAT");
                 }
-                if(result.matches("\\r\\d+$")) {
+                if(result.matches("r\\d+$")) {
                     registerTypeTable.put(result, "FLOAT");
                 }
 
@@ -212,13 +213,13 @@ public class TinyConverter  {
             }
             else if(opcode.contains("ADDF")) {
 
-                if(operand1.matches("\\r\\d+$")) {
+                if(operand1.matches("r\\d+$")) {
                     registerTypeTable.put(operand1, "FLOAT");
                 }
-                if(operand2.matches("\\r\\d+$")) {
+                if(operand2.matches("r\\d+$")) {
                     registerTypeTable.put(operand1, "FLOAT");
                 }
-                if(result.matches("\\r\\d+$")) {
+                if(result.matches("r\\d+$")) {
                     registerTypeTable.put(result, "FLOAT");
                 }
 
@@ -230,13 +231,13 @@ public class TinyConverter  {
             }
             else if(opcode.contains("SUBF")) {
 
-                if(operand1.matches("\\r\\d+$")) {
+                if(operand1.matches("r\\d+$")) {
                     registerTypeTable.put(operand1, "FLOAT");
                 }
-                if(operand2.matches("\\r\\d+$")) {
+                if(operand2.matches("r\\d+$")) {
                     registerTypeTable.put(operand1, "FLOAT");
                 }
-                if(result.matches("\\r\\d+$")) {
+                if(result.matches("r\\d+$")) {
                     registerTypeTable.put(result, "FLOAT");
                 }
 
@@ -248,13 +249,13 @@ public class TinyConverter  {
             }
             else if(opcode.contains("MULTF")) {
 
-                if(operand1.matches("\\r\\d+$")) {
+                if(operand1.matches("r\\d+$")) {
                     registerTypeTable.put(operand1, "FLOAT");
                 }
-                if(operand2.matches("\\r\\d+$")) {
+                if(operand2.matches("r\\d+$")) {
                     registerTypeTable.put(operand1, "FLOAT");
                 }
-                if(result.matches("\\r\\d+$")) {
+                if(result.matches("r\\d+$")) {
                     registerTypeTable.put(result, "FLOAT");
                 }
 
@@ -266,13 +267,13 @@ public class TinyConverter  {
             }
             else if(opcode.contains("DIVF")) {
 
-                if(operand1.matches("\\r\\d+$")) {
+                if(operand1.matches("r\\d+$")) {
                     registerTypeTable.put(operand1, "FLOAT");
                 }
-                if(operand2.matches("\\r\\d+$")) {
+                if(operand2.matches("r\\d+$")) {
                     registerTypeTable.put(operand1, "FLOAT");
                 }
-                if(result.matches("\\r\\d+$")) {
+                if(result.matches("r\\d+$")) {
                     registerTypeTable.put(result, "FLOAT");
                 }
 
@@ -284,18 +285,54 @@ public class TinyConverter  {
             }
             else if(opcode.contains("WRITEF")) {
                 System.out.println("sys writer " + operand1);
+                if(operand1.matches("r\\d+$")) {
+                    registerTypeTable.put(operand1, "FLOAT");
+                }
+                if(operand2.matches("r\\d+$")) {
+                    registerTypeTable.put(operand1, "FLOAT");
+                }
+                if(result.matches("r\\d+$")) {
+                    registerTypeTable.put(result, "FLOAT");
+                }
             }
             else if(opcode.contains("READI")) {
                 System.out.println("sys readi " + operand1);
+                if(operand1.matches("r\\d+$")) {
+                    registerTypeTable.put(operand1, "INT");
+                }
+                if(operand2.matches("r\\d+$")) {
+                    registerTypeTable.put(operand1, "INT");
+                }
+                if(result.matches("r\\d+$")) {
+                    registerTypeTable.put(result, "INT");
+                }
             }
             else if(opcode.contains("READF")) {
                 System.out.println("sys readr " + operand1);
+                if(operand1.matches("r\\d+$")) {
+                    registerTypeTable.put(operand1, "FLOAT");
+                }
+                if(operand2.matches("r\\d+$")) {
+                    registerTypeTable.put(operand1, "FLOAT");
+                }
+                if(result.matches("r\\d+$")) {
+                    registerTypeTable.put(result, "FLOAT");
+                }
             }
             else if(opcode.contains("JUMP")) {
                 System.out.println("jmp " + operand1);
             }
             else if(opcode.contains("LABEL")) {
                 System.out.println("label " + operand1);
+                if(operand1.matches("r\\d+$")) {
+                    registerTypeTable.put(operand1, "FLOAT");
+                }
+                if(operand2.matches("r\\d+$")) {
+                    registerTypeTable.put(operand1, "FLOAT");
+                }
+                if(result.matches("r\\d+$")) {
+                    registerTypeTable.put(result, "FLOAT");
+                }
             }
             else if(opcode.contains("JGE"))
                 System.out.println("jge " + result);
