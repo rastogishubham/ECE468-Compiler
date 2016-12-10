@@ -226,18 +226,18 @@ class ControlFlowGraph {
 		String result = node.getResult(); 
 		if(opcode.contains("STORE")) {
 
-			if(!operand1.matches("^\\d+"))
+			if(!operand1.matches("^\\d+.*"))
 				genSet.add(operand1);
-			if(!result.matches("^\\d+"))
+			if(!result.matches("^\\d+.*"))
 				killSet.add(result);
 		}
-		else if(opcode.contains("POP") && !operand1.equals("") && !operand1.matches("^\\d+")) 
+		else if(opcode.contains("POP") && !operand1.equals("") && !operand1.matches("^\\d+.*")) 
 			killSet.add(operand1);
-		else if(opcode.contains("PUSH") && !operand1.equals("") && !operand1.matches("^\\d+"))
+		else if(opcode.contains("PUSH") && !operand1.equals("") && !operand1.matches("^\\d+.*"))
 			genSet.add(operand1);
-		else if(opcode.contains("WRITE") && !operand1.matches("^\\d+"))
+		else if(opcode.contains("WRITE") && !operand1.matches("^\\d+.*"))
 			genSet.add(operand1);
-		else if(opcode.contains("READ") && !operand1.matches("^\\d+"))
+		else if(opcode.contains("READ") && !operand1.matches("^\\d+.*"))
 			killSet.add(operand1);
 		else if(opcode.contains("JSR")) {
 			SymbolTable tempTable = Listener.SymbolList.getSymbolTable(0);
