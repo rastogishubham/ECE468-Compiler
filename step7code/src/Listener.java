@@ -192,6 +192,7 @@ public class Listener extends MicroBaseListener {
 			else {
 				Helper Help = new Helper();
 				tempList = Help.parseExp(val, operand, 0);
+				Listener.tempRegNum -= 1;
 			}
 			String operand_old = operand;
 			Helper Help = new Helper();
@@ -274,7 +275,8 @@ public class Listener extends MicroBaseListener {
 				}
 				else {
 					Helper Help = new Helper();
-					retList = Help.parseExp(expression, operand, 0);
+					retList = Help.parseExp(val, operand, 0);
+					Listener.tempRegNum -= 1;
 				}
 				String operand_old = operand;
 				Helper Help = new Helper();
