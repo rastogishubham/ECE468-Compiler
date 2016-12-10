@@ -27,6 +27,7 @@ public class SymbolTable {
 				}
 			}
 			String tempName = "$" + regType + tempValue;
+			Listener.typeTable.put(tempName, type);
 			if(VariableTable.containsKey(name_array[i])) {
 				System.out.println("DECLARATION ERROR " + name_array[i]);
 				throw new RuntimeException();
