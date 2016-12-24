@@ -1,0 +1,2033 @@
+;LABEL factorial  
+;LINK   
+;STOREI 1  $T1
+;NE $P1 $T1 label1
+;STOREI 1  $T2
+;STOREI $T2  $R
+;RET   
+;JUMP label2  
+;LABEL label1  
+;STOREI 1  $T3
+;STOREI 1  $T4
+;NE $T3 $T4 label3
+;STOREI 1  $T5
+;SUBI $P1 $T5 $T6
+;PUSH   
+;PUSH $T6  
+;JSR factorial  
+;POP   
+;POP $T7  
+;STOREI $T7  $L2
+;MULTI $L2 $P1 $T8
+;STOREI $T8  $L1
+;JUMP label2  
+;LABEL label3  
+;LABEL label2  
+;STOREI $L1  $T9
+;STOREI $T9  $R
+;RET   
+
+;LABEL main  
+;LINK   
+;WRITES input  
+;READI $L1  
+;STOREI 1  $T1
+;NE $L1 $T1 label4
+;STOREI 1  $T2
+;STOREI $T2  $L2
+;JUMP label5  
+;LABEL label4  
+;STOREI 1  $T3
+;LE $L1 $T3 label6
+;PUSH   
+;PUSH $L1  
+;JSR factorial  
+;POP   
+;POP $T4  
+;STOREI $T4  $L2
+;JUMP label5  
+;LABEL label6  
+;STOREI 1  $T5
+;STOREI 1  $T6
+;NE $T5 $T6 label7
+;STOREI 0  $T7
+;STOREI $T7  $L2
+;JUMP label5  
+;LABEL label7  
+;LABEL label5  
+;WRITEI $L2  
+;WRITES eol  
+;STOREI 0  $T8
+;STOREI $T8  $R
+;RET   
+
+;LABEL factorial  
+;LINK   
+;STOREI 1  $T1
+;NE $P1 $T1 label1
+;STOREI 1  $T2
+;STOREI $T2  $R
+;RET   
+;JUMP label2  
+;LABEL label1  
+;STOREI 1  $T3
+;STOREI 1  $T4
+;NE $T3 $T4 label3
+;STOREI 1  $T5
+;SUBI $P1 $T5 $T6
+;PUSH   
+;PUSH $T6  
+;JSR factorial  
+;POP   
+;POP $T7  
+;STOREI $T7  $L2
+;MULTI $L2 $P1 $T8
+;STOREI $T8  $L1
+;JUMP label2  
+;LABEL label3  
+;LABEL label2  
+;STOREI $L1  $T9
+;STOREI $T9  $R
+;RET   
+;LABEL main  
+;LINK   
+;WRITES input  
+;READI $L1  
+;STOREI 1  $T1
+;NE $L1 $T1 label4
+;STOREI 1  $T2
+;STOREI $T2  $L2
+;JUMP label5  
+;LABEL label4  
+;STOREI 1  $T3
+;LE $L1 $T3 label6
+;PUSH   
+;PUSH $L1  
+;JSR factorial  
+;POP   
+;POP $T4  
+;STOREI $T4  $L2
+;JUMP label5  
+;LABEL label6  
+;STOREI 1  $T5
+;STOREI 1  $T6
+;NE $T5 $T6 label7
+;STOREI 0  $T7
+;STOREI $T7  $L2
+;JUMP label5  
+;LABEL label7  
+;LABEL label5  
+;WRITEI $L2  
+;WRITES eol  
+;STOREI 0  $T8
+;STOREI $T8  $R
+;RET   
+;Instruction is: LABEL factorial  
+;Outset: [input, eol, $L1, $P1]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r2
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r3
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;Instruction is: LINK   
+;Outset: [input, eol, $L1, $P1]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r2
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r3
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;Instruction is: STOREI 1  $T1
+;Outset: [input, $T1, eol, $L1, $P1]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r2
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r3
+;RegVal: $T1
+;RegDirty: true
+;RegFree: false
+
+
+;Instruction is: NE $P1 $T1 label1
+;Outset: [input, eol, $L1, $P1]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r2
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r3
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;Instruction is: STOREI 1  $T2
+;Outset: [$T2, input, eol]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r2
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r3
+;RegVal: $T2
+;RegDirty: true
+;RegFree: false
+
+
+;Instruction is: STOREI $T2  $R
+;Outset: [input, eol]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r2
+;RegVal: $R
+;RegDirty: true
+;RegFree: false
+
+
+;RegName: r3
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;Instruction is: RET   
+;Outset: [input, eol]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r2
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r3
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;Instruction is: JUMP label2  
+;Outset: [input, eol, $L1]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r2
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r3
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;Instruction is: LABEL label1  
+;Outset: [input, eol, $L1, $P1]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r2
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r3
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;Instruction is: STOREI 1  $T3
+;Outset: [$T3, input, eol, $L1, $P1]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r2
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r3
+;RegVal: $T3
+;RegDirty: true
+;RegFree: false
+
+
+;Instruction is: STOREI 1  $T4
+;Outset: [$T3, input, $T4, eol, $L1, $P1]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r2
+;RegVal: $T4
+;RegDirty: true
+;RegFree: false
+
+
+;RegName: r3
+;RegVal: $T3
+;RegDirty: true
+;RegFree: false
+
+
+;Instruction is: NE $T3 $T4 label3
+;Outset: [input, eol, $L1, $P1]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r2
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r3
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;Instruction is: STOREI 1  $T5
+;Outset: [input, $T5, eol, $P1]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r2
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r3
+;RegVal: $T5
+;RegDirty: true
+;RegFree: false
+
+
+;Instruction is: SUBI $P1 $T5 $T6
+;Freeing b
+;Outset: [input, $T6, eol, $P1]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: $T6
+;RegDirty: true
+;RegFree: false
+
+
+;RegName: r2
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r3
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;Instruction is: PUSH   
+;Outset: [input, $T6, eol, $P1]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: $T6
+;RegDirty: true
+;RegFree: false
+
+
+;RegName: r2
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r3
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;Instruction is: PUSH $T6  
+;Outset: [input, eol, $P1]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r2
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r3
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;Instruction is: JSR factorial  
+;Outset: [input, eol, $P1]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r2
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r3
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;Instruction is: POP   
+;Outset: [input, eol, $P1]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r2
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r3
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;Instruction is: POP $T7  
+;Outset: [input, $T7, eol, $P1]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r2
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r3
+;RegVal: $T7
+;RegDirty: true
+;RegFree: false
+
+
+;Instruction is: STOREI $T7  $L2
+;Outset: [input, eol, $L2, $P1]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r2
+;RegVal: $L2
+;RegDirty: true
+;RegFree: false
+
+
+;RegName: r3
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;Instruction is: MULTI $L2 $P1 $T8
+;Freeing b
+;Outset: [input, eol, $T8]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: $T8
+;RegDirty: true
+;RegFree: false
+
+
+;RegName: r2
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r3
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;Instruction is: STOREI $T8  $L1
+;Outset: [input, eol, $L1]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r2
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r3
+;RegVal: $L1
+;RegDirty: true
+;RegFree: false
+
+
+;Instruction is: JUMP label2  
+;Outset: [input, eol, $L1]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r2
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r3
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;Instruction is: LABEL label3  
+;Outset: [input, eol, $L1]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r2
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r3
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;Instruction is: LABEL label2  
+;Outset: [input, eol, $L1]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r2
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r3
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;Instruction is: STOREI $L1  $T9
+;Outset: [input, eol, $T9]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r2
+;RegVal: $T9
+;RegDirty: true
+;RegFree: false
+
+
+;RegName: r3
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;Instruction is: STOREI $T9  $R
+;Outset: [input, eol]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r2
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r3
+;RegVal: $R
+;RegDirty: true
+;RegFree: false
+
+
+;Instruction is: RET   
+;Outset: [input, eol]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r2
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r3
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;Instruction is: LABEL main  
+;Outset: [input, eol, $L2]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r2
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r3
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;Instruction is: LINK   
+;Outset: [input, eol, $L2]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r2
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r3
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;Instruction is: WRITES input  
+;Outset: [input, eol, $L2]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r2
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r3
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;Instruction is: READI $L1  
+;Outset: [input, $L1, eol, $L2]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r2
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r3
+;RegVal: $L1
+;RegDirty: true
+;RegFree: false
+
+
+;Instruction is: STOREI 1  $T1
+;Outset: [input, $T1, $L1, eol, $L2]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r2
+;RegVal: $T1
+;RegDirty: true
+;RegFree: false
+
+
+;RegName: r3
+;RegVal: $L1
+;RegDirty: true
+;RegFree: false
+
+
+;Instruction is: NE $L1 $T1 label4
+;Outset: [input, $L1, eol, $L2]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r2
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r3
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;Instruction is: STOREI 1  $T2
+;Outset: [$T2, input, eol]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r2
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r3
+;RegVal: $T2
+;RegDirty: true
+;RegFree: false
+
+
+;Instruction is: STOREI $T2  $L2
+;Outset: [input, eol, $L2]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r2
+;RegVal: $L2
+;RegDirty: true
+;RegFree: false
+
+
+;RegName: r3
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;Instruction is: JUMP label5  
+;Outset: [input, eol, $L2]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r2
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r3
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;Instruction is: LABEL label4  
+;Outset: [input, $L1, eol, $L2]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r2
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r3
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;Instruction is: STOREI 1  $T3
+;Outset: [$T3, input, $L1, eol, $L2]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r2
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r3
+;RegVal: $T3
+;RegDirty: true
+;RegFree: false
+
+
+;Instruction is: LE $L1 $T3 label6
+;Outset: [input, $L1, eol, $L2]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r2
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r3
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;Instruction is: PUSH   
+;Outset: [input, eol, $L1]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r2
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r3
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;Instruction is: PUSH $L1  
+;Outset: [input, eol]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r2
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r3
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;Instruction is: JSR factorial  
+;Outset: [input, eol]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r2
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r3
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;Instruction is: POP   
+;Outset: [input, eol]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r2
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r3
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;Instruction is: POP $T4  
+;Outset: [input, $T4, eol]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r2
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r3
+;RegVal: $T4
+;RegDirty: true
+;RegFree: false
+
+
+;Instruction is: STOREI $T4  $L2
+;Outset: [input, eol, $L2]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r2
+;RegVal: $L2
+;RegDirty: true
+;RegFree: false
+
+
+;RegName: r3
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;Instruction is: JUMP label5  
+;Outset: [input, eol, $L2]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r2
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r3
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;Instruction is: LABEL label6  
+;Outset: [input, eol, $L2]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r2
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r3
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;Instruction is: STOREI 1  $T5
+;Outset: [input, $T5, eol, $L2]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r2
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r3
+;RegVal: $T5
+;RegDirty: true
+;RegFree: false
+
+
+;Instruction is: STOREI 1  $T6
+;Outset: [input, $T6, $T5, eol, $L2]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r2
+;RegVal: $T6
+;RegDirty: true
+;RegFree: false
+
+
+;RegName: r3
+;RegVal: $T5
+;RegDirty: true
+;RegFree: false
+
+
+;Instruction is: NE $T5 $T6 label7
+;Outset: [input, eol, $L2]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r2
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r3
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;Instruction is: STOREI 0  $T7
+;Outset: [input, $T7, eol]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r2
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r3
+;RegVal: $T7
+;RegDirty: true
+;RegFree: false
+
+
+;Instruction is: STOREI $T7  $L2
+;Outset: [input, eol, $L2]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r2
+;RegVal: $L2
+;RegDirty: true
+;RegFree: false
+
+
+;RegName: r3
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;Instruction is: JUMP label5  
+;Outset: [input, eol, $L2]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r2
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r3
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;Instruction is: LABEL label7  
+;Outset: [input, eol, $L2]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r2
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r3
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;Instruction is: LABEL label5  
+;Outset: [input, eol, $L2]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r2
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r3
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;Instruction is: WRITEI $L2  
+;Outset: [input, eol]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r2
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r3
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;Instruction is: WRITES eol  
+;Outset: [input, eol]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r2
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r3
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;Instruction is: STOREI 0  $T8
+;Outset: [input, eol, $T8]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r2
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r3
+;RegVal: $T8
+;RegDirty: true
+;RegFree: false
+
+
+;Instruction is: STOREI $T8  $R
+;Outset: [input, eol]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r2
+;RegVal: $R
+;RegDirty: true
+;RegFree: false
+
+
+;RegName: r3
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;Instruction is: RET   
+;Outset: [input, eol]
+;Printing register file
+;RegName: r0
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r1
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r2
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+;RegName: r3
+;RegVal: 
+;RegDirty: false
+;RegFree: true
+
+
+
+
+;Printing new IR code: 
+
+
+;LABEL factorial  
+;LINK   
+;STOREI 1  $T4
+;STOREI $P1  $T3
+;NE $T3 $T4 label1
+;STOREF r3  $-3
+;JNE   label1
+;STOREI 1  $T4
+;STOREI $T4  $T3
+;STOREF r3  $-4
+;STOREF r2  $R
+;RET   
+;JUMP label2  
+;LABEL label1  
+;STOREI 1  $T4
+;STOREI 1  $T3
+;NE $T4 $T3 label3
+;STOREF r3  $-5
+;STOREF r2  $-6
+;JNE   label3
+;STOREI 1  $T4
+;STOREI $P1  $T3
+;SUBI $T3 $T4 $T2
+;STOREF r3  $-7
+;PUSH   
+;PUSH $T2  
+;STOREF r1  $-8
+;JSR factorial  
+;POP   
+;POP $T4  
+;STOREI $T4  $T3
+;STOREF r3  $-9
+;STOREI $P1  $T4
+;MULTI $T3 $T4 $T2
+;STOREF r2  $-2
+;STOREI $T2  $T4
+;STOREF r1  $-10
+;STOREF r3  $-1
+;JUMP label2  
+;LABEL label3  
+;LABEL label2  
+;STOREI $-1  $T4
+;STOREI $T4  $T3
+;STOREI $T3  $T4
+;STOREF r2  $-11
+;STOREF r3  $R
+;RET   
+;LABEL main  
+;LINK   
+;WRITES input  
+;READI $T4  
+;STOREI 1  $T3
+;NE $T4 $T3 label4
+;STOREF r3  $-1
+;STOREF r2  $-3
+;JNE   label4
+;STOREI 1  $T4
+;STOREI $T4  $T3
+;STOREF r3  $-4
+;STOREF r2  $-2
+;JUMP label5  
+;LABEL label4  
+;STOREI 1  $T4
+;STOREI $-1  $T3
+;LE $T3 $T4 label6
+;STOREF r3  $-5
+;JLE   label6
+;PUSH   
+;STOREI $-1  $T4
+;PUSH $T4  
+;JSR factorial  
+;POP   
+;POP $T4  
+;STOREI $T4  $T3
+;STOREF r3  $-6
+;STOREF r2  $-2
+;JUMP label5  
+;LABEL label6  
+;STOREI 1  $T4
+;STOREI 1  $T3
+;NE $T4 $T3 label7
+;STOREF r3  $-7
+;STOREF r2  $-8
+;JNE   label7
+;STOREI 0  $T4
+;STOREI $T4  $T3
+;STOREF r3  $-9
+;STOREF r2  $-2
+;JUMP label5  
+;LABEL label7  
+;LABEL label5  
+;STOREI $-2  $T4
+;WRITEI $T4  
+;WRITES eol  
+;STOREI 0  $T4
+;STOREI $T4  $T3
+;STOREF r3  $-10
+;STOREF r2  $R
+;RET   
+str input "Please enter an integer number: "
+str eol "\n"
+push
+push r0
+push r1
+push r2
+push r3
+jsr main
+sys halt
+label factorial
+link 1000
+move 1 r3
+move $6 r2
+cmpi r2 r3
+; comes here r3
+move r3 $-3
+jne label1
+move 1 r3
+move r3 r2
+; comes here r3
+move r3 $-4
+; comes here r2
+move r2 $7
+unlnk
+ret
+jmp label2
+label label1
+move 1 r3
+move 1 r2
+cmpi r3 r2
+; comes here r3
+move r3 $-5
+; comes here r2
+move r2 $-6
+jne label3
+move 1 r3
+move $6 r2
+move r2 r1
+subi r3 r1
+; comes here r3
+move r3 $-7
+push 
+push r1
+; comes here r1
+move r1 $-8
+push r0
+push r1
+push r2
+push r3
+jsr factorial
+pop r3
+pop r2
+pop r1
+pop r0
+pop 
+pop r3
+move r3 r2
+; comes here r3
+move r3 $-9
+move $6 r3
+move r2 r1
+muli r3 r1
+; comes here r2
+move r2 $-2
+move r1 r3
+; comes here r1
+move r1 $-10
+; comes here r3
+move r3 $-1
+jmp label2
+label label3
+label label2
+move $-1 r3
+move r3 r2
+move r2 r3
+; comes here r2
+move r2 $-11
+; comes here r3
+move r3 $7
+unlnk
+ret
+label main
+link 1000
+sys writes input
+sys readi r3
+move 1 r2
+cmpi r3 r2
+; comes here r3
+move r3 $-1
+; comes here r2
+move r2 $-3
+jne label4
+move 1 r3
+move r3 r2
+; comes here r3
+move r3 $-4
+; comes here r2
+move r2 $-2
+jmp label5
+label label4
+move 1 r3
+move $-1 r2
+cmpi r2 r3
+; comes here r3
+move r3 $-5
+jle label6
+push 
+move $-1 r3
+push r3
+push r0
+push r1
+push r2
+push r3
+jsr factorial
+pop r3
+pop r2
+pop r1
+pop r0
+pop 
+pop r3
+move r3 r2
+; comes here r3
+move r3 $-6
+; comes here r2
+move r2 $-2
+jmp label5
+label label6
+move 1 r3
+move 1 r2
+cmpi r3 r2
+; comes here r3
+move r3 $-7
+; comes here r2
+move r2 $-8
+jne label7
+move 0 r3
+move r3 r2
+; comes here r3
+move r3 $-9
+; comes here r2
+move r2 $-2
+jmp label5
+label label7
+label label5
+move $-2 r3
+sys writei r3
+sys writes eol
+move 0 r3
+move r3 r2
+; comes here r3
+move r3 $-10
+; comes here r2
+move r2 $6
+unlnk
+ret
+end
